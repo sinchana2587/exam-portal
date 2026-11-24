@@ -1,0 +1,1390 @@
+# MIT MYSORE ADMIN & HOD PORTAL
+# COMPLETE DEMO DATA REMOVAL AND BACKEND INTEGRATION PREPARATION
+
+You are working inside my existing MIT Mysore Examination Management System Admin/HOD Portal project.
+
+The Principal and HOD frontend pages have already been reviewed, redesigned and approved.
+
+We are now moving from frontend development to actual backend integration.
+
+The backend is being developed separately using Java, with PostgreSQL as the database.
+
+Your task is to completely remove all demonstration records, mock data, fake API responses, simulated operations, demo generators and demo reset functionality from the existing Admin/HOD application.
+
+Prepare the existing application to communicate with the actual Java backend through properly structured API services.
+
+**This is NOT a frontend redesign request.**
+
+Do not create a new project.
+
+Do not replace the existing React/TypeScript application.
+
+Do not redesign approved pages.
+
+Do not remove the approved navigation, forms, tables, filters, charts, dialogs, upload interfaces, conversion workflows or examination-related business logic.
+
+Preserve the approved UI and replace its demonstration data layer with genuine backend integration.
+
+---
+
+# PART 1 — INSPECT THE ENTIRE EXISTING PROJECT
+
+Before changing the code, inspect the complete application.
+
+Review:
+
+- Existing package.json and dependencies.
+- All React and TypeScript pages.
+- Principal and HOD layouts.
+- Routing and authentication.
+- Shared components.
+- API services and data services.
+- Types and interfaces.
+- Mock data files.
+- Demo generators.
+- Authentication mocks.
+- State management.
+- File upload and download logic.
+- Excel parsing and validation.
+- PDF conversion interfaces.
+- Question-bank logic.
+- Student-list management.
+- Examination status services.
+- Results and analytics services.
+- Audit log services.
+- Profile and Settings.
+
+Search the entire source code for:
+
+- Mock data.
+- Sample student records.
+- Fake USNs.
+- Demo HOD accounts.
+- Demo departments.
+- Sample subjects.
+- Artificial question banks.
+- Fake numbered question sets.
+- Hardcoded examination records.
+- Fake result records.
+- Sample audit events.
+- Simulated PDF extraction.
+- Artificial Excel files.
+- Mock authentication.
+- Hardcoded credentials.
+- Fake API responses.
+- Artificial loading delays.
+- Fake success messages.
+- Fallback demo records.
+- Randomly generated sample values.
+- Demo reset operations.
+- Demo-only buttons and components.
+
+Do not assume demo data is located only in a central mock-data file. It may also be embedded inside individual page components and services.
+
+Remove all such demo dependencies throughout the project.
+
+---
+
+# PART 2 — REMOVE ALL DEMONSTRATION DATA
+
+Completely remove demonstration records from both portals.
+
+## 2.1 Common Login
+
+Preserve the approved MIT Mysore login design.
+
+Remove:
+
+- Demo usernames.
+- Demo passwords.
+- Pre-filled login credentials.
+- Fill Demo Credentials.
+- Mock login success.
+- Fake role assignment.
+- Fake authentication tokens.
+- Demo credential side panels.
+- Fake Forgot Password functionality.
+
+The login must use real backend authentication.
+
+The authenticated role determines routing:
+
+- Principal → Principal Dashboard.
+- HOD → assigned department's HOD Dashboard.
+
+Do not introduce a manual role dropdown.
+
+The Principal account is provisioned separately by an authorised college IT/system administrator.
+
+The Principal does not create the COE account.
+
+The COE account is provisioned separately through its authorised process.
+
+## 2.2 Principal Dashboard
+
+Remove all fake:
+
+- Department statistics.
+- HOD counts.
+- Student counts.
+- Upcoming examination records.
+- In-progress examination counts.
+- Completed examination counts.
+- Departmental activity.
+- Recent administrative activities.
+
+Connect these values to genuine backend APIs.
+
+### Preserve the approved dashboard layout
+
+Retain the approved institutional summary and activity sections.
+
+Do not reintroduce:
+
+- Examination Cycles.
+- Staff counts.
+- Staff management.
+- Question-bank readiness.
+- Published question-set counts.
+- HOD question-submission monitoring.
+- Separate academic structure administration.
+
+## 2.3 HOD Management
+
+Remove all sample:
+
+- HOD accounts.
+- Department records.
+- Employee IDs.
+- Names and email addresses.
+- Account statuses.
+- Assignment and replacement histories.
+
+Use actual backend records.
+
+Preserve:
+
+- Create HOD & Department.
+- View HODs.
+- Edit permitted details.
+- Activate/deactivate.
+- Replace HOD.
+- Search and filtering.
+
+Creating the HOD account and department assignment must be handled through the backend as one transaction.
+
+Preserve the rule that only one active HOD is assigned to a department at a time.
+
+Do not create staff management or COE account management in this portal.
+
+Account provisioning must use the authorised backend process. Never display plain-text generated passwords or use shared demo credentials.
+
+## 2.4 Institution Reports & Analytics
+
+Remove:
+
+- Sample examination results.
+- Fake department statistics.
+- Hardcoded pass percentages.
+- Fake toppers.
+- Artificial subject comparisons.
+- Dummy charts.
+- Hardcoded semester/subject filters.
+- Sample academic-year records.
+
+Retrieve actual released results from the backend.
+
+Preserve the approved filters:
+
+- Academic Year.
+- Department.
+- Semester.
+- Subject / Examination.
+
+Use only results explicitly released by the COE.
+
+Do not show pending or unreleased results.
+
+Keep the Results Overview and Performance Analytics tabs.
+
+Calculate statistics using actual student results.
+
+Use percentages to compare subjects with different maximum marks.
+
+Do not hardcode department or subject options.
+
+## 2.5 Principal Audit Logs
+
+Remove all sample audit entries.
+
+Connect the page to actual backend audit records.
+
+Preserve:
+
+- Department filter.
+- Role filter.
+- Activity category.
+- Date range.
+- Search.
+- CSV export.
+
+Keep the Principal's institution-wide access.
+
+Do not generate audit entries artificially in frontend code.
+
+---
+
+# PART 3 — HOD PORTAL DEMO DATA REMOVAL
+
+## 3.1 HOD Dashboard
+
+Remove all fake dashboard statistics and examination records.
+
+Preserve the final approved simplified dashboard containing exactly three summary cards:
+
+1. Total Students.
+2. Upcoming Examinations.
+3. Released Results.
+
+### Total Students — IMPORTANT
+
+Total Students must represent the complete departmental student enrolment across all active semesters and applicable sections for the current academic year.
+
+Do NOT calculate this value using examination-eligible student lists.
+
+The student lists uploaded through Setup Class represent examination eligibility lists, which may not contain every student enrolled in the department.
+
+Use the authoritative complete department enrolment data from the backend.
+
+Count unique USNs without duplication.
+
+If the complete department enrolment endpoint is not yet available, show a clear unavailable/backend-not-connected state. Never display the eligible roster count as the total departmental student count.
+
+### Upcoming Examinations
+
+Retrieve actual examination records assigned to the HOD's department.
+
+Count distinct examinations scheduled for future dates.
+
+Do not count individual sections or sittings as separate examinations.
+
+### Released Results
+
+Count distinct examinations whose results have been explicitly released by the COE.
+
+Do not count individual student results as separate examinations.
+
+### Department Examination Activity
+
+Preserve the approved table:
+
+- Subject.
+- Semester.
+- Participating Sections.
+- Date.
+- Exam Status.
+- Result Status.
+
+Remove fake records.
+
+Do not restore:
+
+- Quick Actions.
+- My Subjects.
+- Eligible Students.
+- Published Subjects.
+- Lab Readiness column.
+- Recent Department Activities.
+- Summary of Released Results.
+
+Recent activities are available in Audit Logs. Detailed results are available in Department Results & Performance Analytics.
+
+## 3.2 Setup Class — Subjects
+
+Remove sample subjects and artificial module configurations.
+
+Retrieve genuine subject records from the backend.
+
+Preserve:
+
+- Semester selector.
+- Subjects tab.
+- Student Lists tab.
+- Create Subject.
+- Edit Subject.
+- Deactivate/archive.
+- Existing dependency validation.
+
+Subject details must include:
+
+- Subject Code.
+- Subject Name.
+- Module Count.
+- Applicable Sections.
+
+Module count and sections must be dynamic.
+
+Do not hardcode five modules or a fixed section count.
+
+Subject records are associated with the authenticated HOD's department.
+
+Do not create fake subjects when no backend records exist.
+
+## 3.3 Setup Class — Student Lists
+
+Remove all:
+- Sample student records.
+- Fake USNs.
+- Hardcoded student names.
+- Artificial DOBs.
+- Mock validation responses.
+- Pre-filled student lists.
+- Demo upload histories.
+
+Preserve the approved student-list workflow.
+
+The standard student Excel template must contain exactly:
+
+1. USN.
+2. Student Name.
+3. DOB.
+
+Department comes from the authenticated HOD account.
+
+Semester comes from the selected semester.
+
+Section comes from the selected Student Lists tab.
+
+Preserve existing validation:
+
+- Invalid USN.
+- Missing name.
+- Missing or invalid DOB.
+- Duplicate USN.
+- Department-prefix mismatch.
+- Cross-section/dept duplicate.
+- Incorrect document context.
+- Unclear or incomplete data.
+
+Keep:
+- Excel Template Download.
+- Excel Upload.
+- PDF/image-to-Excel Conversion Helper.
+- Preview.
+- Manual correction.
+- Validation.
+- Excel Download.
+- Manual Excel re-upload.
+- Student-list replacement.
+- Individual student management.
+- Upload and replacement history.
+
+### Student List Converter — IMPORTANT
+
+Do NOT remove the converter interface.
+
+It is a genuine planned application feature.
+
+Remove only:
+
+- Demo PDF Generator.
+- Hardcoded PDF extraction responses.
+- Sample student PDF files.
+- Fake OCR results.
+- Artificial converted Excel files.
+- Automatic demo student insertion.
+- Simulated conversion success.
+
+The future workflow must remain:
+
+Original PDF/image → Java backend extraction/OCR → Student Preview → Validation → Manual correction → Standard Excel generation → Download → Manual Excel upload → Backend validation → Student-list save.
+
+The actual document extraction and Excel generation must be performed by the Java backend after its services are connected.
+
+Until the backend conversion service is available:
+
+- Preserve the interface.
+- Preserve the upload control.
+- Preserve the expected API integration points.
+- Show a genuine backend-not-connected message when processing is attempted.
+- Do not pretend that extraction succeeded.
+- Do not generate sample records as fallback.
+
+Do not automatically save converted student information.
+
+## 3.4 Questions — Module-Wise Question Bank
+
+Remove all sample question records and fake question-bank data.
+
+Preserve the approved module-wise question upload workflow.
+
+The HOD must:
+
+1. Select Semester.
+2. Select Subject.
+3. Select exactly one Module.
+4. Upload questions for that module.
+5. Review the extracted questions.
+6. Validate.
+7. Download the standard Excel workbook.
+8. Manually upload the Excel through the normal question-bank import flow.
+9. Save only after backend validation succeeds.
+
+### Standard Question Excel
+
+The standard question template must contain exactly these columns:
+
+1. Module Number.
+2. Question Text.
+3. Option A.
+4. Option B.
+5. Option C.
+6. Option D.
+7. Correct Option.
+
+Every question row in an individual upload batch must belong to exactly one selected module.
+
+Do not combine questions from different modules into one workbook.
+
+### Question Converter — IMPORTANT
+
+Do NOT remove the actual question conversion interface.
+
+Remove only:
+
+- Demo question PDF generator.
+- Artificial question records.
+- Fake question extraction.
+- Sample image assets.
+- Simulated OCR.
+- Fake converted Excel files.
+- Automatic sample question insertion.
+- Artificial correct answers.
+- Hardcoded success responses.
+
+The actual converter must eventually support:
+
+- Text-based PDFs.
+- Scanned PDFs.
+- JPG/JPEG.
+- PNG.
+- Question diagrams.
+- Image-based answer options.
+- Multiple images within one question.
+
+Preserve the requirement that images belonging to a question or an option are embedded as actual image objects in the generated `.xlsx` workbook and remain associated correctly after manual upload.
+
+The Excel parser must support embedded image extraction and image-association mapping.
+
+Do not merely place image filenames or external URLs into spreadsheet cells.
+
+The Java backend must perform genuine extraction, OCR, image association, Excel generation and parsing.
+
+Until the relevant Java services are connected:
+
+- Preserve the existing converter UI.
+- Prepare typed API integration.
+- Show an honest backend-not-connected state.
+- Do not simulate extraction.
+- Do not return hardcoded questions.
+- Do not create fake Excel files.
+- Do not silently insert questions.
+
+Stable Question IDs must be assigned by the backend after successful question-bank import, not during document conversion.
+
+## 3.5 Numbered Question Set Generation
+
+Preserve the latest approved HOD question-set generation logic.
+
+Do not reintroduce any earlier fixed-four or balanced-reuse implementation.
+
+The current institutional rule is:
+
+- The HOD configures the number of questions per module in one paper.
+- The backend calculates the maximum number of complete numbered sets possible from the available valid question pool.
+- Generate only that maximum number of sets.
+- Every numbered set must have completely different questions.
+- No Question ID can be reused across different numbered sets in the same generation.
+- Do not generate incomplete sets.
+- Do not fabricate questions.
+- Do not assume exactly four sets.
+
+The maximum set count must be calculated as:
+
+Maximum Sets = minimum across configured modules of:
+
+Floor(Available Valid Unique Questions in Module / Required Questions from Module per Set).
+
+The HOD must NOT see the actual generated question composition of individual numbered sets.
+
+HOD may see only:
+- Number of sets generated.
+- Questions per set.
+- Module-wise distribution.
+- Total unique questions allocated.
+- Zero-overlap validation status.
+- Publication status.
+
+The HOD cannot see:
+- Question-to-set mapping.
+- Question texts belonging to individual generated sets.
+- Options.
+- Correct answers.
+- Internal set allocation details.
+
+All generation and publication data must come from the real backend.
+
+Do not retain sample Set 1, Set 2, Set 3 or Set 4 records.
+
+## 3.6 Key Correction
+
+Remove all sample correction requests and fake approval histories.
+
+Preserve the approved Key Correction workflow:
+
+- HOD selects a completed examination whose results are not released.
+- Selects Question ID.
+- Provides existing answer.
+- Provides proposed answer.
+- Provides a reason and supporting explanation.
+- Submits to COE.
+- Views actual correction status and history.
+
+The HOD must not directly edit examination marks or release results.
+
+COE decisions and result recalculations must come from the backend.
+
+Do not create artificial correction success or approval records.
+
+## 3.7 Examination Status
+
+Remove all hardcoded examination records and fake statuses.
+
+Preserve one read-only Examination Status page.
+
+Display one examination per:
+
+Department + Semester + Subject.
+
+Group all participating sections together.
+
+Display:
+
+- Subject.
+- Semester.
+- Participating Sections.
+- Examination Date.
+- Exam Status.
+- Result Status.
+- Sitting Details where applicable.
+
+Preserve the approved examination lifecycle:
+
+- Scheduled.
+- In Progress.
+- Exam Completed.
+- Cancelled.
+
+Preserve result statuses:
+
+- Not Imported.
+- Awaiting COE Approval.
+- Correction Pending.
+- Released.
+
+Do not show duplicate section-wise examinations.
+
+Do not restore Examination Cycle terminology.
+
+Do not add lab scheduling controls or question-set selection to the HOD page.
+
+Sitting and lab details must come from actual COE records.
+
+## 3.8 Department Results & Performance Analytics
+
+Remove all sample student results, artificial marks, fake percentages and hardcoded charts.
+
+Preserve the two tabs:
+
+1. Individual Student Results.
+2. Performance Analytics.
+
+Only show results explicitly released by COE.
+
+Preserve filters:
+
+- Academic Year.
+- Semester.
+- Examination/Subject.
+- Section.
+- Student search.
+
+Use genuine backend records.
+
+Show:
+- Student Name.
+- USN.
+- Examination.
+- Semester.
+- Original Section.
+- Marks Obtained / Maximum Marks.
+- Percentage.
+- Attendance.
+- Pass/Fail where evaluated.
+
+Absent students must not automatically be counted as failed unless institutional policy specifies otherwise.
+
+Performance analytics must calculate from actual released results.
+
+Include:
+- Students Evaluated.
+- Pass Percentage.
+- Fail Percentage.
+- Average Percentage.
+- Highest Percentage.
+- Lowest Percentage.
+- Absent Students.
+- Top performers.
+- Subject-wise performance.
+- Section-wise performance.
+
+Use percentage comparisons across subjects with different maximum marks.
+
+Exports must contain actual backend data.
+
+Do not show fake sample result records when the backend has no released results.
+
+## 3.9 HOD Audit Logs
+
+Remove all sample audit entries.
+
+Retrieve actual department-specific audit events from the backend.
+
+Preserve:
+- Search.
+- Activity category.
+- Performed By.
+- Date range.
+- CSV export.
+
+The HOD can see only their assigned department's activity.
+
+Include actual relevant actions by:
+- HOD.
+- Principal.
+- COE.
+- System.
+
+Do not create artificial audit records from frontend-only actions.
+
+The Principal retains institution-wide audit access.
+
+The backend must enforce these permissions.
+
+## 3.10 Profile & Settings
+
+Preserve the shared Profile & Settings page available through the account menu.
+
+Remove all demo data/reset functionality entirely.
+
+Remove:
+
+- Demo Data Management.
+- Reset Demo Data.
+- Restore Sample Records.
+- Mock Reset Confirmation.
+- Any demo-only reset buttons.
+- Any mock data restoration functionality.
+
+Preserve:
+
+- Profile information.
+- Change Password.
+- Contact Number update where authorised.
+- Light/Dark appearance preference.
+- Logout through the account menu.
+
+Official employee identity fields and assigned department remain read-only.
+
+The backend must authenticate and validate all profile and password updates.
+
+---
+
+# PART 4 — REMOVE ALL MOCK FALLBACK SERVICES
+
+This is critical.
+
+Do not simply clear sample records from the UI while leaving mock services active underneath.
+
+Inspect every service and replace demo implementations with real API integration functions.
+
+Remove:
+
+- Hardcoded arrays used as live page data.
+- Artificial success responses.
+- Fake authentication.
+- Fake API response generators.
+- Randomised student counts.
+- Artificial examination numbers.
+- Sample question generation used as real records.
+- Mock result calculations.
+- Fake publication success.
+- Simulated correction approval.
+- Simulated PDF extraction.
+- Fake XLSX generation.
+- Fake upload completion.
+- Artificial audit events.
+- Automatic demo fallback when an API request fails.
+
+If a backend operation fails, display the real error.
+
+Do not silently switch to sample data.
+
+Do not report success when no backend operation took place.
+
+Do not add a mock-data fallback merely to keep the pages visually populated.
+
+---
+
+# PART 5 — CENTRAL JAVA BACKEND API ARCHITECTURE
+
+Prepare the frontend for the actual Java backend and PostgreSQL database.
+
+Preserve the existing project's conventions, but organise backend operations through reusable services.
+
+Create or refine:
+
+- Central API client.
+- Authentication services.
+- Typed request/response interfaces.
+- Principal services.
+- HOD services.
+- Department services.
+- Subject services.
+- Student-list services.
+- Document-conversion services.
+- Question-bank services.
+- Question-set generation services.
+- Key correction services.
+- Examination status services.
+- Result services.
+- Audit services.
+- Settings services.
+- File upload/download utilities.
+- Error-handling utilities.
+
+Avoid embedding API requests independently inside every page component.
+
+### API configuration
+
+Use an environment variable such as:
+
+VITE_API_BASE_URL
+
+Do not hardcode the production backend URL inside React components.
+
+Do not expose database credentials, access secrets, private keys, signing keys or passwords in frontend code.
+
+### Authentication
+
+Implement real backend authentication.
+
+The frontend must obtain:
+
+- Authenticated User ID.
+- Role.
+- Assigned Department ID for HOD.
+- Permitted routes and actions.
+- Authentication/session status.
+
+Use protected routes.
+
+Do not treat hidden sidebar links as sufficient security.
+
+The Java backend must independently enforce Principal/HOD access.
+
+### Principal API services
+
+Prepare service methods for:
+
+- Login.
+- Logout.
+- Current user.
+- Dashboard overview.
+- Create HOD and department.
+- HOD listing.
+- HOD detail.
+- HOD update.
+- HOD activation/deactivation.
+- HOD replacement.
+- Institutional reports.
+- Institutional analytics.
+- Institution-wide audit logs.
+- Profile.
+- Change password.
+- Theme preference.
+
+### HOD API services
+
+Prepare service methods for:
+
+- Department dashboard.
+- Total department student count across all active semesters.
+- Upcoming examination count.
+- Released result count.
+- Subject CRUD.
+- Student-list management.
+- Student PDF/image conversion.
+- Student Excel validation and import.
+- Question PDF/image conversion.
+- Question extraction and image mapping.
+- Module-wise question Excel generation and upload.
+- Question validation.
+- Question-set generation.
+- Question-set publication.
+- Question publication history.
+- Key correction requests.
+- Examination status.
+- Sitting details.
+- Released department results.
+- Department analytics.
+- Department audit logs.
+- Profile.
+- Change password.
+- Theme preference.
+
+### Backend permission rules
+
+The frontend must obtain the HOD's department from authenticated backend identity.
+
+Do not trust a department ID supplied by the browser as proof of permission.
+
+Every HOD operation must be authorised server-side.
+
+The HOD cannot:
+- Access another department's records.
+- Schedule examinations.
+- Select examination question sets.
+- Approve key corrections.
+- Manually change marks.
+- Release examination results.
+- Manage COE accounts.
+
+The Principal has institution-wide access only within their authorised responsibilities.
+
+---
+
+# PART 6 — DOCUMENT CONVERTER BACKEND INTEGRATION
+
+Preserve both approved converters as real application features.
+
+Do not remove their interfaces during demo cleanup.
+
+### Student List Converter
+
+The backend must eventually handle:
+
+- PDF text extraction.
+- Scanned PDF OCR.
+- Image processing.
+- Table extraction.
+- USN/name/DOB field mapping.
+- Context validation.
+- Standard Excel generation.
+- XLSX parsing.
+- Duplicate checks.
+- Student-list import.
+
+Standard student template:
+
+USN | Student Name | DOB
+
+Department, semester and section are provided through authenticated context and selected page settings.
+
+### Module-Wise Question Converter
+
+The backend must eventually handle:
+
+- PDF text extraction.
+- Scanned PDF OCR.
+- Question segmentation.
+- Module identification.
+- Option extraction.
+- Correct-answer extraction where explicitly supplied.
+- PDF image extraction.
+- Question image association.
+- Option image association.
+- Image-enabled XLSX generation.
+- Embedded image extraction during XLSX upload.
+- Question validation.
+- Question-bank import.
+
+Standard question template:
+
+Module Number | Question Text | Option A | Option B | Option C | Option D | Correct Option
+
+Every conversion must contain one selected module only.
+
+Do not mix questions from different modules.
+
+Actual images must remain embedded inside the Excel workbook and retain their correct question/option associations.
+
+Do not simulate OCR or image extraction.
+
+### Java technology guidance
+
+The backend team may use appropriate libraries such as:
+
+- Apache PDFBox.
+- Apache Tika.
+- Tesseract OCR.
+- Apache POI for image-enabled XLSX generation and parsing.
+
+Equivalent maintained technologies are acceptable if they meet the extraction and image round-trip requirements.
+
+Prefer local/on-premises processing. Do not silently send confidential student lists or examination question papers to external services.
+
+Until backend document-processing endpoints are available, retain the UI and API integration points, but show an honest backend-not-connected message instead of returning fake extraction records.
+
+---
+
+# PART 7 — PROPOSED API CONTRACT DOCUMENTATION
+
+Create or update a concise API integration document in the project.
+
+Use existing backend contracts if already available.
+
+Do not invent the claim that proposed endpoints already exist.
+
+Suggested endpoints include:
+
+### Authentication
+
+POST `/api/auth/login`
+
+POST `/api/auth/logout`
+
+GET `/api/auth/me`
+
+### Principal
+
+GET `/api/principal/dashboard`
+
+GET `/api/principal/hods`
+
+POST `/api/principal/hods`
+
+PUT `/api/principal/hods/{hodId}`
+
+PATCH `/api/principal/hods/{hodId}/status`
+
+POST `/api/principal/hods/{hodId}/replace`
+
+GET `/api/principal/reports`
+
+GET `/api/principal/analytics`
+
+GET `/api/principal/audit-logs`
+
+### HOD Setup Class
+
+GET `/api/hod/subjects`
+
+POST `/api/hod/subjects`
+
+PUT `/api/hod/subjects/{subjectId}`
+
+GET `/api/hod/student-lists`
+
+POST `/api/hod/student-lists/conversions`
+
+GET `/api/hod/student-lists/conversions/{conversionId}`
+
+PUT `/api/hod/student-lists/conversions/{conversionId}/records`
+
+GET `/api/hod/student-lists/conversions/{conversionId}/excel`
+
+POST `/api/hod/student-lists/import`
+
+### Questions
+
+POST `/api/hod/question-banks/conversions`
+
+GET `/api/hod/question-banks/conversions/{conversionId}`
+
+PUT `/api/hod/question-banks/conversions/{conversionId}/records`
+
+POST `/api/hod/question-banks/conversions/{conversionId}/validate`
+
+GET `/api/hod/question-banks/conversions/{conversionId}/excel`
+
+POST `/api/hod/question-banks/import`
+
+POST `/api/hod/question-banks/blueprints`
+
+POST `/api/hod/question-banks/generations`
+
+POST `/api/hod/question-banks/generations/{generationId}/publish`
+
+GET `/api/hod/question-banks/publication-history`
+
+### Key Correction
+
+GET `/api/hod/key-corrections/examinations`
+
+POST `/api/hod/key-corrections`
+
+GET `/api/hod/key-corrections`
+
+### Examination Status
+
+GET `/api/hod/examinations`
+
+GET `/api/hod/examinations/{examinationId}/sittings`
+
+### Department Results
+
+GET `/api/hod/results`
+
+GET `/api/hod/results/analytics`
+
+### HOD Audit
+
+GET `/api/hod/audit-logs`
+
+### Profile and Settings
+
+GET `/api/profile`
+
+PUT `/api/profile/contact`
+
+POST `/api/profile/change-password`
+
+GET `/api/profile/preferences`
+
+PUT `/api/profile/preferences`
+
+These are proposed endpoint contracts. Align with the actual Java backend API structure.
+
+For each endpoint, document:
+
+- HTTP method.
+- Request fields.
+- Response fields.
+- Authentication requirement.
+- Role permissions.
+- Validation.
+- Error responses.
+- File upload or download behaviour where applicable.
+
+Do not assume these endpoint names are final until the backend team agrees.
+
+---
+
+# PART 8 — LOADING, EMPTY, ERROR AND SUCCESS STATES
+
+Without demo data, many pages may initially have no records.
+
+This is expected.
+
+Implement honest interface states.
+
+### Loading
+
+Display appropriate loading indicators during API requests.
+
+### Empty
+
+Examples:
+
+- No departments found.
+- No HOD accounts found.
+- No subjects created.
+- No student lists uploaded.
+- No questions uploaded.
+- No numbered sets published.
+- No examinations scheduled.
+- No released results.
+- No key correction requests.
+- No audit events available.
+
+### Backend unavailable
+
+Display a clear message such as:
+
+"Unable to connect to the examination management server. Please check the backend service and try again."
+
+Do not display a generic empty message when the actual cause is a network or server error.
+
+### Unauthorised
+
+Handle expired sessions and permission failures properly.
+
+Do not expose protected data from stale frontend state.
+
+### Validation failures
+
+Display the actual backend validation message near the relevant field or record.
+
+Do not show fake success notifications.
+
+Do not confuse:
+- Loading.
+- Empty data.
+- Backend unavailable.
+- Permission denied.
+- Validation failure.
+- Successful operation.
+
+---
+
+# PART 9 — FILE UPLOAD AND DOWNLOAD INTEGRITY
+
+Remove all artificial file generators and placeholder downloads.
+
+Preserve the genuine planned document conversion workflows.
+
+Real operations must eventually use:
+- Backend multipart/form-data uploads.
+- Backend file validation.
+- Actual document processing.
+- Real XLSX generation.
+- Actual XLSX parsing.
+- Genuine file downloads.
+- Authorised backend imports.
+
+Do not generate fake `.xlsx` files merely to make the button appear functional.
+
+Do not claim a PDF was extracted if processing did not happen.
+
+Do not claim an Excel import succeeded if the backend did not save it.
+
+Keep conversion separate from importing records.
+
+The HOD must still manually download and upload the converted Excel.
+
+---
+
+# PART 10 — SECURITY, AUDIT AND DATA PROTECTION
+
+### Access control
+
+Principal:
+- Institution-wide HOD management.
+- Institution-wide released reports.
+- Institution-wide audit logs.
+
+HOD:
+- Only assigned department.
+- Only authorised subject, student and question records.
+- Only own department's released results.
+- Only own department's audit logs.
+
+Enforce these rules in Java backend services, not just React route guards.
+
+### Sensitive information
+
+Never expose:
+
+- Plaintext passwords.
+- Authentication tokens.
+- Student DOB in audit descriptions.
+- Confidential question-set allocation mappings.
+- Private signing keys.
+- Backend file-system paths.
+- Unauthorised department records.
+
+### Audit
+
+Maintain protected backend audit records for:
+
+- HOD creation and replacement.
+- Subject creation and updates.
+- Student-list uploads and replacement.
+- Individual student changes.
+- Document conversions.
+- Question uploads and publication.
+- Key correction submission.
+- Examination status updates.
+- Results viewing and exports.
+- Profile and account changes.
+
+Preserve historical records.
+
+Do not fabricate audit entries from frontend-only state changes.
+
+---
+
+# PART 11 — DEVELOPMENT CONFIGURATION AFTER DEMO REMOVAL
+
+The Admin/HOD application is moving to actual backend integration.
+
+There must be no automatic mock adapter, sample-data fallback or artificial success response.
+
+Use environment configuration to connect to the Java backend.
+
+If the backend is not running:
+
+- Show a genuine backend connection error.
+- Keep the UI stable.
+- Allow retry.
+- Do not inject sample data.
+- Do not report fake success.
+
+Keep only non-record static configuration values needed by the UI, such as:
+
+- Status labels.
+- Sitting types.
+- Result status enums.
+- Paper version labels.
+- Form validation constants.
+
+These are not demo data.
+
+### Do not delete real institutional information
+
+This task removes frontend mock/demo data, seed fixtures and demo-only functionality.
+
+Do NOT run destructive database commands.
+
+Do not truncate tables.
+
+Do not delete actual student, department, HOD, subject, question, examination, result or audit records from PostgreSQL.
+
+The backend team must separately manage any development seed database through an authorised database migration/seed process.
+
+---
+
+# PART 12 — IMPLEMENTATION ORDER
+
+Work systematically.
+
+### Phase 1 — Inspection
+
+Inspect all source files and locate every demo-data source.
+
+### Phase 2 — Demo removal
+
+Remove mock records, fake APIs, sample generators, hardcoded results, demo credentials and reset functions.
+
+### Phase 3 — API architecture
+
+Create/refine the central API client and typed services.
+
+### Phase 4 — Principal integration preparation
+
+Prepare Principal Dashboard, HOD Management, Institution Reports and Audit Logs services.
+
+### Phase 5 — HOD integration preparation
+
+Prepare HOD Dashboard, Setup Class, Questions, Key Correction, Examination Status, Department Results and Audit Logs services.
+
+### Phase 6 — Converter preparation
+
+Retain both genuine document converters and their backend API contracts.
+
+Remove all demo extraction and fake document-generation logic.
+
+### Phase 7 — Security and permissions
+
+Implement role-based frontend protection and proper backend permission contracts.
+
+### Phase 8 — Verification
+
+Test every page with:
+- Real API response where available.
+- Genuine empty state.
+- Backend unavailable state.
+- Permission denied state.
+- Validation failure state.
+
+Do not stop after writing a plan. Make the actual code changes.
+
+---
+
+# PART 13 — MANDATORY VERIFICATION
+
+Run the available:
+
+- TypeScript checks.
+- Production build.
+- Lint checks.
+- Broken import checks.
+- Dead route checks.
+- API service verification.
+
+Search the complete source code for:
+- Mock records.
+- Hardcoded sample USNs.
+- Fake student names.
+- Demo subjects.
+- Artificial question records.
+- Demo credentials.
+- Fake result records.
+- Fake audit events.
+- Mock success responses.
+- Demo PDF generators.
+- Demo question generators.
+- Demo student generators.
+- Demo Reset Data.
+- Automatic mock fallbacks.
+
+Verify the following business rules remain intact:
+
+1. Principal and HOD login through the same institutional login.
+2. Role-based routing.
+3. Principal has institution-wide authorised access.
+4. HOD can access only their own department.
+5. Total Students comes from complete department enrolment, not eligible exam rosters.
+6. Student lists use the standard USN, Student Name and DOB format.
+7. Question uploads are strictly module-wise.
+8. Question Excel uses the approved seven-column template.
+9. Question images and option images are preserved through the conversion workflow.
+10. No automatic saving occurs during document conversion.
+11. HOD can generate only the maximum complete number of fully disjoint numbered sets supported by the available question pool.
+12. HOD cannot inspect generated set question composition.
+13. HOD cannot schedule examinations or release results.
+14. Examination Status reflects actual COE records.
+15. Only COE-released results appear in HOD and Principal reports.
+16. Audit access is role-appropriate.
+17. No demo reset or sample data restoration remains.
+
+---
+
+# PART 14 — FINAL REPORT
+
+After implementation, provide:
+
+1. Demo data sources identified.
+2. Demo records removed.
+3. Mock services removed.
+4. Hardcoded fallback logic removed.
+5. Demo PDF/question generators removed.
+6. Demo reset functionality removed.
+7. Principal pages connected to real API service functions.
+8. HOD pages connected to real API service functions.
+9. Student-list converter API integration prepared.
+10. Module-wise question converter API integration prepared.
+11. Embedded-image Excel integration requirements documented.
+12. Numbered question-set generation contracts prepared.
+13. API endpoints still required from the Java backend.
+14. Authentication and role-permission changes.
+15. PostgreSQL/backend integration dependencies.
+16. TypeScript and build verification results.
+17. Remaining blockers or incomplete integrations.
+
+Be honest about which endpoints are already implemented and which only have frontend contracts.
+
+Do not claim that the portal is fully backend-connected unless the actual Java backend has been connected and verified.
+
+FINAL INSTRUCTION:
+
+Remove all demo data and simulated operations from the existing MIT Mysore Admin/HOD Portal.
+
+Preserve the approved frontend and all institutional workflows.
+
+Prepare the Principal and HOD portals for genuine Java backend and PostgreSQL integration.
+
+Keep the student-list and module-wise question converters as real planned application features.
+
+Do not replace actual backend operations with mock records, hardcoded data, sample files or simulated success.

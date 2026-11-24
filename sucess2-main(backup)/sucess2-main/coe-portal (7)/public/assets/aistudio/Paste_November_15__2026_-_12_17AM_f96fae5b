@@ -1,0 +1,1296 @@
+# MASTER REFINEMENT PROMPT — COE PORTAL
+## MIT Mysore Examination Management System
+### USN-Based Paper Allocation, Dynamic Workstation Management, Lab Recovery Credentials and Session Unlock Credentials
+
+You are working inside my existing Google AI Studio COE Portal project.
+
+Your task is to inspect and refine the existing COE Portal implementation according to the requirements below.
+
+This is an existing application. Do not create a new project, replace the application, merge it with the Admin/HOD Portal or Student Portal, or redesign unrelated pages.
+
+Preserve the approved MIT Mysore branding, existing React/TypeScript architecture, routing, layouts, functionality and UI/UX guidelines wherever appropriate.
+
+The purpose of this refinement is to correct the examination paper allocation logic, remove advance PC allocation, implement dynamic workstation association, and introduce two separate credential mechanisms for examination security and recovery.
+
+---
+
+# PART 1 — INSPECT THE EXISTING COE PORTAL
+
+Before making changes, inspect:
+
+- Existing React and TypeScript structure.
+- Dashboard.
+- Schedule Examination.
+- Session Monitoring.
+- Import Results.
+- Result Approval.
+- Audit Logs.
+- Settings.
+- Authentication and role permissions.
+- Existing examination scheduling logic.
+- Question-set selection and A–D paper version generation.
+- Student allocation and sitting distribution.
+- Package preparation and Lab Server communication.
+- Student monitoring and PC recovery services.
+- Existing mock data and backend API interfaces.
+
+Identify every place where the current code uses PC numbers to determine question paper versions or preassigns students to PCs.
+
+Also identify every place where there is a shared unlock password, hardcoded recovery password, fixed session credential, or incomplete recovery implementation.
+
+Correct the actual implementation rather than merely changing labels in the UI.
+
+---
+
+# PART 2 — FINAL COE PORTAL NAVIGATION
+
+Preserve the approved main navigation:
+
+1. Dashboard.
+2. Schedule Examination.
+3. Session Monitoring.
+4. Import Results.
+5. Result Approval.
+6. Audit Logs.
+7. Settings.
+
+Do not introduce unnecessary separate sidebar pages.
+
+Inside Session Monitoring, preserve the existing contextual sections:
+
+- Overall Monitoring.
+- Individual Student Monitoring.
+- Suspicious Activity & Unlocks.
+- PC Recovery Logs.
+
+Add the new session credential management functionality within the relevant examination/sitting context rather than creating unnecessary duplicate pages.
+
+Keep the existing institutional branding and common COE login.
+
+There is exactly one COE account at MIT Mysore, provisioned separately by an authorised college authority.
+
+---
+
+# PART 3 — DYNAMIC NUMBERED QUESTION SET SUPPORT
+
+The HOD Portal is being changed to generate a dynamic number of fully disjoint numbered question sets.
+
+The COE Portal must support this change.
+
+Do not assume that every examination has exactly four numbered sets.
+
+### Required behaviour
+
+HOD may publish:
+- One numbered set.
+- Two numbered sets.
+- Three numbered sets.
+- Four numbered sets.
+- More than four numbered sets, where the available question pool supports them.
+
+The COE Portal must dynamically retrieve the actual published numbered sets belonging to the selected Department + Semester + Subject and question-bank revision.
+
+For every sitting:
+
+1. Display the available published numbered sets.
+2. Initially show Not Selected.
+3. Require the COE to select one set explicitly.
+4. Require confirmation before committing the selection.
+5. Do not automatically select Set 1 for morning and Set 2 for afternoon.
+6. Do not assume that Sets 1–4 always exist.
+7. Do not fabricate missing numbered sets.
+8. Do not allow selection of unpublished or superseded sets.
+
+The COE may see and select the actual published paper set under authorised COE permissions. The HOD must not receive access to the generated set composition or question-to-set mapping.
+
+### Dynamic set integrity
+
+Before package preparation, validate:
+
+- Selected set belongs to the correct subject and examination context.
+- Selected set is published and active.
+- Question count matches the HOD-approved blueprint.
+- Module distribution matches the approved blueprint.
+- No Question ID is duplicated within the set.
+- Selected question-bank and blueprint revisions match the publication.
+- Set has not been superseded or invalidated.
+
+The backend must enforce these rules.
+
+The selected numbered set is associated with the particular examination sitting.
+
+A different sitting may use another published numbered set, selected explicitly by the COE.
+
+---
+
+# PART 4 — A–D PAPER VERSION GENERATION
+
+After the COE selects and confirms a numbered question set for an examination sitting, the backend generates four shuffled versions:
+
+- Version A.
+- Version B.
+- Version C.
+- Version D.
+
+Each version contains the same questions from the selected numbered set.
+
+Only the following are shuffled:
+- Question order.
+- Answer-option order.
+
+Stable Question IDs must remain unchanged across versions.
+
+The correct answer mapping must be transformed correctly when options are shuffled.
+
+The backend must generate and preserve:
+- Version A question ordering and option ordering.
+- Version B question ordering and option ordering.
+- Version C question ordering and option ordering.
+- Version D question ordering and option ordering.
+- Stable Question ID mapping.
+- Correct answer mapping for evaluation.
+
+These are four versions of ONE selected numbered set, not four separate numbered sets.
+
+Do not allow A–D version generation to use different question pools.
+
+Preserve the relationship between:
+- Examination ID.
+- Sitting ID.
+- Selected numbered set ID.
+- Question-bank revision ID.
+- Blueprint revision ID.
+- A–D version IDs.
+
+---
+
+# PART 5 — USN-BASED PAPER VERSION ALLOCATION
+
+This is a strict institutional rule.
+
+Paper versions must be allocated based on the student's identity, using the student's USN as the institutional login identifier.
+
+**Never allocate paper versions based on PC numbers.**
+
+### Example
+
+Suppose the examination has 60 students and the backend generates A–D versions.
+
+The backend allocates versions approximately equally and randomises the allocation.
+
+| Student USN | Assigned Version |
+|---|---|
+| 4MH24CS001 | C |
+| 4MH24CS002 | A |
+| 4MH24CS003 | D |
+| 4MH24CS004 | B |
+| 4MH24CS005 | A |
+| 4MH24CS006 | C |
+
+These are illustrative assignments.
+
+### Allocation requirements
+
+1. Use the student's stable internal Student ID as the database identity.
+2. Maintain a unique mapping between Student ID and USN.
+3. Use USN as the institutional student login identifier.
+4. Assign one of A, B, C or D to each eligible student within the selected sitting.
+5. Randomise the allocation using a secure server-side method.
+6. Distribute students as evenly as mathematically possible across the four versions.
+7. The difference in version counts should be no greater than one when the roster permits.
+8. Do not use the last digit of USN, modulo calculations, PC numbers or other predictable patterns to select a version.
+9. Save the assignment before the sitting becomes ready for examination.
+10. Once committed, the assignment must remain unchanged throughout the sitting.
+
+For example, if there are 60 students, a balanced allocation can assign 15 students to each version.
+
+If there are 62 students, allocate 16, 16, 15 and 15 students in a randomised distribution.
+
+### Persistent assignment mapping
+
+The backend must maintain:
+
+- Examination ID.
+- Sitting ID.
+- Student ID.
+- USN.
+- Assigned numbered set ID.
+- Assigned version ID.
+- Assignment timestamp.
+- Allocation revision.
+- Assignment status.
+
+The exact paper version assigned to a student must remain stable after logout, reconnection, browser refresh, PC failure and recovery.
+
+Do not generate a new paper assignment every time a student logs in.
+
+Do not reassign versions when a student moves to another computer.
+
+### Confidentiality
+
+Never expose the complete student-to-version allocation table to the HOD.
+
+The Student Portal should receive only the authenticated student's own assigned paper version.
+
+The COE may see authorised aggregate version counts for monitoring and verification.
+
+---
+
+# PART 6 — REMOVE ADVANCE PC ALLOCATION COMPLETELY
+
+This is another strict rule.
+
+The COE must not assign students to specific PCs before the examination.
+
+Remove any functionality or logic involving:
+
+- Preassigning PC-01 to a particular student.
+- Preassigning PC-02 to another student.
+- Selecting PC numbers during student sitting allocation.
+- Assigning paper versions based on PC numbers.
+- Fixed student-to-PC mapping before login.
+- Fixed workstation allocation tables for future examination participants.
+
+The PC number must never determine the question paper version.
+
+### What replaces advance PC allocation?
+
+Dynamic workstation association.
+
+When a student logs in:
+
+1. Student opens the Student Portal on any available computer in the authorised laboratory.
+2. Student enters USN and DOB.
+3. Lab Server validates the student's eligibility for the selected examination and sitting.
+4. The terminal identifies itself using its registered workstation identity.
+5. The backend authenticates the student.
+6. The backend retrieves the student's existing paper version from the persistent USN-based assignment.
+7. The Lab Server binds the active student session to that currently used PC.
+8. The examination starts or resumes according to the authorised state.
+
+The workstation identity is used for session monitoring and recovery only.
+
+It must never be used to select A/B/C/D.
+
+### Important session rule
+
+One student may have only one active workstation session at a time.
+
+If another PC attempts to log in using the same student's identity while the original session is active:
+
+- Reject the second login.
+- Display an appropriate message.
+- Require an authorised recovery workflow.
+- Do not silently transfer or steal the session.
+
+---
+
+# PART 7 — DYNAMIC WORKSTATION MONITORING
+
+Although advance PC assignment is removed, the COE still needs to monitor which computer each student is currently using.
+
+In Individual Student Monitoring, rename the existing column:
+
+**Assigned PC → Current PC**
+
+This field must show the currently active workstation after student login.
+
+Before the student logs in, show Not Logged In or Not Assigned.
+
+After login:
+- Display the registered current PC ID.
+- Display current connectivity.
+- Display session status.
+
+When a student recovers on another workstation:
+- Update Current PC to the new PC.
+- Preserve the same student paper version.
+- Preserve saved responses.
+- Preserve remaining time.
+- Preserve examination and sitting identity.
+
+Do not present Current PC as an advance allocation.
+
+Keep useful fields in Individual Student Monitoring:
+
+- Student Name.
+- USN.
+- Original Section.
+- Current PC.
+- Login Status.
+- Examination Status.
+- Submission Status.
+- Connection Status.
+- Suspicious Activity Count.
+
+Do not expose student answers or confidential question contents.
+
+---
+
+# PART 8 — TWO COMPLETELY SEPARATE CREDENTIAL SYSTEMS
+
+This is the most important new security requirement.
+
+The system must maintain two independent credentials for two different purposes.
+
+## SYSTEM A — PERMANENT LAB-SPECIFIC PC RECOVERY CREDENTIAL
+
+Purpose: Allow the authorised Lab Administrator or Lab Instructor to open the recovery console and authorise a student to resume an interrupted examination on another PC after a workstation crash or failure.
+
+### Credential model
+
+Each physical computer laboratory has its own Lab Administrator account.
+
+For example:
+
+| Laboratory | Username | Credential scope |
+|---|---|---|
+| Lab 1 | labadmin01 | Lab 1 only |
+| Lab 2 | labadmin02 | Lab 2 only |
+| Lab 3 | labadmin03 | Lab 3 only |
+
+These usernames and passwords are configured once through the authorised institutional account provisioning process.
+
+They remain the same across different examination sessions until an authorised administrator changes or rotates them.
+
+### Important rules
+
+1. Every laboratory must have a distinct account.
+2. Do not use one institution-wide shared recovery password.
+3. Do not generate a new Lab Administrator password for every examination.
+4. Do not automatically change the lab credential at the end of an examination.
+5. Do not generate these permanent lab credentials from the COE session unlock feature.
+6. Do not expose stored passwords in the COE Portal.
+7. Store only secure password hashes in the backend or Lab Server credential store.
+8. Credentials must be revocable and changeable by an authorised institutional administrator.
+9. Do not hardcode usernames or passwords in React source code.
+10. Lab Administrator permissions must be limited to the assigned laboratory.
+
+The permanent Lab Administrator credentials must be available to the Lab Server while the student examination is offline.
+
+The Lab Server must authenticate the Lab Administrator locally or through the authorised college LAN service. The recovery feature must not depend on an active Internet connection.
+
+The COE Portal may display laboratory identity and recovery configuration status, but it must not reveal the permanent passwords.
+
+### Where this login appears
+
+The Student Portal will have a separate option:
+
+**Lab Administrator / Recovery Login**
+
+This must be different from student login.
+
+The lab instructor authenticates using their assigned laboratory account and opens the authorised recovery console.
+
+The actual Student Portal login-page implementation is maintained in the separate Student Portal project. Do not merge that application into the COE project.
+
+Prepare the necessary authentication API contract and integration requirements.
+
+---
+
+## SYSTEM B — COE-GENERATED EXAMINATION SESSION UNLOCK CREDENTIAL
+
+Purpose: Authorise an invigilator to unlock a student's examination screen after a suspicious activity event such as a tab switch or loss of focus.
+
+This credential is generated by the COE for a particular examination sitting.
+
+### Credential scope
+
+Every examination sitting must have its own session unlock credential.
+
+For example:
+
+| Examination | Sitting | Credential |
+|---|---|---|
+| BCS301 | Morning Sitting | Unique session credential A |
+| BCS302 | Afternoon Sitting | Unique session credential B |
+| BCS305 | Morning Sitting | Unique session credential C |
+
+These are illustrative credentials, not actual passwords.
+
+The credential must:
+- Be unique to the examination sitting.
+- Be securely generated using cryptographically secure randomness on the backend.
+- Not be derived from the examination name, date, student USN, PC number or predictable values.
+- Not be shared between unrelated examination sittings.
+- Remain valid only during its authorised sitting period.
+- Become invalid after the sitting expires or is cancelled.
+- Be revocable and regenerable by the COE under the defined security workflow.
+
+### Repeated unlocks during a sitting
+
+The same active session credential may be used for multiple authorised unlock events during that sitting.
+
+Do not make it a one-use-only password if that would prevent the invigilator from unlocking separate legitimate incidents.
+
+However:
+- Each unlock action must be independently logged.
+- Rate-limit failed attempts.
+- Prevent brute-force guessing.
+- Invalidate the credential when its sitting expires or is revoked.
+
+### Credential generation and visibility
+
+The COE should be able to:
+
+- Generate a session unlock credential.
+- View it securely at generation time.
+- Copy it for authorised distribution.
+- View its status.
+- Regenerate it.
+- Revoke it.
+
+After generation, mask the stored credential in the UI.
+
+If it must be regenerated, invalidate the old credential.
+
+Do not display the plain-text credential in audit logs or ordinary monitoring tables.
+
+Only authorised COE access should permit credential generation, regeneration or revocation.
+
+### Invigilator identity and accountability
+
+The session unlock credential is not an ordinary student password.
+
+Use the existing authorised invigilator/lab administrator authentication mechanism to identify the person performing the unlock, where available.
+
+If an authorised staff identity service is already provided, use it.
+
+Otherwise, prepare a backend contract that requires an authorised operator identity alongside the session credential.
+
+Do not invent a new staff management module or fake staff authentication.
+
+The system must not claim to have verified an invigilator identity merely because a person typed an arbitrary name.
+
+### Student screen unlock workflow
+
+1. Student triggers a monitored suspicious event such as tab switching.
+2. The Student Portal locks the examination interface.
+3. The student cannot continue answering until authorised unlock.
+4. The invigilator authenticates through the authorised unlock workflow.
+5. The session-specific unlock credential is verified by the Lab Server.
+6. The Lab Server confirms that the credential matches the student's examination and sitting.
+7. If valid, it authorises the screen unlock.
+8. Student resumes the same examination session.
+9. Paper version, saved answers and timer remain unchanged.
+10. The unlock event is recorded in the audit history.
+
+A password from another examination sitting must never unlock the current session.
+
+A permanent Lab Administrator recovery password must not substitute for the session-specific unlock credential.
+
+Likewise, the session unlock credential must not authorise PC recovery by itself.
+
+---
+
+# PART 9 — COE PORTAL UI FOR SESSION UNLOCK CREDENTIALS
+
+Add a new section named:
+
+**Invigilator Session Unlock Credentials**
+
+Place it within the existing examination/sitting management context.
+
+Recommended placement:
+
+- In the Schedule Examination workflow, inside each sitting's details.
+- In Session Monitoring, within the selected examination and sitting details.
+
+Do not create a completely separate main sidebar page.
+
+### Required UI elements
+
+For every sitting, display:
+
+- Examination Name / Subject.
+- Examination ID.
+- Sitting.
+- Sitting Date.
+- Start Time.
+- Assigned Lab.
+- Credential Status.
+- Generated At.
+- Expires At.
+- Last Regenerated At, where applicable.
+
+Credential statuses:
+
+- Not Generated.
+- Active.
+- Expired.
+- Revoked.
+- Synchronisation Pending.
+- Synchronisation Failed.
+
+Provide actions:
+
+- Generate Credential.
+- Copy Credential at generation time.
+- Regenerate Credential.
+- Revoke Credential.
+
+### Generation confirmation
+
+Before generating:
+
+- Show the selected examination and sitting.
+- Confirm the correct laboratory/session association.
+- Explain that the new credential replaces any existing credential if regeneration is requested.
+- Require confirmation.
+
+After generation:
+- Show the credential once in a secure dialog.
+- Provide Copy.
+- Instruct the COE to distribute it only to authorised invigilators.
+- Mask it after the dialog is closed.
+- Never expose it in normal audit records.
+
+### Regeneration behaviour
+
+When the COE regenerates a credential:
+
+1. Old credential becomes invalid.
+2. New credential is generated.
+3. New verifier is securely synchronised with the relevant Lab Server.
+4. New credential becomes Active only after successful synchronisation.
+5. COE receives a genuine success or failure result.
+6. Audit logs record the regeneration event without storing the password value.
+
+If the sitting is active and the Lab Server cannot receive the new verifier, do not falsely claim that the new credential is active.
+
+Provide an appropriate warning and safe recovery process.
+
+Do not silently invalidate a working credential without clearly communicating the effect.
+
+### Offline verification requirement
+
+The examination operates on the college LAN without requiring Internet access at the student computers.
+
+Therefore, the session credential must be verifiable by the Lab Server locally.
+
+When the package is prepared and sent to the Lab Server, include the necessary signed, protected credential verifier metadata:
+
+- Examination ID.
+- Sitting ID.
+- Lab ID or authorised lab scope.
+- Credential ID.
+- Secure password verifier and salt.
+- Valid-from and expiry timestamps.
+- Credential revision.
+- Revocation/replacement information.
+
+Never include the plaintext credential in the Lab Server package.
+
+The Lab Server must verify the signed package and securely store the verifier locally.
+
+The Student Portal must submit the unlock request to the Lab Server, not directly to an Internet-hosted service.
+
+Use a suitable password-hashing/KDF implementation and secure key management on the backend.
+
+---
+
+# PART 10 — PC CRASH RECOVERY WORKFLOW
+
+The Lab Administrator credential and recovery workflow must be separate from the session unlock credential.
+
+### Scenario
+
+A student is writing an examination and their PC crashes.
+
+The student needs to continue using another available computer.
+
+### Recovery workflow
+
+1. Student's current PC crashes or loses its active connection.
+2. Lab Server detects the interrupted connection or heartbeat timeout.
+3. Student is marked Interrupted / Recovery Required after the configured detection policy.
+4. Lab Administrator opens the Student Portal recovery login.
+5. Lab Administrator enters the permanent credentials for that specific laboratory.
+6. Lab Server authenticates the account and identifies its authorised laboratory.
+7. Lab Administrator opens the recovery console.
+8. Search for the affected student using USN.
+9. Display the student's:
+   - Name.
+   - USN.
+   - Examination.
+   - Sitting.
+   - Original Section.
+   - Current session status.
+   - Last active PC.
+   - Last saved response timestamp.
+10. Lab Administrator selects the affected student and initiates recovery.
+11. Require a reason for the recovery.
+12. Select an available replacement PC in the authorised recovery scope.
+13. Lab Server revokes the old workstation binding.
+14. Lab Server creates a secure single-use, expiring recovery authorisation bound to the student, examination, sitting and new PC.
+15. Student logs in on the new PC.
+16. Lab Server verifies the recovery authorisation.
+17. Lab Server restores the server-confirmed saved answers and remaining timer.
+18. Student continues the same examination.
+
+### Preserve these values without changing them
+
+- Student ID.
+- USN.
+- Examination ID.
+- Sitting ID.
+- Selected numbered set ID.
+- Assigned A/B/C/D paper version.
+- Stable Question ID mapping.
+- Saved responses.
+- Remaining examination time.
+- Submission status and session history.
+
+Moving computers must NEVER regenerate the paper version or create a new examination attempt.
+
+### One active workstation rule
+
+A student may have only one active workstation at any time.
+
+On successful recovery:
+- Revoke the old PC token/session.
+- Allow the new PC to become the only active workstation.
+- Reject future requests from the old workstation.
+- Prevent two PCs from concurrently writing answers for the same student.
+
+### Lab scope
+
+The permanent Lab Administrator account must be restricted to its own laboratory.
+
+If the student needs to move to another laboratory, require an authorised cross-lab recovery process rather than allowing any Lab Administrator to access any laboratory.
+
+### Recovery audit
+
+Record:
+
+- Student USN and internal Student ID.
+- Examination ID.
+- Sitting ID.
+- Lab Administrator account.
+- Original PC ID.
+- Replacement PC ID.
+- Recovery reason.
+- Recovery timestamp.
+- Recovery authorisation ID.
+- Recovery status.
+
+Do not log credentials, plaintext passwords, session unlock codes or sensitive authentication tokens.
+
+---
+
+# PART 11 — SESSION MONITORING REFINEMENT
+
+Preserve the existing Session Monitoring layout and monitoring sections.
+
+### Individual Student Monitoring
+
+Change the column:
+
+Assigned PC → Current PC.
+
+The value must be dynamically populated only after login.
+
+The HOD and COE must not see future PC assignments because no advance assignment exists.
+
+Show:
+- Student Name.
+- USN.
+- Original Section.
+- Current PC.
+- Login Status.
+- Examination Status.
+- Submission Status.
+- Connection Status.
+- Suspicious Events Count.
+
+Maintain the existing filters:
+- Search by Student Name, USN or Current PC.
+- Examination Status.
+- Connection State.
+
+### Suspicious Activity & Unlocks
+
+Preserve this section.
+
+Display:
+- Student.
+- USN.
+- Examination and Sitting.
+- Suspicious Event Type.
+- Event Timestamp.
+- Unlock Status.
+- Authorised Operator.
+- Unlock Timestamp.
+- Reason.
+
+Relevant event types may include:
+- Tab switch.
+- Browser/window focus loss.
+- Fullscreen exit.
+- Other reliably detected examination restrictions.
+
+Do not claim that an ordinary browser can reliably detect or prevent every operating-system action.
+
+Use managed kiosk mode for stronger laboratory restrictions where supported.
+
+### PC Recovery Logs
+
+Preserve this section.
+
+Show:
+- Student.
+- USN.
+- Examination.
+- Sitting.
+- Original PC.
+- Replacement PC.
+- Lab Administrator.
+- Reason.
+- Timestamp.
+- Recovery Result.
+
+Keep these recovery events distinct from suspicious activity unlock events.
+
+### Overview metrics
+
+Use meaningful counts:
+- Students logged in.
+- Active examinations.
+- Submitted.
+- In progress.
+- Interrupted.
+- Suspicious activity incidents.
+- Pending recovery.
+
+Do not treat a dynamic current PC association as a preassigned workstation.
+
+---
+
+# PART 12 — EXAMINATION PACKAGE PREPARATION AND LAB SERVER INTEGRATION
+
+The architecture is:
+
+COE Portal Frontend → Central Java Backend → College LAN → Lab Server → Student PCs.
+
+The examination must function without Internet dependency on student PCs.
+
+When COE clicks Prepare & Send to Lab, the backend must prepare a secure sitting-specific package containing:
+
+- Examination ID.
+- Sitting ID.
+- Department and semester.
+- Subject.
+- Applicable sections.
+- Selected published numbered set ID.
+- A–D shuffled paper versions.
+- Stable Question ID mapping.
+- Correct answer mappings for evaluation.
+- Eligible student roster snapshot.
+- USN and required secure login validation information.
+- Student-to-version allocation mapping.
+- Examination settings.
+- Duration and timing.
+- Lab ID.
+- Session credential verifier metadata.
+- Package revision and integrity information.
+
+Do not include plaintext DOB in ordinary monitoring data or audit descriptions. It must be securely delivered only where required for USN+DOB login validation.
+
+### Package security
+
+Backend must:
+- Sign and protect the package.
+- Ensure integrity and authenticity.
+- Validate exact examination and sitting identity.
+- Validate exact roster and paper revision.
+- Prevent duplicate or stale package activation.
+
+Lab Server must:
+- Verify package signature and integrity.
+- Verify exam/sitting identity.
+- Verify roster and allocation consistency.
+- Validate credential metadata.
+- Store question papers and student version mappings securely.
+- Acknowledge package receipt and verification.
+
+The sitting becomes Ready only after successful Lab Server receipt and verification.
+
+### No advance workstation assignment
+
+The package may include registered laboratory workstation identities for authentication and monitoring, but it must not map each student to a specific PC.
+
+Do not include a student-to-PC allocation table.
+
+The student-to-version allocation table is separate and mandatory.
+
+---
+
+# PART 13 — RESULT IMPORT AND ANSWER-KEY CORRECTION COMPATIBILITY
+
+Preserve the previously approved result workflow.
+
+The Lab Server must retain individual student responses mapped to stable Question IDs and assigned A–D version.
+
+When answer-key corrections are approved:
+- Recalculate marks from individual responses.
+- Recalculate across all affected A–D versions.
+- Preserve old answer-key revisions.
+- Preserve prior results and audit history.
+- Update pass/fail/topper status.
+- Prevent result release until critical corrections are resolved.
+
+The paper version assignment must remain connected to each student's response record so that the correct answer mapping is used.
+
+Do not rely only on aggregate marks.
+
+---
+
+# PART 14 — AUDIT LOGS AND SECURITY
+
+Record all relevant actions.
+
+### Credential events
+
+For permanent Lab Administrator accounts:
+- Account provisioned.
+- Account changed.
+- Account rotated.
+- Account deactivated.
+- Account used for recovery.
+
+For session unlock credentials:
+- Credential generated.
+- Credential regenerated.
+- Credential revoked.
+- Credential expired.
+- Synchronisation succeeded or failed.
+- Unlock attempt accepted or rejected.
+
+### Student/workstation events
+
+- Student login.
+- Active workstation association.
+- Connection interruption.
+- PC recovery requested.
+- Recovery approved or denied.
+- Old workstation binding revoked.
+- Replacement workstation binding created.
+- Suspicious event detected.
+- Screen unlocked.
+- Examination submitted.
+
+### Version assignment events
+
+- Numbered set selected for sitting.
+- A–D versions generated.
+- Student version allocation completed.
+- Allocation integrity checked.
+- Package transferred.
+- Package verified.
+
+Record relevant IDs and timestamps.
+
+Never record:
+- Plaintext passwords.
+- Session unlock codes.
+- Password-reset tokens.
+- DOB values.
+- Private signing keys.
+- Confidential student answers.
+
+The audit system must be protected and append-only in production.
+
+Do not claim cryptographic immutability in mock mode.
+
+---
+
+# PART 15 — BACKEND API AND DATA CONTRACT PREPARATION
+
+Prepare clean typed API interfaces and services for the Java backend.
+
+Do not assume that endpoint names already exist. Define proposed contracts and align them with the backend team.
+
+### Paper version allocation
+
+Support:
+- Retrieve published numbered sets dynamically.
+- Select a numbered set for a sitting.
+- Generate A–D versions.
+- Allocate A–D versions to eligible student IDs/USNs.
+- Retrieve aggregate version counts.
+- Retrieve an authenticated student's assigned version.
+- Verify allocation integrity.
+
+### Workstation association
+
+Support:
+- Authenticate student using USN+DOB.
+- Identify the registered workstation.
+- Create active workstation binding.
+- Retrieve current workstation.
+- Detect duplicate active sessions.
+- Revoke old workstation binding.
+- Bind replacement workstation.
+- Verify single-use recovery authorisation.
+
+### Lab Administrator credentials
+
+Support:
+- Provision a lab-specific account through authorised administration.
+- Authenticate the Lab Administrator.
+- Verify laboratory scope.
+- Open recovery console.
+- Submit and validate recovery requests.
+- Change, rotate or revoke lab credentials through authorised administration.
+
+These credentials must not be generated anew by COE for every examination.
+
+### Session unlock credentials
+
+Support:
+- Generate credential for examination + sitting.
+- Retrieve credential status.
+- Securely distribute or reveal the generated credential to authorised COE users.
+- Regenerate credential.
+- Revoke credential.
+- Synchronise verifier with Lab Server.
+- Verify unlock request on Lab Server.
+- Record unlock result.
+
+### Monitoring and recovery
+
+Support:
+- Student monitoring list.
+- Current PC status.
+- Connection state.
+- Suspicious activity events.
+- Unlock history.
+- Recovery logs.
+- Lab Server health.
+- Credential synchronisation status.
+
+### Suggested data relationships
+
+Maintain separate records for:
+
+**Student Version Allocation**
+- Examination ID.
+- Sitting ID.
+- Student ID.
+- USN.
+- Numbered Set ID.
+- Version ID.
+- Allocation Revision.
+- Assigned Timestamp.
+
+**Active Workstation Binding**
+- Examination ID.
+- Sitting ID.
+- Student ID.
+- Lab ID.
+- Current PC ID.
+- Binding Token ID.
+- Binding Status.
+- Bound Timestamp.
+- Last Heartbeat.
+
+**Lab Administrator Account**
+- Lab ID.
+- Account ID.
+- Username.
+- Secure Password Hash.
+- Account Status.
+- Credential Revision.
+- Last Rotation Timestamp.
+
+**Session Unlock Credential**
+- Examination ID.
+- Sitting ID.
+- Lab Scope.
+- Credential ID.
+- Secure Verifier and Salt.
+- Valid From.
+- Expiry.
+- Status.
+- Revision.
+- Generated By.
+- Synchronisation Status.
+
+**Recovery Event**
+- Student ID.
+- Examination ID.
+- Sitting ID.
+- Old PC ID.
+- New PC ID.
+- Lab Administrator Account ID.
+- Reason.
+- Timestamp.
+- Recovery Token ID.
+- Status.
+
+**Suspicious Activity Unlock Event**
+- Student ID.
+- Examination ID.
+- Sitting ID.
+- Event ID.
+- Credential ID.
+- Authorised Operator ID.
+- Unlock Timestamp.
+- Reason.
+- Result.
+
+Use appropriate foreign keys, unique constraints, indexes and transactional operations in PostgreSQL.
+
+A stable Student ID should be the internal database identity, while USN must be unique and remain the institutional student identifier.
+
+---
+
+# PART 16 — DEVELOPMENT MODE AND PRODUCTION MODE
+
+The existing COE project may contain mock data and simulated operations.
+
+Keep them separate from production operations.
+
+### Development mode
+
+May support:
+- Synthetic students.
+- Synthetic workstation IDs.
+- Demo examinations.
+- Simulated Lab Server responses.
+- Test session unlock credentials.
+- Demo recovery events.
+- Mock package verification.
+
+Clearly label simulated functionality.
+
+Never use real institutional credentials or real student information in demo data.
+
+### Production mode
+
+Must use:
+- Real Java backend authentication.
+- Real session credentials.
+- Secure password storage.
+- Secure signed package transfer.
+- Real Lab Server verification.
+- Real student version allocation.
+- Real workstation binding and recovery.
+- Protected audit records.
+
+Never silently fall back to mock data when a production operation fails.
+
+Never hardcode permanent lab passwords or session unlock credentials in frontend code.
+
+Never claim successful Lab Server synchronization unless the Lab Server acknowledges it.
+
+---
+
+# PART 17 — PRESERVE OTHER APPROVED COE FUNCTIONALITY
+
+Do not regress the already approved COE features.
+
+Preserve:
+
+### Scheduling
+- One examination per Department + Semester + Subject.
+- All participating sections combined.
+- One or two independently configured sittings.
+- Separate sitting dates, times, duration and labs where required.
+- Exact time-overlap-based lab availability.
+- Backend capacity and conflict validation.
+- COE-configured passing marks.
+- Question count and maximum marks obtained from published question bank.
+- No negative marking.
+- No manual marks per question.
+
+### Student roster
+- HOD supplies the eligible lists.
+- COE selects student distribution counts between sittings.
+- Backend assigns students without duplicates.
+- Preserve original section for reporting.
+- No individual student checkbox allocation interface.
+
+### Session monitoring
+- Overall monitoring.
+- Individual student monitoring.
+- Suspicious activity and unlocks.
+- PC recovery logs.
+- Lab Server status.
+
+### Result import
+- Lab Server-generated signed result package.
+- Manual upload through the normal result import workflow.
+- Validation of exam, sitting, eligible USNs and package integrity.
+- No duplicate package imports.
+- Separate result handling for each sitting.
+
+### Result approval
+- Student-wise results.
+- Answer-key corrections.
+- Recalculation after approved corrections.
+- COE review and release.
+- HOD only sees released results for their department.
+- Principal can see institution-wide released results.
+
+### Audit Logs and Settings
+- Preserve approved audit history and filters.
+- Keep Change Password and Light/Dark appearance.
+- Keep Demo Reset only in development mode.
+- No demo reset in production.
+
+---
+
+# PART 18 — IMPLEMENTATION ORDER
+
+Work in the following sequence.
+
+### Phase 1: Inspect and identify
+Find all existing fixed-PC assignment logic, PC-based version allocation, session unlock handling and recovery operations.
+
+### Phase 2: Correct paper assignment
+Implement USN/student-identity-based balanced A–D version assignment and persistence.
+
+### Phase 3: Remove advance PC allocation
+Remove advance student-to-PC assignment and introduce dynamic workstation binding after login.
+
+### Phase 4: Implement two credential systems
+Implement permanent lab-specific PC recovery accounts and COE-generated session-specific unlock credentials as independent mechanisms.
+
+### Phase 5: Update Session Monitoring
+Update Current PC, recovery logs, suspicious events and credential status displays.
+
+### Phase 6: Update package integration
+Ensure the signed package includes the student-to-version assignment and session unlock verifier metadata, but never a student-to-PC mapping or plaintext password.
+
+### Phase 7: Update API contracts
+Prepare typed services and request/response interfaces for the Java backend and Lab Server.
+
+### Phase 8: Verify all workflows
+Test version allocation, workstation changes, duplicate logins, screen unlock, recovery, offline credential verification and audit logging.
+
+---
+
+# PART 19 — MANDATORY TEST SCENARIOS
+
+### Test 1: USN-based version assignment
+
+Use 60 synthetic students.
+
+Expected:
+- 15 students per version where the distribution is balanced.
+- Version assignments randomised.
+- No PC number influences the version.
+- Assignments persist after refresh and logout/relogin.
+
+### Test 2: Student changes PC
+
+Student 4MH24CS001 is assigned Version C.
+
+Initially logs in from PC-01.
+
+After a simulated crash, authorised recovery moves the student to PC-15.
+
+Expected:
+- Version remains C.
+- Same examination and sitting.
+- Same saved answers.
+- Same remaining time.
+- Old PC binding revoked.
+- PC-15 becomes Current PC.
+- No duplicate active session.
+
+### Test 3: Lab-specific recovery credential
+
+Use two laboratory accounts.
+
+Expected:
+- Lab 1 credentials work only in Lab 1.
+- Lab 2 credentials work only in Lab 2.
+- Credentials remain unchanged across different examinations until authorised rotation.
+- Lab credentials do not authorise session tab-switch unlocking by themselves.
+- Account activity is logged.
+
+### Test 4: Session unlock credential
+
+Create two examination sittings.
+
+Expected:
+- Each sitting receives a different credential.
+- Morning credential cannot unlock afternoon sitting.
+- Credential works only within the authorised sitting period.
+- Multiple legitimate unlocks can occur during the same active sitting.
+- Every unlock is logged.
+- Expired or revoked credentials are rejected.
+
+### Test 5: Offline operation
+
+Disconnect Internet access from the student laboratory environment.
+
+Expected:
+- Student login works through the college LAN and Lab Server.
+- USN-based version retrieval works.
+- Session unlock credential is verified locally.
+- Lab Administrator recovery login works locally.
+- Student recovery works without Internet access.
+
+### Test 6: Dynamic numbered sets
+
+Test an examination with one, two, three and more than four published numbered sets.
+
+Expected:
+- COE sees the exact number of available published sets.
+- No fixed-four assumptions.
+- Only published valid sets are selectable.
+- Each sitting requires explicit set selection.
+
+### Test 7: Security and audit
+
+Verify:
+- No passwords in frontend source code.
+- No plaintext credentials in packages or audit logs.
+- No cross-lab recovery.
+- No cross-sitting session unlock.
+- No duplicate active student workstation sessions.
+- No version change during workstation recovery.
+- No student-to-version mapping exposed to HOD.
+
+---
+
+# PART 20 — FINAL EXPECTED RESULT
+
+The COE Portal must follow these final institutional rules:
+
+1. Numbered question-set availability is dynamic.
+2. COE explicitly selects a published numbered set for each sitting.
+3. A–D paper versions are generated from that selected numbered set.
+4. Student paper versions are allocated by USN/student identity.
+5. Paper version allocation never depends on PC numbers.
+6. Students are not assigned PCs in advance.
+7. Workstation association happens dynamically after successful login.
+8. A student can recover on another PC without changing the paper version, answers or timer.
+9. Each physical laboratory has its own permanent Lab Administrator recovery credentials.
+10. Lab Administrator credentials remain the same across examinations until authorised rotation.
+11. COE generates a separate session-specific unlock credential for each examination sitting.
+12. The session unlock credential is used for authorised suspicious-activity/tab-switch screen unlocks.
+13. The two credential systems are independent.
+14. Lab Server supports these mechanisms locally without student Internet dependency.
+15. Every recovery, unlock, version allocation and credential action is auditable.
+
+### Final reporting required
+
+After implementation, report:
+
+- Existing logic that was incorrect.
+- Files and components modified.
+- New version allocation algorithm.
+- Confirmation that no advance PC assignment remains.
+- Lab-specific recovery credential implementation.
+- Session-specific unlock credential implementation.
+- Lab Server synchronisation changes.
+- Student Portal integration contracts required.
+- COE API contracts prepared for the Java backend.
+- Tests completed and their results.
+- Features still requiring backend or Lab Server implementation.
+
+**FINAL INSTRUCTION: Modify the existing COE Portal in place. Do not create a replacement project. Keep USN-based paper allocation, dynamic workstation binding, permanent lab-specific recovery credentials and COE-generated sitting-specific unlock credentials as four clearly separated responsibilities. Never allow one credential or one PC mapping to substitute for another.**

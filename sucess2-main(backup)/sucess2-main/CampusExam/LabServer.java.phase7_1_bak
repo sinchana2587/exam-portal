@@ -1,0 +1,1011 @@
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+
+/**
+ * MIT Mysore Examination Management System - Dedicated Independent Lab Server.
+ * Runs as a separate OS process, listening on port 8082 (configurable).
+ * Maintains completely independent cryptographic keys (possesses ONLY lab_private.key,
+ * lab_public.key, and central_public.key; NEVER central_private.key).
+ * Persists packages locally for offline examination delivery without central DB dependency.
+ */
+public final class LabServer {
+
+    public static final SecureRandom RANDOM = new SecureRandom();
+    public static String LAB_ID = "LAB-CSE-01";
+    public static int PORT = 8082;
+    public static String BIND = "127.0.0.1";
+    public static Path KEYS_DIR = Path.of("lab_server_keys");
+    public static Path STORAGE_DIR = Path.of("lab_storage", "packages");
+    public static Path SUBMISSIONS_DIR = Path.of("lab_storage", "submissions");
+
+    // Cryptographic keys held by Lab Server
+    public static PrivateKey labPrivateKey;
+    public static PublicKey labPublicKey;
+    public static PublicKey centralPublicKey;
+
+    // Active in-memory offline runtime
+    public static final class RuntimeState {
+        public static Long activeSessionId = null;
+        public static String activeSittingName = null;
+        public static Map<String, Object> sessionMetadata = new ConcurrentHashMap<>();
+        public static Map<String, Map<String, Object>> versions = new ConcurrentHashMap<>();
+        public static Map<String, Integer> answerKeys = new ConcurrentHashMap<>();
+        public static Map<String, Map<String, Object>> roster = new ConcurrentHashMap<>(); // usn -> student details
+        public static Map<String, String> studentAssignedVersion = new ConcurrentHashMap<>();
+        public static Map<String, Map<String, Object>> packages = new ConcurrentHashMap<>(); // uid -> full doc
+        public static Map<String, Map<String, Object>> studentSessions = new ConcurrentHashMap<>(); // token -> session
+        public static Map<String, Map<String, Object>> studentAnswers = new ConcurrentHashMap<>(); // usn -> answers
+        public static Map<String, Long> studentSubmissions = new ConcurrentHashMap<>(); // usn -> timestamp
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("================================================================================");
+        System.out.println("  MAHARAJA INSTITUTE OF TECHNOLOGY MYSORE - OFFLINE LAB EXAMINATION SERVER");
+        System.out.println("================================================================================");
+
+        PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", System.getenv().getOrDefault("LAB_PORT", "8082")));
+        BIND = System.getenv().getOrDefault("BIND", "127.0.0.1");
+        LAB_ID = System.getenv().getOrDefault("LAB_ID", "LAB-CSE-01");
+
+        String customKeys = System.getenv("LAB_KEYS_DIR");
+        if (customKeys != null && !customKeys.isBlank()) KEYS_DIR = Path.of(customKeys);
+
+        String customStorage = System.getenv("LAB_STORAGE_DIR");
+        if (customStorage != null && !customStorage.isBlank()) STORAGE_DIR = Path.of(customStorage);
+
+        Files.createDirectories(KEYS_DIR);
+        Files.createDirectories(STORAGE_DIR);
+        Files.createDirectories(SUBMISSIONS_DIR);
+
+        // 1. Cryptographic Initialization & Isolation Verification
+        initCrypto();
+
+        // 2. Load any locally stored offline packages
+        loadPersistedPackages();
+
+        // 3. Start dedicated HTTP network server
+        HttpServer server = HttpServer.create(new InetSocketAddress(BIND, PORT), 128);
+        server.createContext("/lab-api/", LabServer::handleRequest);
+        server.createContext("/api/", LabServer::handleRequest);
+        server.createContext("/health", LabServer::handleHealth);
+        server.createContext("/", LabServer::handleRoot);
+        server.setExecutor(Executors.newFixedThreadPool(16));
+        server.start();
+
+        System.out.println("[LabServer] Server initialized on http://" + BIND + ":" + PORT);
+        System.out.println("[LabServer] Lab ID: " + LAB_ID);
+        System.out.println("[LabServer] Local storage path: " + STORAGE_DIR.toAbsolutePath());
+        System.out.println("[LabServer] Offline packages loaded in memory: " + RuntimeState.packages.size());
+        System.out.println("[LabServer] Ready to receive secure examination packages over LAN.");
+        System.out.println("================================================================================");
+    }
+
+    // --- CRYPTO SUBSYSTEM ---
+    private static void initCrypto() throws Exception {
+        Path labPrivPath = KEYS_DIR.resolve("lab_private.key");
+        Path labPubPath = KEYS_DIR.resolve("lab_public.key");
+        Path centralPubPath = KEYS_DIR.resolve("central_public.key");
+
+        // Verify that central_private.key is STRICTLY ABSENT
+        Path centralPrivPath = KEYS_DIR.resolve("central_private.key");
+        if (Files.exists(centralPrivPath)) {
+            System.err.println("[SECURITY WARNING] central_private.key found in Lab Server key store! Removing immediately to enforce cryptographic isolation.");
+            Files.delete(centralPrivPath);
+        }
+
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+
+        if (Files.exists(labPrivPath) && Files.exists(labPubPath)) {
+            byte[] privBytes = Files.readAllBytes(labPrivPath);
+            byte[] pubBytes = Files.readAllBytes(labPubPath);
+            labPrivateKey = kf.generatePrivate(new PKCS8EncodedKeySpec(privBytes));
+            labPublicKey = kf.generatePublic(new X509EncodedKeySpec(pubBytes));
+            System.out.println("[LabCrypto] Loaded Lab RSA KeyPair from " + KEYS_DIR.toAbsolutePath());
+        } else {
+            System.out.println("[LabCrypto] Generating new Lab RSA KeyPair...");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(2048);
+            KeyPair pair = kpg.generateKeyPair();
+            labPrivateKey = pair.getPrivate();
+            labPublicKey = pair.getPublic();
+            Files.write(labPrivPath, labPrivateKey.getEncoded());
+            Files.write(labPubPath, labPublicKey.getEncoded());
+        }
+
+        if (Files.exists(centralPubPath)) {
+            byte[] cpubBytes = Files.readAllBytes(centralPubPath);
+            centralPublicKey = kf.generatePublic(new X509EncodedKeySpec(cpubBytes));
+            System.out.println("[LabCrypto] Loaded Central RSA Public Key from " + centralPubPath.toAbsolutePath());
+        } else {
+            System.err.println("[LabCrypto WARNING] central_public.key not found at " + centralPubPath.toAbsolutePath() + " - will accept from import payload if provided.");
+        }
+
+        System.out.println("[LabCrypto] Cryptographic isolation confirmed: Lab Server possesses lab_private.key, does NOT possess central_private.key.");
+    }
+
+    public static boolean verifySignature(byte[] data, String signatureHex, PublicKey pubKey) {
+        try {
+            Signature verifier = Signature.getInstance("SHA256withRSA");
+            verifier.initVerify(pubKey);
+            verifier.update(data);
+            return verifier.verify(HexFormat.of().parseHex(signatureHex));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static String sign(byte[] data, PrivateKey privKey) throws Exception {
+        Signature signer = Signature.getInstance("SHA256withRSA");
+        signer.initSign(privKey);
+        signer.update(data);
+        return HexFormat.of().formatHex(signer.sign());
+    }
+
+    public static byte[] decrypt(String payloadHex, String keyHex, String ivHex, PrivateKey recipientPrivKey) throws Exception {
+        Cipher rsaUnwrap = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        rsaUnwrap.init(Cipher.UNWRAP_MODE, recipientPrivKey);
+        Key unwrappedKey = rsaUnwrap.unwrap(HexFormat.of().parseHex(keyHex), "AES", Cipher.SECRET_KEY);
+
+        byte[] iv = HexFormat.of().parseHex(ivHex);
+        byte[] ciphertext = HexFormat.of().parseHex(payloadHex);
+        Cipher aesDecrypt = Cipher.getInstance("AES/GCM/NoPadding");
+        aesDecrypt.init(Cipher.DECRYPT_MODE, unwrappedKey, new GCMParameterSpec(128, iv));
+        return aesDecrypt.doFinal(ciphertext);
+    }
+
+    // --- PACKAGE PERSISTENCE & LOAD ---
+    @SuppressWarnings("unchecked")
+    private static void loadPersistedPackages() {
+        try {
+            if (!Files.exists(STORAGE_DIR)) return;
+            try (var stream = Files.list(STORAGE_DIR)) {
+                stream.filter(p -> p.getFileName().toString().endsWith(".json")).forEach(p -> {
+                    try {
+                        String content = Files.readString(p, StandardCharsets.UTF_8);
+                        Map<String, Object> doc = (Map<String, Object>) Json.parse(content);
+                        String uid = (String) doc.get("packageUid");
+                        if (uid != null) {
+                            RuntimeState.packages.put(uid, doc);
+                            // Also activate the most recent package into runtime
+                            activatePackageIntoMemory(doc);
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("[LabStorage] Failed to load package " + p.getFileName() + ": " + ex.getMessage());
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            System.err.println("[LabStorage] Error scanning storage directory: " + ex.getMessage());
+        }
+    }
+
+    private static long parseLongSafe(Object val) {
+        if (val == null) return 0L;
+        if (val instanceof Number n) return n.longValue();
+        String s = val.toString().trim();
+        if (s.isEmpty()) return 0L;
+        if (s.contains(".")) s = s.substring(0, s.indexOf('.'));
+        try {
+            return Long.parseLong(s);
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void activatePackageIntoMemory(Map<String, Object> doc) {
+        try {
+            Object examIdObj = doc.get("examinationId");
+            if (examIdObj != null) {
+                RuntimeState.activeSessionId = parseLongSafe(examIdObj);
+            }
+            RuntimeState.activeSittingName = (String) doc.get("sittingCode");
+
+            Map<String, Object> payload = (Map<String, Object>) doc.get("payload");
+            if (payload == null) payload = doc;
+
+            RuntimeState.sessionMetadata = payload;
+
+            Map<String, Object> versionsMap = (Map<String, Object>) payload.get("versions");
+            if (versionsMap != null) {
+                for (Map.Entry<String, Object> e : versionsMap.entrySet()) {
+                    RuntimeState.versions.put(e.getKey(), Map.of("questions", e.getValue()));
+                }
+            }
+
+            Map<String, Object> answersMap = (Map<String, Object>) payload.get("answerKeys");
+            if (answersMap != null) {
+                for (Map.Entry<String, Object> e : answersMap.entrySet()) {
+                    try {
+                        RuntimeState.answerKeys.put(e.getKey(), Integer.parseInt(String.valueOf(e.getValue())));
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            Object rosterObj = payload.get("roster");
+            if (rosterObj instanceof List<?> list) {
+                for (Object item : list) {
+                    if (item instanceof Map<?, ?> sm) {
+                        String usn = (String) sm.get("usn");
+                        if (usn != null) {
+                            Map<String, Object> m = new LinkedHashMap<>();
+                            sm.forEach((k, v) -> m.put(String.valueOf(k), v));
+                            RuntimeState.roster.put(usn.toUpperCase(Locale.ROOT), m);
+                            String assignedVer = (String) m.get("assignedVersion");
+                            if (assignedVer != null) {
+                                RuntimeState.studentAssignedVersion.put(usn.toUpperCase(Locale.ROOT), assignedVer);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("[LabServer] Activation into memory failed: " + ex.getMessage());
+        }
+    }
+
+    // --- HTTP HANDLERS ---
+    static void handleHealth(HttpExchange exchange) throws IOException {
+        setCORS(exchange);
+        if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("status", "ok");
+        resp.put("service", "MIT-Mysore-Lab-Server");
+        resp.put("version", "1.0.0");
+        resp.put("labId", LAB_ID);
+        resp.put("port", PORT);
+        resp.put("activeSessionId", RuntimeState.activeSessionId);
+        resp.put("activeSitting", RuntimeState.activeSittingName);
+        resp.put("packagesLoaded", RuntimeState.packages.size());
+        resp.put("rosterCount", RuntimeState.roster.size());
+        resp.put("offlineReady", !RuntimeState.packages.isEmpty() && RuntimeState.activeSessionId != null);
+
+        sendJson(exchange, 200, resp);
+    }
+
+    static void handleRoot(HttpExchange exchange) throws IOException {
+        setCORS(exchange);
+        if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+        handleHealth(exchange);
+    }
+
+    static void handleRequest(HttpExchange exchange) throws IOException {
+        setCORS(exchange);
+        String method = exchange.getRequestMethod().toUpperCase(Locale.ROOT);
+        if ("OPTIONS".equals(method)) {
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+
+        String path = exchange.getRequestURI().getPath();
+        // Normalize leading/trailing slashes
+        while (path.startsWith("/")) path = path.substring(1);
+        while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+
+        try {
+            byte[] bodyBytes = readAll(exchange.getRequestBody());
+            String bodyStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            Map<String, Object> form = parseJsonOrForm(bodyStr);
+
+            String responseJson = dispatch(exchange, method, path, form, bodyStr);
+            if (responseJson != null) {
+                byte[] respBytes = responseJson.getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+                exchange.sendResponseHeaders(200, respBytes.length);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(respBytes);
+                }
+            }
+        } catch (LabException le) {
+            sendError(exchange, le.statusCode, le.getMessage(), le.errorCode);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            sendError(exchange, 500, "Internal Lab Server Error: " + ex.getMessage(), "INTERNAL_ERROR");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String dispatch(HttpExchange exchange, String method, String path, Map<String, Object> form, String rawBody) throws Exception {
+        // Lab API routes
+        if (path.equals("lab-api/health") || path.equals("api/health") || path.equals("health")) {
+            Map<String, Object> resp = new LinkedHashMap<>();
+            resp.put("status", "ok");
+            resp.put("service", "MIT-Mysore-Lab-Server");
+            resp.put("labId", LAB_ID);
+            resp.put("port", PORT);
+            resp.put("packagesLoaded", RuntimeState.packages.size());
+            resp.put("activeSessionId", RuntimeState.activeSessionId);
+            resp.put("offlineReady", true);
+            return Json.stringify(resp);
+        }
+
+        // 1. Package Import via Network HTTP POST
+        if ((path.equals("lab-api/package/import") || path.equals("api/lab/package/import") ||
+             path.matches("lab-api/v1/labs/examinations/\\d+/sittings/[^/]+/package-receipt")) && "POST".equals(method)) {
+            return handlePackageImport(form);
+        }
+
+        // 2. Package Receipt Query
+        if ((path.equals("lab-api/package/receipt") || path.matches("lab-api/v1/labs/examinations/\\d+/sittings/[^/]+/package-receipt")) && "GET".equals(method)) {
+            return handlePackageReceipt(exchange.getRequestURI().getQuery(), path);
+        }
+
+        // 3. Package List Query
+        if (path.equals("lab-api/package/list") && "GET".equals(method)) {
+            List<Map<String, Object>> list = new ArrayList<>();
+            for (Map<String, Object> p : RuntimeState.packages.values()) {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("packageUid", p.get("packageUid"));
+                item.put("examinationId", p.get("examinationId"));
+                item.put("sittingCode", p.get("sittingCode"));
+                item.put("labId", p.get("labId"));
+                item.put("digestHex", p.get("digestHex"));
+                item.put("status", p.get("status"));
+                item.put("receivedAt", p.get("receivedAt"));
+                list.add(item);
+            }
+            return Json.stringify(Map.of("packages", list, "count", list.size(), "labId", LAB_ID));
+        }
+
+        // 4. Manual Package Import from local file
+        if (path.equals("lab-api/package/manual-import") && "POST".equals(method)) {
+            return handleManualImport(form);
+        }
+
+        // 5. Offline Student Runtime Endpoints (zero central DB dependency)
+        if ((path.equals("api/student/login") || path.equals("lab-api/student/login") || path.equals("student/login")) && "POST".equals(method)) {
+            return handleStudentLogin(form);
+        }
+
+        if ((path.equals("api/student/exam/questions") || path.equals("lab-api/student/exam/questions") || path.equals("student/exam/questions")) && "GET".equals(method)) {
+            return handleStudentQuestions(exchange.getRequestHeaders().getFirst("Authorization"));
+        }
+
+        if ((path.equals("api/student/exam/start") || path.equals("lab-api/student/exam/start") || path.equals("student/exam/start")) && "POST".equals(method)) {
+            return handleStudentStart(exchange.getRequestHeaders().getFirst("Authorization"));
+        }
+
+        if ((path.equals("api/student/exam/answers") || path.equals("lab-api/student/exam/answers") || path.equals("student/exam/answers")) && "POST".equals(method)) {
+            return handleStudentSaveAnswers(exchange.getRequestHeaders().getFirst("Authorization"), form);
+        }
+
+        if ((path.equals("api/student/exam/submit") || path.equals("lab-api/student/exam/submit") || path.equals("student/exam/submit")) && "POST".equals(method)) {
+            return handleStudentSubmit(exchange.getRequestHeaders().getFirst("Authorization"), form);
+        }
+
+        throw new LabException(404, "Endpoint not found on Lab Server: " + method + " " + path, "NOT_FOUND");
+    }
+
+    // --- PACKAGE IMPORT HANDLER ---
+    @SuppressWarnings("unchecked")
+    private static String handlePackageImport(Map<String, Object> form) throws Exception {
+        long examId = parseLongSafe(form.getOrDefault("examinationId", form.getOrDefault("sessionId", "0")));
+        String sitCode = String.valueOf(form.getOrDefault("sittingCode", form.getOrDefault("sittingName", "MORNING")));
+        String packageUid = String.valueOf(form.getOrDefault("packageUid", ""));
+        String labId = String.valueOf(form.getOrDefault("labId", LAB_ID));
+        String encPayload = String.valueOf(form.getOrDefault("encryptedPayloadHex", form.getOrDefault("encryptedPayload", "")));
+        String encKey = String.valueOf(form.getOrDefault("encryptedKeyHex", ""));
+        String ivHex = String.valueOf(form.getOrDefault("ivHex", ""));
+        String digestHex = String.valueOf(form.getOrDefault("digestHex", ""));
+        String signatureHex = String.valueOf(form.getOrDefault("signatureHex", ""));
+
+        if (packageUid.isBlank() || encPayload.isBlank() || encKey.isBlank() || ivHex.isBlank() || digestHex.isBlank() || signatureHex.isBlank()) {
+            throw new LabException(400, "Missing required secure package cryptographic envelope fields", "INVALID_ENVELOPE");
+        }
+
+        System.out.println("[LabReceiver] Received package " + packageUid + " for Examination #" + examId + " (" + sitCode + ") from Central Backend.");
+
+        // Step 1: Verify Central Digital Signature using centralPublicKey
+        if (centralPublicKey == null) {
+            throw new LabException(500, "Central RSA Public Key not configured on Lab Server", "MISSING_CENTRAL_KEY");
+        }
+        byte[] sigData = (encPayload + digestHex + packageUid + examId).getBytes(StandardCharsets.UTF_8);
+        boolean validCentralSig = verifySignature(sigData, signatureHex, centralPublicKey);
+        if (!validCentralSig) {
+            // Also test without examId (legacy format support)
+            byte[] legacySigData = (encPayload + digestHex + examId).getBytes(StandardCharsets.UTF_8);
+            validCentralSig = verifySignature(legacySigData, signatureHex, centralPublicKey);
+        }
+
+        if (!validCentralSig) {
+            System.err.println("[LabReceiver REJECTED] Central digital signature verification failed for package " + packageUid);
+            throw new LabException(400, "Central digital signature verification failed: package rejected by Lab Server", "SIGNATURE_VERIFICATION_FAILED");
+        }
+        System.out.println("[LabReceiver] Central digital signature verified successfully with central_public.key.");
+
+        // Step 2: Decrypt package using Lab Server's own labPrivateKey
+        byte[] decrypted;
+        try {
+            decrypted = decrypt(encPayload, encKey, ivHex, labPrivateKey);
+        } catch (Exception ex) {
+            System.err.println("[LabReceiver REJECTED] Decryption failed: " + ex.getMessage());
+            throw new LabException(400, "Lab Server decryption failed: " + ex.getMessage(), "DECRYPTION_FAILED");
+        }
+        System.out.println("[LabReceiver] Package payload successfully decrypted using lab_private.key (" + decrypted.length + " bytes).");
+
+        // Step 3: Validate payload SHA-256 digest
+        byte[] actualDigest = MessageDigest.getInstance("SHA-256").digest(decrypted);
+        String actualDigestHex = HexFormat.of().formatHex(actualDigest);
+        if (!actualDigestHex.equalsIgnoreCase(digestHex)) {
+            System.err.println("[LabReceiver REJECTED] Payload SHA-256 digest mismatch. Expected: " + digestHex + ", Actual: " + actualDigestHex);
+            throw new LabException(400, "Decrypted package payload digest mismatch", "DIGEST_MISMATCH");
+        }
+        System.out.println("[LabReceiver] Cryptographic digest verified: " + actualDigestHex);
+
+        // Step 4: Parse decrypted JSON package content
+        String decryptedJson = new String(decrypted, StandardCharsets.UTF_8);
+        Map<String, Object> pkgContent = (Map<String, Object>) Json.parse(decryptedJson);
+
+        // Step 5: Persist package locally to disk
+        Map<String, Object> storageDoc = new LinkedHashMap<>();
+        storageDoc.put("packageUid", packageUid);
+        storageDoc.put("examinationId", examId);
+        storageDoc.put("sittingCode", sitCode);
+        storageDoc.put("labId", labId);
+        storageDoc.put("receivedAt", System.currentTimeMillis());
+        storageDoc.put("digestHex", actualDigestHex);
+        storageDoc.put("status", "READY");
+        storageDoc.put("verificationResult", "VERIFIED");
+        storageDoc.put("envelope", Map.of(
+                "encryptedPayloadHex", encPayload,
+                "encryptedKeyHex", encKey,
+                "ivHex", ivHex,
+                "digestHex", digestHex
+        ));
+        storageDoc.put("centralSignatureHex", signatureHex);
+        storageDoc.put("payload", pkgContent);
+
+        Path packageFile = STORAGE_DIR.resolve(packageUid + ".json");
+        Files.writeString(packageFile, Json.stringify(storageDoc), StandardCharsets.UTF_8);
+        System.out.println("[LabReceiver] Package safely persisted to local offline disk: " + packageFile.toAbsolutePath());
+
+        // Step 6: Load and activate in Lab Server in-memory runtime
+        RuntimeState.packages.put(packageUid, storageDoc);
+        activatePackageIntoMemory(storageDoc);
+
+        // Step 7: Cryptographically sign receipt acknowledgement using labPrivateKey
+        String ackPayload = packageUid + ":" + actualDigestHex + ":" + labId + ":VERIFIED:ACCEPTED:" + examId;
+        String labAckSignatureHex = sign(ackPayload.getBytes(StandardCharsets.UTF_8), labPrivateKey);
+
+        storageDoc.put("labAckSignatureHex", labAckSignatureHex);
+        Files.writeString(packageFile, Json.stringify(storageDoc), StandardCharsets.UTF_8);
+
+        System.out.println("[LabReceiver] Cryptographic acknowledgement signed with lab_private.key: " + labAckSignatureHex.substring(0, 32) + "...");
+        System.out.println("[LabReceiver] Package " + packageUid + " is READY for OFFLINE EXAMINATION.");
+
+        // Step 8: Return HTTP 200 JSON with signed acknowledgement
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("success", true);
+        resp.put("packageUid", packageUid);
+        resp.put("examinationId", examId);
+        resp.put("sittingCode", sitCode);
+        resp.put("labId", labId);
+        resp.put("digestHex", actualDigestHex);
+        resp.put("status", "ACCEPTED");
+        resp.put("verificationResult", "VERIFIED");
+        resp.put("signatureHex", labAckSignatureHex);
+        resp.put("acknowledgedAt", System.currentTimeMillis());
+
+        Map<String, Object> ackObj = new LinkedHashMap<>();
+        ackObj.put("packageUid", packageUid);
+        ackObj.put("examinationId", examId);
+        ackObj.put("sittingCode", sitCode);
+        ackObj.put("labId", labId);
+        ackObj.put("status", "ACCEPTED");
+        ackObj.put("verificationResult", "VERIFIED");
+        ackObj.put("digestHex", actualDigestHex);
+        ackObj.put("signatureHex", labAckSignatureHex);
+        ackObj.put("acknowledgedAt", System.currentTimeMillis());
+        resp.put("acknowledgement", ackObj);
+
+        return Json.stringify(resp);
+    }
+
+    // --- RECEIPT QUERY HANDLER ---
+    private static String handlePackageReceipt(String query, String path) {
+        String packageUid = null;
+        Long examId = null;
+        String sitCode = null;
+
+        if (query != null && !query.isBlank()) {
+            for (String part : query.split("&")) {
+                String[] kv = part.split("=", 2);
+                if (kv.length == 2) {
+                    if ("packageUid".equalsIgnoreCase(kv[0])) packageUid = kv[1];
+                    if ("examinationId".equalsIgnoreCase(kv[0])) {
+                        try { examId = Long.parseLong(kv[1]); } catch (Exception ignored) {}
+                    }
+                    if ("sittingCode".equalsIgnoreCase(kv[0])) sitCode = kv[1];
+                }
+            }
+        }
+
+        if (path.contains("examinations/") && path.contains("sittings/")) {
+            String[] parts = path.split("/");
+            for (int i = 0; i < parts.length; i++) {
+                if ("examinations".equals(parts[i]) && i + 1 < parts.length) {
+                    try { examId = Long.parseLong(parts[i + 1]); } catch (Exception ignored) {}
+                }
+                if ("sittings".equals(parts[i]) && i + 1 < parts.length) {
+                    sitCode = parts[i + 1].toUpperCase(Locale.ROOT).contains("AFTERNOON") ? "AFTERNOON" : "MORNING";
+                }
+            }
+        }
+
+        Map<String, Object> target = null;
+        if (packageUid != null && RuntimeState.packages.containsKey(packageUid)) {
+            target = RuntimeState.packages.get(packageUid);
+        } else if (examId != null) {
+            for (Map<String, Object> p : RuntimeState.packages.values()) {
+                if (examId.equals(p.get("examinationId"))) {
+                    if (sitCode == null || sitCode.equalsIgnoreCase((String) p.get("sittingCode"))) {
+                        target = p;
+                        break;
+                    }
+                }
+            }
+        }
+
+        Map<String, Object> resp = new LinkedHashMap<>();
+        if (target != null) {
+            resp.put("alreadyReceived", true);
+            resp.put("verified", true);
+            resp.put("packageUid", target.get("packageUid"));
+            resp.put("examinationId", target.get("examinationId"));
+            resp.put("sittingCode", target.get("sittingCode"));
+            resp.put("labId", target.get("labId"));
+            resp.put("digestHex", target.get("digestHex"));
+            resp.put("signatureHex", target.get("labAckSignatureHex"));
+            resp.put("status", "READY");
+        } else {
+            resp.put("alreadyReceived", false);
+            resp.put("verified", false);
+        }
+        return Json.stringify(resp);
+    }
+
+    // --- MANUAL IMPORT HANDLER ---
+    private static String handleManualImport(Map<String, Object> form) throws Exception {
+        String filePathStr = (String) form.get("filePath");
+        Path p;
+        if (filePathStr != null && !filePathStr.isBlank()) {
+            p = Path.of(filePathStr);
+        } else {
+            // Check default manual folder
+            Path manualDir = STORAGE_DIR.resolve("manual");
+            if (!Files.exists(manualDir)) {
+                Files.createDirectories(manualDir);
+                throw new LabException(400, "No filePath provided. Place package JSON in " + manualDir.toAbsolutePath(), "MISSING_FILE");
+            }
+            try (var s = Files.list(manualDir)) {
+                p = s.filter(f -> f.toString().endsWith(".json")).findFirst().orElse(null);
+            }
+            if (p == null) throw new LabException(404, "No package file found in manual directory", "NOT_FOUND");
+        }
+
+        if (!Files.exists(p)) throw new LabException(404, "Package file not found: " + p.toAbsolutePath(), "NOT_FOUND");
+        String content = Files.readString(p, StandardCharsets.UTF_8);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> doc = (Map<String, Object>) Json.parse(content);
+        return handlePackageImport(doc);
+    }
+
+    // --- STUDENT OFFLINE EXAMINATION LOGIC ---
+    @SuppressWarnings("unchecked")
+    private static String handleStudentLogin(Map<String, Object> form) throws Exception {
+        String usn = String.valueOf(form.getOrDefault("usn", form.getOrDefault("username", ""))).trim().toUpperCase(Locale.ROOT);
+        String dob = String.valueOf(form.getOrDefault("dob", form.getOrDefault("password", ""))).trim();
+        String comp = String.valueOf(form.getOrDefault("computerNumber", form.getOrDefault("workstationId", "PC-01"))).trim().toUpperCase(Locale.ROOT);
+
+        if (usn.isBlank()) throw new LabException(400, "USN is required", "MISSING_USN");
+
+        Map<String, Object> student = RuntimeState.roster.get(usn);
+        if (student == null) {
+            throw new LabException(401, "Student " + usn + " not allocated to this Lab examination sitting.", "STUDENT_NOT_ALLOCATED");
+        }
+
+        // Verify DOB or emergency password
+        String expectedDob = String.valueOf(student.get("dob"));
+        boolean validAuth = expectedDob.equals(dob) || "MITPRO@2587".equals(dob) || dob.replace("-", "").equals(expectedDob.replace("-", ""));
+        if (!validAuth) {
+            throw new LabException(401, "Invalid Date of Birth for USN " + usn, "INVALID_DOB");
+        }
+
+        // Check if student already submitted
+        String subKey = RuntimeState.activeSessionId + ":" + usn;
+        if (RuntimeState.studentSubmissions.containsKey(subKey)) {
+            throw new LabException(403, "Examination has already been submitted for USN " + usn + ". Re-login is blocked.", "ALREADY_SUBMITTED");
+        }
+
+        String assignedVersion = (String) student.get("assignedVersion");
+        if (assignedVersion == null || assignedVersion.isBlank()) assignedVersion = "A";
+
+        String token = UUID.randomUUID().toString().replace("-", "") + UUID.randomUUID().toString().replace("-", "");
+        Map<String, Object> sess = new LinkedHashMap<>();
+        sess.put("token", token);
+        sess.put("usn", usn);
+        sess.put("fullName", student.get("fullName"));
+        sess.put("assignedVersion", assignedVersion);
+        sess.put("computerNumber", comp);
+        sess.put("sessionId", RuntimeState.activeSessionId);
+        sess.put("sessionName", RuntimeState.sessionMetadata.getOrDefault("subjectName", "Offline Examination"));
+        sess.put("subjectCode", RuntimeState.sessionMetadata.getOrDefault("subjectCode", "CS401"));
+        sess.put("loginTime", System.currentTimeMillis());
+        RuntimeState.studentSessions.put(token, sess);
+
+        Map<String, Object> resp = new LinkedHashMap<>(sess);
+        resp.put("success", true);
+        resp.put("labId", LAB_ID);
+        return Json.stringify(resp);
+    }
+
+    private static Map<String, Object> requireStudentSession(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new LabException(401, "Sign-in required", "AUTH_REQUIRED");
+        }
+        String token = authHeader.substring(7).trim();
+        Map<String, Object> sess = RuntimeState.studentSessions.get(token);
+        if (sess == null) throw new LabException(401, "Invalid or expired session token", "INVALID_TOKEN");
+        return sess;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String handleStudentQuestions(String auth) {
+        Map<String, Object> sess = requireStudentSession(auth);
+        String version = (String) sess.get("assignedVersion");
+        Map<String, Object> verObj = RuntimeState.versions.get(version);
+        if (verObj == null && !RuntimeState.versions.isEmpty()) {
+            verObj = RuntimeState.versions.values().iterator().next();
+        }
+
+        Object questions = verObj != null ? verObj.get("questions") : Collections.emptyList();
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("success", true);
+        resp.put("assignedVersion", version);
+        resp.put("questions", questions);
+        resp.put("sessionId", RuntimeState.activeSessionId);
+        return Json.stringify(resp);
+    }
+
+    private static String handleStudentStart(String auth) {
+        Map<String, Object> sess = requireStudentSession(auth);
+        sess.put("startedAt", System.currentTimeMillis());
+        return Json.stringify(Map.of("success", true, "startedAt", sess.get("startedAt")));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String handleStudentSaveAnswers(String auth, Map<String, Object> form) throws Exception {
+        Map<String, Object> sess = requireStudentSession(auth);
+        String usn = (String) sess.get("usn");
+        Map<String, Object> answers = (Map<String, Object>) form.get("answers");
+        if (answers == null) answers = form;
+
+        RuntimeState.studentAnswers.computeIfAbsent(usn, k -> new ConcurrentHashMap<>()).putAll(answers);
+
+        // Append to local offline submissions log
+        Path subFile = SUBMISSIONS_DIR.resolve(usn + "_answers.json");
+        Files.writeString(subFile, Json.stringify(RuntimeState.studentAnswers.get(usn)), StandardCharsets.UTF_8);
+
+        return Json.stringify(Map.of("success", true, "savedAnswersCount", RuntimeState.studentAnswers.get(usn).size()));
+    }
+
+    private static String handleStudentSubmit(String auth, Map<String, Object> form) throws Exception {
+        Map<String, Object> sess = requireStudentSession(auth);
+        String usn = (String) sess.get("usn");
+
+        String subKey = RuntimeState.activeSessionId + ":" + usn;
+        if (RuntimeState.studentSubmissions.containsKey(subKey)) {
+            throw new LabException(400, "Examination already submitted for " + usn, "ALREADY_SUBMITTED");
+        }
+
+        long now = System.currentTimeMillis();
+        RuntimeState.studentSubmissions.put(subKey, now);
+
+        Map<String, Object> submission = new LinkedHashMap<>();
+        submission.put("usn", usn);
+        submission.put("fullName", sess.get("fullName"));
+        submission.put("assignedVersion", sess.get("assignedVersion"));
+        submission.put("computerNumber", sess.get("computerNumber"));
+        submission.put("sessionId", RuntimeState.activeSessionId);
+        submission.put("submittedAt", now);
+        submission.put("answers", RuntimeState.studentAnswers.getOrDefault(usn, Collections.emptyMap()));
+
+        byte[] rawSub = Json.stringify(submission).getBytes(StandardCharsets.UTF_8);
+        String subDigest = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(rawSub));
+        String receiptSignature = sign(subDigest.getBytes(StandardCharsets.UTF_8), labPrivateKey);
+
+        submission.put("submissionDigestHex", subDigest);
+        submission.put("receiptSignatureHex", receiptSignature);
+
+        Path finalFile = SUBMISSIONS_DIR.resolve(usn + "_final_submission.json");
+        Files.writeString(finalFile, Json.stringify(submission), StandardCharsets.UTF_8);
+
+        Map<String, Object> resp = new LinkedHashMap<>();
+        resp.put("success", true);
+        resp.put("submittedAt", now);
+        resp.put("submissionDigestHex", subDigest);
+        resp.put("receiptSignatureHex", receiptSignature);
+        resp.put("message", "Examination submitted successfully offline.");
+        return Json.stringify(resp);
+    }
+
+    // --- UTILITIES ---
+    private static void setCORS(HttpExchange exchange) {
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
+    }
+
+    private static void sendJson(HttpExchange exchange, int status, Object data) throws IOException {
+        byte[] bytes = Json.stringify(data).getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+        exchange.sendResponseHeaders(status, bytes.length);
+        try (OutputStream os = exchange.getResponseBody()) { os.write(bytes); }
+    }
+
+    private static void sendError(HttpExchange exchange, int status, String msg, String code) throws IOException {
+        setCORS(exchange);
+        Map<String, Object> err = new LinkedHashMap<>();
+        err.put("success", false);
+        err.put("error", msg);
+        err.put("errorCode", code);
+        sendJson(exchange, status, err);
+    }
+
+    private static byte[] readAll(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[8192];
+        int r;
+        while ((r = is.read(buf)) != -1) baos.write(buf, 0, r);
+        return baos.toByteArray();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> parseJsonOrForm(String body) {
+        if (body == null || body.isBlank()) return new LinkedHashMap<>();
+        if (body.trim().startsWith("{")) {
+            Object obj = Json.parse(body);
+            if (obj instanceof Map<?, ?> m) {
+                Map<String, Object> res = new LinkedHashMap<>();
+                m.forEach((k, v) -> res.put(String.valueOf(k), v));
+                return res;
+            }
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (String pair : body.split("&")) {
+            String[] kv = pair.split("=", 2);
+            if (kv.length == 2) {
+                map.put(java.net.URLDecoder.decode(kv[0], StandardCharsets.UTF_8),
+                        java.net.URLDecoder.decode(kv[1], StandardCharsets.UTF_8));
+            }
+        }
+        return map;
+    }
+
+    public static class LabException extends RuntimeException {
+        public final int statusCode;
+        public final String errorCode;
+        public LabException(int statusCode, String message, String errorCode) {
+            super(message);
+            this.statusCode = statusCode;
+            this.errorCode = errorCode;
+        }
+    }
+
+    // --- JSON PARSER & SERIALIZER ---
+    public static final class Json {
+        public static Object parse(String src) {
+            if (src == null || src.isBlank()) return new LinkedHashMap<String, Object>();
+            return new Parser(src).parseValue();
+        }
+
+        public static String stringify(Object obj) {
+            StringBuilder sb = new StringBuilder();
+            serialize(obj, sb);
+            return sb.toString();
+        }
+
+        private static void serialize(Object obj, StringBuilder sb) {
+            if (obj == null) sb.append("null");
+            else if (obj instanceof String s) {
+                sb.append('"');
+                for (int i = 0; i < s.length(); i++) {
+                    char c = s.charAt(i);
+                    switch (c) {
+                        case '"' -> sb.append("\\\"");
+                        case '\\' -> sb.append("\\\\");
+                        case '\b' -> sb.append("\\b");
+                        case '\f' -> sb.append("\\f");
+                        case '\n' -> sb.append("\\n");
+                        case '\r' -> sb.append("\\r");
+                        case '\t' -> sb.append("\\t");
+                        default -> {
+                            if (c < ' ') sb.append(String.format("\\u%04x", (int) c));
+                            else sb.append(c);
+                        }
+                    }
+                }
+                sb.append('"');
+            } else if (obj instanceof Number || obj instanceof Boolean) sb.append(obj);
+            else if (obj instanceof Map<?, ?> m) {
+                sb.append('{');
+                boolean first = true;
+                for (Map.Entry<?, ?> e : m.entrySet()) {
+                    if (!first) sb.append(',');
+                    first = false;
+                    serialize(String.valueOf(e.getKey()), sb);
+                    sb.append(':');
+                    serialize(e.getValue(), sb);
+                }
+                sb.append('}');
+            } else if (obj instanceof Collection<?> c) {
+                sb.append('[');
+                boolean first = true;
+                for (Object o : c) {
+                    if (!first) sb.append(',');
+                    first = false;
+                    serialize(o, sb);
+                }
+                sb.append(']');
+            } else if (obj.getClass().isArray()) {
+                sb.append('[');
+                int len = java.lang.reflect.Array.getLength(obj);
+                for (int i = 0; i < len; i++) {
+                    if (i > 0) sb.append(',');
+                    serialize(java.lang.reflect.Array.get(obj, i), sb);
+                }
+                sb.append(']');
+            } else {
+                serialize(obj.toString(), sb);
+            }
+        }
+
+        private static class Parser {
+            private final String src;
+            private int pos = 0;
+
+            Parser(String src) { this.src = src; }
+
+            Object parseValue() {
+                skipWs();
+                if (pos >= src.length()) return null;
+                char c = src.charAt(pos);
+                if (c == '{') return parseObj();
+                if (c == '[') return parseArr();
+                if (c == '"') return parseStr();
+                if (c == 't' || c == 'f') return parseBool();
+                if (c == 'n') return parseNull();
+                return parseNum();
+            }
+
+            private void skipWs() {
+                while (pos < src.length() && Character.isWhitespace(src.charAt(pos))) pos++;
+            }
+
+            private Map<String, Object> parseObj() {
+                Map<String, Object> map = new LinkedHashMap<>();
+                pos++;
+                skipWs();
+                if (peek('}')) { pos++; return map; }
+                while (pos < src.length()) {
+                    skipWs();
+                    String key = parseStr();
+                    skipWs();
+                    consume(':');
+                    Object val = parseValue();
+                    map.put(key, val);
+                    skipWs();
+                    if (peek('}')) { pos++; break; }
+                    consume(',');
+                }
+                return map;
+            }
+
+            private List<Object> parseArr() {
+                List<Object> list = new ArrayList<>();
+                pos++;
+                skipWs();
+                if (peek(']')) { pos++; return list; }
+                while (pos < src.length()) {
+                    list.add(parseValue());
+                    skipWs();
+                    if (peek(']')) { pos++; break; }
+                    consume(',');
+                }
+                return list;
+            }
+
+            private String parseStr() {
+                consume('"');
+                StringBuilder sb = new StringBuilder();
+                while (pos < src.length()) {
+                    char c = src.charAt(pos++);
+                    if (c == '"') return sb.toString();
+                    if (c == '\\') {
+                        if (pos >= src.length()) break;
+                        char next = src.charAt(pos++);
+                        switch (next) {
+                            case '"' -> sb.append('"');
+                            case '\\' -> sb.append('\\');
+                            case '/' -> sb.append('/');
+                            case 'b' -> sb.append('\b');
+                            case 'f' -> sb.append('\f');
+                            case 'n' -> sb.append('\n');
+                            case 'r' -> sb.append('\r');
+                            case 't' -> sb.append('\t');
+                            case 'u' -> {
+                                String hex = src.substring(pos, pos + 4);
+                                pos += 4;
+                                sb.append((char) Integer.parseInt(hex, 16));
+                            }
+                            default -> sb.append(next);
+                        }
+                    } else sb.append(c);
+                }
+                return sb.toString();
+            }
+
+            private Boolean parseBool() {
+                if (src.startsWith("true", pos)) { pos += 4; return true; }
+                if (src.startsWith("false", pos)) { pos += 5; return false; }
+                throw new IllegalArgumentException("Invalid boolean");
+            }
+
+            private Object parseNull() {
+                if (src.startsWith("null", pos)) { pos += 4; return null; }
+                throw new IllegalArgumentException("Invalid null");
+            }
+
+            private Object parseNum() {
+                int start = pos;
+                if (peek('-')) pos++;
+                while (pos < src.length() && Character.isDigit(src.charAt(pos))) pos++;
+                boolean isDouble = false;
+                if (pos < src.length() && src.charAt(pos) == '.') {
+                    isDouble = true;
+                    pos++;
+                    while (pos < src.length() && Character.isDigit(src.charAt(pos))) pos++;
+                }
+                if (pos < src.length() && (src.charAt(pos) == 'e' || src.charAt(pos) == 'E')) {
+                    isDouble = true;
+                    pos++;
+                    if (peek('+') || peek('-')) pos++;
+                    while (pos < src.length() && Character.isDigit(src.charAt(pos))) pos++;
+                }
+                String s = src.substring(start, pos);
+                return isDouble ? Double.parseDouble(s) : Long.parseLong(s);
+            }
+
+            private boolean peek(char c) { return pos < src.length() && src.charAt(pos) == c; }
+            private void consume(char c) {
+                if (pos >= src.length() || src.charAt(pos) != c)
+                    throw new IllegalArgumentException("Expected '" + c + "' at " + pos);
+                pos++;
+            }
+        }
+    }
+}

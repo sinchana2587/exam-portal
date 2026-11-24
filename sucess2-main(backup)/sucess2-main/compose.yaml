@@ -1,0 +1,217 @@
+# ====================================================================
+# MAHARAJA INSTITUTE OF TECHNOLOGY MYSORE - OFFLINE EXAMINATION MANAGEMENT SYSTEM
+# PRODUCTION DOCKER COMPOSE SPECIFICATION (compose.yaml)
+# ====================================================================
+
+services:
+  # ------------------------------------------------------------------
+  # 1. PostgreSQL Database Server (Isolated Internal Network)
+  # ------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: campusexam-postgres
+    restart: unless-stopped
+    pull_policy: never
+    environment:
+      POSTGRES_DB: ${DB_NAME:-campusexam_test}
+      POSTGRES_USER: ${DB_USER:-campusexam}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-campusexam} -d ${DB_NAME:-campusexam_test}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # ------------------------------------------------------------------
+  # 2. Central Backend (Java 17, Port 8081)
+  # ------------------------------------------------------------------
+  central:
+    build:
+      context: ./CampusExam
+      dockerfile: Dockerfile.central
+    image: campusexam-central:latest
+    container_name: campusexam-central
+    restart: unless-stopped
+    pull_policy: never
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      BIND: "0.0.0.0"
+      DB_URL: "jdbc:postgresql://postgres:5432/${DB_NAME:-campusexam_test}"
+      DB_NAME: "${DB_NAME:-campusexam_test}"
+      DB_USER: "${DB_USER:-campusexam}"
+      DB_PASSWORD: "${DB_PASSWORD:-password}"
+      BOOTSTRAP_OFFICIAL_ACCOUNTS: "false"
+      LAB_SERVER_URL: "http://lab:8082"
+      CENTRAL_KEYS_DIR: "/app/keys"
+      LAB_RESULTS_DIR: "/app/lab_storage/results"
+      AUDIT_STORAGE_DIR: "/app/audit_storage/results"
+    volumes:
+      - central-keys:/app/keys:ro
+      - lab-storage:/app/lab_storage:ro
+      - audit-storage:/app/audit_storage:rw
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8081/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # ------------------------------------------------------------------
+  # 3. Lab Server (Java 17 Offline Runtime, Port 8082)
+  # ------------------------------------------------------------------
+  lab:
+    build:
+      context: ./CampusExam
+      dockerfile: Dockerfile.lab
+    image: campusexam-lab:latest
+    container_name: campusexam-lab
+    restart: unless-stopped
+    pull_policy: never
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      BIND: "0.0.0.0"
+      LAB_ID: "${LAB_ID:-LAB-CSE-01}"
+      CENTRAL_URL: "http://central:8081"
+      LAB_KEYS_DIR: "/app/lab_server_keys"
+      LAB_STORAGE_BASE_DIR: "/app/lab_storage"
+    volumes:
+      - lab-keys:/app/lab_server_keys:rw
+      - lab-storage:/app/lab_storage:rw
+    depends_on:
+      central:
+        condition: service_healthy
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8082/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # ------------------------------------------------------------------
+  # 4. Admin / HOD Portal (Nginx, Port 3000)
+  # ------------------------------------------------------------------
+  admin-portal:
+    build:
+      context: "./admin-portal (7)"
+      dockerfile: Dockerfile
+    image: campusexam-admin-portal:latest
+    container_name: campusexam-admin-portal
+    restart: unless-stopped
+    pull_policy: never
+    ports:
+      - "3000:80"
+    environment:
+      VITE_API_BASE_URL: "${CENTRAL_PUBLIC_URL:-http://localhost:8081/api/v1}"
+    depends_on:
+      central:
+        condition: service_healthy
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+
+  # ------------------------------------------------------------------
+  # 5. Controller of Examinations (COE) Portal (Nginx, Port 3001)
+  # ------------------------------------------------------------------
+  coe-portal:
+    build:
+      context: "./coe-portal (7)"
+      dockerfile: Dockerfile
+    image: campusexam-coe-portal:latest
+    container_name: campusexam-coe-portal
+    restart: unless-stopped
+    pull_policy: never
+    ports:
+      - "3001:80"
+    environment:
+      VITE_API_BASE_URL: "${CENTRAL_PUBLIC_URL:-http://localhost:8081/api/v1}"
+      VITE_LAB_API_BASE_URL: "${LAB_PUBLIC_URL:-http://localhost:8082/lab-api}"
+    depends_on:
+      central:
+        condition: service_healthy
+      lab:
+        condition: service_healthy
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+
+  # ------------------------------------------------------------------
+  # 6. Student Examination Portal (Nginx, Port 3002)
+  # ------------------------------------------------------------------
+  student-portal:
+    build:
+      context: "./student-portal (Final)/student-portal (Final)/student-portal"
+      dockerfile: Dockerfile
+    image: campusexam-student-portal:latest
+    container_name: campusexam-student-portal
+    restart: unless-stopped
+    pull_policy: never
+    ports:
+      - "3002:80"
+    environment:
+      VITE_API_URL: "${LAB_PUBLIC_URL:-http://localhost:8082}"
+      VITE_LAB_API_BASE_URL: "${LAB_PUBLIC_URL:-http://localhost:8082}"
+    depends_on:
+      lab:
+        condition: service_healthy
+    networks:
+      - campusexam-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+
+# --------------------------------------------------------------------
+# Networks
+# --------------------------------------------------------------------
+networks:
+  campusexam-net:
+    name: campusexam-net
+    driver: bridge
+
+# --------------------------------------------------------------------
+# Persistent Storage Volumes
+# --------------------------------------------------------------------
+volumes:
+  db-data:
+    name: campusexam-db-data
+    external: true
+  central-keys:
+    name: campusexam-central-keys
+    external: true
+  lab-keys:
+    name: campusexam-lab-keys
+    external: true
+  lab-storage:
+    name: campusexam-lab-storage
+    external: true
+  audit-storage:
+    name: campusexam-audit-storage
+    external: true

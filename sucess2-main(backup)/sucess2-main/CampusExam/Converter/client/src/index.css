@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Official MIT Mysore ProTick CSS Design Tokens */
+  --brand-blue: #1263F5;
+  --brand-navy: #101B46;
+  --brand-purple: #7048F5;
+  --brand-purple-light: #F1ECFF;
+  --brand-green: #12A86B;
+  --brand-green-light: #EAF8F0;
+  --bg-main: #F7F9FF;
+  --bg-surface: #FFFFFF;
+  --border-subtle: #DCE4F5;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--brand-navy);
+  font-family: 'Lato', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars for data tables and editor panes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

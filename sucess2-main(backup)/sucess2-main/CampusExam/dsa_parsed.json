@@ -1,0 +1,1502 @@
+[
+  {
+    "qNum": 1,
+    "module": 1,
+    "text": "According to the notes, a data structure can be expressed as:",
+    "optionA": "Data Structure = Organized data + Allowed operations",
+    "optionB": "Data Structure = Algorithm + Flowchart",
+    "optionC": "Data Structure = Program + Compiler",
+    "optionD": "Data Structure = Input + Output",
+    "correct": "A"
+  },
+  {
+    "qNum": 2,
+    "module": 1,
+    "text": "A field K whose values uniquely determine a record in a file is called a:",
+    "optionA": "Primary key",
+    "optionB": "Group item",
+    "optionC": "Entity set",
+    "optionD": "Variable-length record",
+    "correct": "A"
+  },
+  {
+    "qNum": 3,
+    "module": 1,
+    "text": "Which of the following is a primitive data structure?",
+    "optionA": "Array",
+    "optionB": "Integer",
+    "optionC": "Tree",
+    "optionD": "Graph",
+    "correct": "B"
+  },
+  {
+    "qNum": 4,
+    "module": 1,
+    "text": "Which of the following is a non-linear data structure?",
+    "optionA": "Stack",
+    "optionB": "Queue",
+    "optionC": "Linked list",
+    "optionD": "Tree",
+    "correct": "D"
+  },
+  {
+    "qNum": 5,
+    "module": 1,
+    "text": "In data structure operations, merging means:",
+    "optionA": "Arranging all data items in ascending or descending order",
+    "optionB": "Combining the data items of two sorted lists into a single list",
+    "optionC": "Finding whether a desired data item is present in a list",
+    "optionD": "Reserving memory for the program elements",
+    "correct": "B"
+  },
+  {
+    "qNum": 6,
+    "module": 1,
+    "text": "A pointer is:",
+    "optionA": "A variable that can store only integer constants",
+    "optionB": "A special variable that contains the address of a memory location",
+    "optionC": "A function that allocates memory at run time",
+    "optionD": "A data type that stores a sequence of characters",
+    "correct": "B"
+  },
+  {
+    "qNum": 7,
+    "module": 1,
+    "text": "A pointer that has not been initialized with a valid address is known as a:",
+    "optionA": "NULL pointer",
+    "optionB": "Void pointer",
+    "optionC": "Dangling (wild) pointer",
+    "optionD": "Pointer to pointer",
+    "correct": "C"
+  },
+  {
+    "qNum": 8,
+    "module": 1,
+    "text": "Memory requested at run time using malloc() and calloc() is allocated from the:",
+    "optionA": "Stack",
+    "optionB": "Static (compile-time) data area",
+    "optionC": "CPU registers",
+    "optionD": "Heap",
+    "correct": "D"
+  },
+  {
+    "qNum": 9,
+    "module": 1,
+    "text": "Which dynamic memory allocation function initializes every allocated block to zero?",
+    "optionA": "malloc()",
+    "optionB": "realloc()",
+    "optionC": "calloc()",
+    "optionD": "free()",
+    "correct": "C"
+  },
+  {
+    "qNum": 10,
+    "module": 1,
+    "text": "Which statement correctly distinguishes calloc() from malloc()?",
+    "optionA": "calloc() takes one argument and leaves the allocated memory uninitialized",
+    "optionB": "calloc() takes two arguments (number of elements, element size) and initializes the memory to zero",
+    "optionC": "calloc() releases previously allocated memory, while malloc() allocates it",
+    "optionD": "calloc() allocates memory at compile time, while malloc() does it at run time",
+    "correct": "B"
+  },
+  {
+    "qNum": 11,
+    "module": 1,
+    "text": "If realloc() cannot extend an existing memory block in place, it:",
+    "optionA": "Leaves the old block unchanged and returns a pointer to its first byte",
+    "optionB": "Frees the old block and returns an uninitialized block without copying any data",
+    "optionC": "Allocates a new block, copies the old contents into it and frees the old block",
+    "optionD": "Always terminates the program with a run-time error",
+    "correct": "C"
+  },
+  {
+    "qNum": 12,
+    "module": 1,
+    "text": "What is the output of the following code? int a[5] = {10, 20, 30, 40, 50}; int *p = a; printf(\"%d %d\", *(p + 2), 3[a]);",
+    "optionA": "20 40",
+    "optionB": "30 30",
+    "optionC": "Compilation error",
+    "optionD": "30 40",
+    "correct": "D"
+  },
+  {
+    "qNum": 13,
+    "module": 1,
+    "text": "Which declaration creates an array of 5 pointers to integers?",
+    "optionA": "int *a;",
+    "optionB": "int a[5];",
+    "optionC": "int *a[5];",
+    "optionD": "int **a;",
+    "correct": "C"
+  },
+  {
+    "qNum": 14,
+    "module": 1,
+    "text": "Binary search is applied on the sorted array {2, 5, 8, 12, 16, 23, 38, 56, 72, 91} with low = 0, high = 9 and mid = (low + high)/2 to find the key 23. How many times is mid computed before the key is found?",
+    "optionA": "3",
+    "optionB": "2",
+    "optionC": "4",
+    "optionD": "5",
+    "correct": "A"
+  },
+  {
+    "qNum": 15,
+    "module": 1,
+    "text": "What is the output of the following code that inserts an item into an array? int a[10] = {5, 10, 15, 20}, n = 4, pos = 2, item = 12, i; for (i = n - 1; i >= pos; i--) a[i + 1] = a[i]; a[pos] = item; n = n + 1; for (i = 0; i < n; i++) printf(\"%d \", a[i]);",
+    "optionA": "5 10 15 12 20",
+    "optionB": "5 10 12 15 20",
+    "optionC": "12 5 10 15 20",
+    "optionD": "5 10 12 20 20",
+    "correct": "B"
+  },
+  {
+    "qNum": 16,
+    "module": 1,
+    "text": "What is the output of the following code? int m[2][3] = { {1, 4, 2}, {3, 6, 8} }; int i, j, s = 0; for (i = 0; i < 2; i++) for (j = 0; j < 3; j++) if (i != j) s += m[i][j]; printf(\"%d\", s);",
+    "optionA": "24",
+    "optionB": "7",
+    "optionC": "21",
+    "optionD": "17",
+    "correct": "D"
+  },
+  {
+    "qNum": 17,
+    "module": 1,
+    "text": "To create a 2-D integer array of rows x cols dynamically using the pointer-to-pointer method of the notes, how many MALLOC (malloc) calls are needed in total?",
+    "optionA": "1",
+    "optionB": "rows x cols",
+    "optionC": "rows + 1",
+    "optionD": "cols + 1",
+    "correct": "C"
+  },
+  {
+    "qNum": 18,
+    "module": 1,
+    "text": "What is the output of the following code? int a = 10; int *p1 = &a; int **p2 = &p1; **p2 = **p2 + 5; printf(\"%d %d\", a, *p1);",
+    "optionA": "10 15",
+    "optionB": "15 10",
+    "optionC": "10 10",
+    "optionD": "15 15",
+    "correct": "D"
+  },
+  {
+    "qNum": 19,
+    "module": 1,
+    "text": "Which of the following structure definitions results in a syntax error?",
+    "optionA": "struct str1 { int i; char c; } var1 = {10, 'A'};",
+    "optionB": "struct str1 { int i = 10; char c = 'A'; };",
+    "optionC": "struct str1 { int i; char c; }; struct str1 var1 = {10, 'A'};",
+    "optionD": "struct str1 { int i; char c; float f; } s1, s2;",
+    "correct": "B"
+  },
+  {
+    "qNum": 20,
+    "module": 1,
+    "text": "Which of the following is a self-referential structure?",
+    "optionA": "struct node { int data; struct node next; };",
+    "optionB": "struct node { int data; int *next; };",
+    "optionC": "struct node { int data; };",
+    "optionD": "struct node { int data; struct node *next; };",
+    "correct": "D"
+  },
+  {
+    "qNum": 21,
+    "module": 1,
+    "text": "The size of a union is equal to the size of its:",
+    "optionA": "Largest member",
+    "optionB": "Smallest member",
+    "optionC": "Sum of all members",
+    "optionD": "First member",
+    "correct": "A"
+  },
+  {
+    "qNum": 22,
+    "module": 1,
+    "text": "Which statement about structures and unions is correct?",
+    "optionA": "Altering one member of a structure alters the other members, but not in a union",
+    "optionB": "In a structure each member has its own storage, whereas all members of a union share the same memory",
+    "optionC": "A union allocates memory equal to the sum of the sizes of its members",
+    "optionD": "All members of a union can be initialized at once, but only the first member of a structure can be",
+    "correct": "B"
+  },
+  {
+    "qNum": 23,
+    "module": 1,
+    "text": "Using the addpolynomial() logic of the notes (terms are stored in decreasing order of exponent and a term is attached only when its coefficient is non-zero), the sum of A(x) = 5x^3 + 4x^2 + 2 and B(x) = 3x^3 - 4x^2 + 7x is:",
+    "optionA": "8x^3 + 0x^2 + 7x + 2",
+    "optionB": "8x^3 + 8x^2 + 7x + 2",
+    "optionC": "2x^3 + 8x^2 + 7x + 2",
+    "optionD": "8x^3 + 7x + 2",
+    "correct": "D"
+  },
+  {
+    "qNum": 24,
+    "module": 1,
+    "text": "A sparse matrix is a matrix that has:",
+    "optionA": "A greater number of zero elements than non-zero elements",
+    "optionB": "Only non-zero elements",
+    "optionC": "More rows than columns",
+    "optionD": "Non-zero elements only on its diagonal",
+    "correct": "A"
+  },
+  {
+    "qNum": 25,
+    "module": 1,
+    "text": "In the (row, column, value) triple representation of a sparse matrix, the first entry A[0] stores:",
+    "optionA": "The first non-zero element of the matrix",
+    "optionB": "The number of zero elements, rows and columns",
+    "optionC": "The number of rows, the number of columns and the number of non-zero terms",
+    "optionD": "The largest element and its row and column",
+    "correct": "C"
+  },
+  {
+    "qNum": 26,
+    "module": 1,
+    "text": "The 4 x 4 sparse matrix A shown below is stored as triples with B[0] = (4, 4, 5) for its transpose. Using the column-by-column transpose algorithm of the notes, what is B[4]? | 0  0  3  0 | A = | 0  0  0  8 | | 1  0  3  0 | | 0  0  7  0 |",
+    "optionA": "(3, 1, 8)",
+    "optionB": "(2, 3, 7)",
+    "optionC": "(2, 2, 3)",
+    "optionD": "(0, 2, 1)",
+    "correct": "B"
+  },
+  {
+    "qNum": 27,
+    "module": 1,
+    "text": "For a sparse matrix with c columns and t non-zero terms, the transpose function of the notes (which scans all t terms once for every column) runs in time:",
+    "optionA": "O(c x t)",
+    "optionB": "O(c + t)",
+    "optionC": "O(t)",
+    "optionD": "O(c)",
+    "correct": "A"
+  },
+  {
+    "qNum": 28,
+    "module": 1,
+    "text": "A string in C is a sequence of characters terminated by the:",
+    "optionA": "Null character '\\0'",
+    "optionB": "Newline character '\\n'",
+    "optionC": "Space character",
+    "optionD": "Tab character '\\t'",
+    "correct": "A"
+  },
+  {
+    "qNum": 29,
+    "module": 1,
+    "text": "What is the output of the following code? #include <string.h> char s[] = \"Hello\"; printf(\"%d\", (int)(sizeof(s) + strlen(s)));",
+    "optionA": "10",
+    "optionB": "12",
+    "optionC": "11",
+    "optionD": "5",
+    "correct": "C"
+  },
+  {
+    "qNum": 30,
+    "module": 1,
+    "text": "What is the output of the following code? char a[20] = \"Data\"; char b[] = \"Struct\"; strcat(a, b); printf(\"%s %d\", a, (int)strlen(a));",
+    "optionA": "DataStruct 10",
+    "optionB": "DataStruct 11",
+    "optionC": "StructData 10",
+    "optionD": "Data 4",
+    "correct": "A"
+  },
+  {
+    "qNum": 31,
+    "module": 2,
+    "text": "In a stack, insertions (push) and deletions (pop) are made at one end called the:",
+    "optionA": "Top",
+    "optionB": "Front",
+    "optionC": "Rear",
+    "optionD": "Base",
+    "correct": "A"
+  },
+  {
+    "qNum": 32,
+    "module": 2,
+    "text": "Trying to push an element onto a stack that is already full is called:",
+    "optionA": "Overflow",
+    "optionB": "Underflow",
+    "optionC": "Deadlock",
+    "optionD": "Wrap-around",
+    "correct": "A"
+  },
+  {
+    "qNum": 33,
+    "module": 2,
+    "text": "Which auxiliary stack operation returns the last inserted element without removing it?",
+    "optionA": "Pop()",
+    "optionB": "Push()",
+    "optionC": "Top()",
+    "optionD": "Size()",
+    "correct": "C"
+  },
+  {
+    "qNum": 34,
+    "module": 2,
+    "text": "When a stack is implemented using an array, the value of top for an empty stack is initialized to:",
+    "optionA": "-1",
+    "optionB": "0",
+    "optionC": "1",
+    "optionD": "MAX_STACK_SIZE",
+    "correct": "A"
+  },
+  {
+    "qNum": 35,
+    "module": 2,
+    "text": "When a function is invoked, its stack frame placed on the system stack initially contains:",
+    "optionA": "Only the local variables of the invoking function",
+    "optionB": "The source code of the invoked function",
+    "optionC": "A pointer to the previous stack frame and the return address",
+    "optionD": "The final return value and an overflow flag",
+    "correct": "C"
+  },
+  {
+    "qNum": 36,
+    "module": 2,
+    "text": "For an array-based stack of size MAX_STACK_SIZE, the stack is full when:",
+    "optionA": "top < 0",
+    "optionB": "top >= MAX_STACK_SIZE - 1",
+    "optionC": "top == MAX_STACK_SIZE",
+    "optionD": "top == 0",
+    "correct": "B"
+  },
+  {
+    "qNum": 37,
+    "module": 2,
+    "text": "In the array-doubling strategy for a stack stored in a dynamic array, the total time spent on all array doublings over n push operations is:",
+    "optionA": "O(n^2)",
+    "optionB": "O(log n)",
+    "optionC": "O(n)",
+    "optionD": "O(n log n)",
+    "correct": "C"
+  },
+  {
+    "qNum": 38,
+    "module": 2,
+    "text": "In the infix-to-postfix algorithm using in-stack precedence (isp) and incoming precedence (icp), the left parenthesis has:",
+    "optionA": "High in-stack precedence and low incoming precedence",
+    "optionB": "Low in-stack precedence (isp = 0) but high incoming precedence (icp = 20)",
+    "optionC": "Equal in-stack and incoming precedence of 0",
+    "optionD": "Equal in-stack and incoming precedence of 20",
+    "correct": "B"
+  },
+  {
+    "qNum": 39,
+    "module": 2,
+    "text": "In which notation does the operator appear after its operands, as in A B +?",
+    "optionA": "Postfix (reverse Polish) notation",
+    "optionB": "Prefix (Polish) notation",
+    "optionC": "Infix notation",
+    "optionD": "Parenthesized infix notation",
+    "correct": "A"
+  },
+  {
+    "qNum": 40,
+    "module": 2,
+    "text": "The postfix form of the infix expression a*(b+c)*d is:",
+    "optionA": "ab*c+d*",
+    "optionB": "abcd+**",
+    "optionC": "abc+*d*",
+    "optionD": "abc*+d*",
+    "correct": "C"
+  },
+  {
+    "qNum": 41,
+    "module": 2,
+    "text": "The postfix form of the infix expression a+b*c-d/e is:",
+    "optionA": "ab+c*de/-",
+    "optionB": "abc*de/+-",
+    "optionC": "abcde*/+-",
+    "optionD": "abc*+de/-",
+    "correct": "D"
+  },
+  {
+    "qNum": 42,
+    "module": 2,
+    "text": "What is the value of the postfix expression 5 6 2 + * 12 4 / -?",
+    "optionA": "37",
+    "optionB": "-37",
+    "optionC": "43",
+    "optionD": "3",
+    "correct": "A"
+  },
+  {
+    "qNum": 43,
+    "module": 2,
+    "text": "The prefix form of the infix expression (A + B) * C is:",
+    "optionA": "+ A * B C",
+    "optionB": "A B + C *",
+    "optionC": "* A + B C",
+    "optionD": "* + A B C",
+    "correct": "D"
+  },
+  {
+    "qNum": 44,
+    "module": 2,
+    "text": "Starting with an empty stack, the operations push(3), push(6), push(9), pop(), push(12), pop(), pop() are performed. What are the values returned by Top() and Size() now?",
+    "optionA": "Top = 6, Size = 2",
+    "optionB": "Top = 3, Size = 1",
+    "optionC": "Top = 12, Size = 2",
+    "optionD": "Top = 9, Size = 1",
+    "correct": "B"
+  },
+  {
+    "qNum": 45,
+    "module": 2,
+    "text": "What is the output of the following code? int stack[10], top = -1, x, y; stack[++top] = 4; stack[++top] = 7; stack[++top] = 2; x = stack[top--]; y = stack[top--]; stack[++top] = x * y; printf(\"%d %d\", stack[top], top);",
+    "optionA": "28 1",
+    "optionB": "14 1",
+    "optionC": "14 2",
+    "optionD": "14 0",
+    "correct": "B"
+  },
+  {
+    "qNum": 46,
+    "module": 2,
+    "text": "A stack uses a dynamically allocated array with an initial capacity of 1 and doubles the capacity (using realloc) whenever a push arrives while the array is full. What is the capacity after 9 pushes?",
+    "optionA": "16",
+    "optionB": "9",
+    "optionC": "8",
+    "optionD": "18",
+    "correct": "A"
+  },
+  {
+    "qNum": 47,
+    "module": 2,
+    "text": "A queue works on which of the following principles?",
+    "optionA": "Last-In-First-Out (LIFO)",
+    "optionB": "Highest-priority-last",
+    "optionC": "Random access",
+    "optionD": "First-In-First-Out (FIFO)",
+    "correct": "D"
+  },
+  {
+    "qNum": 48,
+    "module": 2,
+    "text": "In the array implementation of a linear queue (with f initialized to 0 and r to -1), the queue is empty when:",
+    "optionA": "f < r",
+    "optionB": "f > r",
+    "optionC": "r == QUEUESIZE - 1",
+    "optionD": "f == QUEUESIZE - 1",
+    "correct": "B"
+  },
+  {
+    "qNum": 49,
+    "module": 2,
+    "text": "The figure shows a linear queue stored in an array with QUEUESIZE = 5, f = 2 and r = 4. What happens when insertQ(60, &r, q) is executed? q[ ] 0 1 30 2 40 3 50 4 f r",
+    "optionA": "60 is stored at index 0",
+    "optionB": "60 is stored at index 5",
+    "optionC": "It prints \"Queue Empty\"",
+    "optionD": "It prints \"queue overflow\" even though locations 0 and 1 are empty",
+    "correct": "D"
+  },
+  {
+    "qNum": 50,
+    "module": 2,
+    "text": "In a circular queue implemented with an array of size QUEUESIZE, the rear is advanced during insertion using:",
+    "optionA": "rear = rear + 1",
+    "optionB": "rear = (rear - 1) % QUEUESIZE",
+    "optionC": "rear = rear % QUEUESIZE + 1",
+    "optionD": "rear = (rear + 1) % QUEUESIZE",
+    "correct": "D"
+  },
+  {
+    "qNum": 51,
+    "module": 2,
+    "text": "A circular queue (QUEUESIZE = 5) uses the variables f, r and count, initially f = 0, r = -1, count = 0. The operations performed are: insert 10, 20, 30, 40; delete twice; insert 50, 60, 70. The final values of f, r and count are:",
+    "optionA": "f = 2, r = 1, count = 5",
+    "optionB": "f = 2, r = 2, count = 5",
+    "optionC": "f = 0, r = 1, count = 5",
+    "optionD": "f = 2, r = 1, count = 3",
+    "correct": "A"
+  },
+  {
+    "qNum": 52,
+    "module": 2,
+    "text": "Elements 9, 4 and 6 are inserted, in this order, into an ascending priority queue. The order in which they are deleted is:",
+    "optionA": "4, 6, 9",
+    "optionB": "9, 4, 6",
+    "optionC": "6, 4, 9",
+    "optionD": "9, 6, 4",
+    "correct": "A"
+  },
+  {
+    "qNum": 53,
+    "module": 2,
+    "text": "A priority queue is mainly used to implement:",
+    "optionA": "Recursion",
+    "optionB": "CPU scheduling algorithms",
+    "optionC": "Binary search",
+    "optionD": "Matrix multiplication",
+    "correct": "B"
+  },
+  {
+    "qNum": 54,
+    "module": 2,
+    "text": "In a deque (double-ended queue), insertion and deletion can be performed:",
+    "optionA": "Only at the front end",
+    "optionB": "At both the front and the rear ends",
+    "optionC": "Only at the rear end",
+    "optionD": "Only in the middle of the queue",
+    "correct": "B"
+  },
+  {
+    "qNum": 55,
+    "module": 2,
+    "text": "In an input-restricted deque:",
+    "optionA": "Deletion is allowed at only one end, while insertion is allowed at both ends",
+    "optionB": "Both insertion and deletion are allowed at only one end",
+    "optionC": "Insertion is allowed at only one end, while deletion is allowed at both ends",
+    "optionD": "Insertion is not allowed at any end",
+    "correct": "C"
+  },
+  {
+    "qNum": 56,
+    "module": 2,
+    "text": "A deque is initially empty. The operations insertFront(1), insertRear(2), insertFront(3), insertRear(4), deleteFront(), deleteRear() are performed in order. The contents of the deque from front to rear are:",
+    "optionA": "3, 1",
+    "optionB": "2, 4",
+    "optionC": "1, 2, 4",
+    "optionD": "1, 2",
+    "correct": "D"
+  },
+  {
+    "qNum": 57,
+    "module": 2,
+    "text": "In the maze problem of the notes, the maze is represented by a two-dimensional array in which:",
+    "optionA": "Ones represent open paths and zeros represent barriers",
+    "optionB": "Zeros represent open paths and ones represent barriers",
+    "optionC": "Zeros represent the exit and ones the entrance",
+    "optionD": "Every position stores the number of its neighbours",
+    "correct": "B"
+  },
+  {
+    "qNum": 58,
+    "module": 2,
+    "text": "To avoid checking border conditions in the maze program, the maze is surrounded by a border of ones. An m x p maze therefore requires an array of size:",
+    "optionA": "m x p",
+    "optionB": "(m + 1) x (p + 1)",
+    "optionC": "(m + 2) x (p + 2)",
+    "optionD": "(m + 2) x p",
+    "correct": "C"
+  },
+  {
+    "qNum": 59,
+    "module": 2,
+    "text": "A 6 x 8 maze is stored in an array with a border of ones. If the entrance is at maze[1][1], the exit is at:",
+    "optionA": "maze[7][9]",
+    "optionB": "maze[5][7]",
+    "optionC": "maze[8][10]",
+    "optionD": "maze[6][8]",
+    "correct": "D"
+  },
+  {
+    "qNum": 60,
+    "module": 2,
+    "text": "Since each position of an m x p maze is visited no more than once, the worst-case computing time of the maze-path algorithm is:",
+    "optionA": "O(m + p)",
+    "optionB": "O((mp)^2)",
+    "optionC": "O(mp)",
+    "optionD": "O(log mp)",
+    "correct": "C"
+  },
+  {
+    "qNum": 61,
+    "module": 3,
+    "text": "Each node of a singly linked list consists of:",
+    "optionA": "A data field, a prev field and a next field",
+    "optionB": "Only a data field",
+    "optionC": "Two data fields and a counter",
+    "optionD": "A data field and a next (link) field",
+    "correct": "D"
+  },
+  {
+    "qNum": 62,
+    "module": 3,
+    "text": "In a singly linked list, the next field of the last node contains:",
+    "optionA": "The address of the first node",
+    "optionB": "The address of the previous node",
+    "optionC": "NULL",
+    "optionD": "The value zero as data",
+    "correct": "C"
+  },
+  {
+    "qNum": 63,
+    "module": 3,
+    "text": "Which disadvantage of arrays is overcome by using linked lists?",
+    "optionA": "Slow random access to the i-th element",
+    "optionB": "Use of a common name for all the elements",
+    "optionC": "Inability to store more than one data type",
+    "optionD": "Fixed size, and costly insertion and deletion at a given position",
+    "correct": "D"
+  },
+  {
+    "qNum": 64,
+    "module": 3,
+    "text": "While traversing a singly linked list with a pointer current that starts at head, the traversal loop stops when:",
+    "optionA": "current becomes NULL",
+    "optionB": "current becomes equal to head again",
+    "optionC": "current->data becomes zero",
+    "optionD": "current->next points to head",
+    "correct": "A"
+  },
+  {
+    "qNum": 65,
+    "module": 3,
+    "text": "How many types of linked lists are listed in the notes?",
+    "optionA": "2 (singly and doubly)",
+    "optionB": "4 (singly, doubly, circular singly and circular doubly)",
+    "optionC": "3 (singly, doubly and circular)",
+    "optionD": "5",
+    "correct": "B"
+  },
+  {
+    "qNum": 66,
+    "module": 3,
+    "text": "Each node of a doubly linked list consists of:",
+    "optionA": "Data and a pointer to the next node",
+    "optionB": "Data and a pointer to the previous node",
+    "optionC": "Data, a pointer to the head and a pointer to the tail",
+    "optionD": "Data, a pointer to the previous node and a pointer to the next node",
+    "correct": "D"
+  },
+  {
+    "qNum": 67,
+    "module": 3,
+    "text": "Which linked list supports traversal in both the forward and backward directions?",
+    "optionA": "Singly linked list",
+    "optionB": "Doubly linked list",
+    "optionC": "Circular singly linked list",
+    "optionD": "Singly linked list with a tail pointer",
+    "correct": "B"
+  },
+  {
+    "qNum": 68,
+    "module": 3,
+    "text": "In a circular linked list, the last node points to:",
+    "optionA": "NULL",
+    "optionB": "The previous node",
+    "optionC": "The first node",
+    "optionD": "Itself, in every list",
+    "correct": "C"
+  },
+  {
+    "qNum": 69,
+    "module": 3,
+    "text": "In a stack implemented using a singly linked list, push() inserts the new node at the:",
+    "optionA": "End of the list",
+    "optionB": "Beginning of the list (top)",
+    "optionC": "Middle of the list",
+    "optionD": "Position given by the data value",
+    "correct": "B"
+  },
+  {
+    "qNum": 70,
+    "module": 3,
+    "text": "Elements of a linked list are accessed:",
+    "optionA": "Randomly using an index",
+    "optionB": "Sequentially, starting from the head",
+    "optionC": "Only from the tail",
+    "optionD": "Using the memory address of the array base",
+    "correct": "B"
+  },
+  {
+    "qNum": 71,
+    "module": 3,
+    "text": "Which of the following correctly compares arrays and linked lists?",
+    "optionA": "Array: non-contiguous memory and sequential access; Linked list: contiguous memory and random access",
+    "optionB": "Both arrays and linked lists use contiguous memory and random access",
+    "optionC": "Array: contiguous memory and random access; Linked list: non-contiguous memory and sequential access",
+    "optionD": "Both arrays and linked lists use non-contiguous memory and sequential access",
+    "correct": "C"
+  },
+  {
+    "qNum": 72,
+    "module": 3,
+    "text": "In the memory representation of a linked list, the nodes and the pointer variable head declared inside main() are stored, respectively, in the:",
+    "optionA": "Heap and stack",
+    "optionB": "Stack and heap",
+    "optionC": "Heap and heap",
+    "optionD": "Stack and stack",
+    "correct": "A"
+  },
+  {
+    "qNum": 73,
+    "module": 3,
+    "text": "The time required to insert a new node at the end of a singly linked list when only the head pointer is available is:",
+    "optionA": "O(1)",
+    "optionB": "O(log n)",
+    "optionC": "O(n^2)",
+    "optionD": "O(n)",
+    "correct": "D"
+  },
+  {
+    "qNum": 74,
+    "module": 3,
+    "text": "The main advantage of implementing a stack with a linked list instead of an array is that:",
+    "optionA": "Elements can be accessed randomly using an index",
+    "optionB": "Memory is allocated contiguously",
+    "optionC": "No pointer is needed for the top",
+    "optionD": "The stack can grow and shrink dynamically without a fixed maximum capacity",
+    "correct": "D"
+  },
+  {
+    "qNum": 75,
+    "module": 3,
+    "text": "While inserting a new node at the beginning of a non-empty doubly linked list, which statement is required in addition to new_node->next = head?",
+    "optionA": "head->next = new_node",
+    "optionB": "new_node->prev = head",
+    "optionC": "head->prev = new_node",
+    "optionD": "head->prev = NULL",
+    "correct": "C"
+  },
+  {
+    "qNum": 76,
+    "module": 3,
+    "text": "When only a pointer to the node to be deleted is given, the time for deletion in a singly linked list and in a doubly linked list is, respectively:",
+    "optionA": "O(n) and O(1)",
+    "optionB": "O(1) and O(n)",
+    "optionC": "O(1) and O(1)",
+    "optionD": "O(n) and O(n)",
+    "correct": "A"
+  },
+  {
+    "qNum": 77,
+    "module": 3,
+    "text": "Which of the following is a disadvantage of a doubly linked list compared with a singly linked list?",
+    "optionA": "It cannot be traversed in the backward direction",
+    "optionB": "Insertion at the beginning requires traversing the whole list",
+    "optionC": "Every node needs extra memory for the additional prev pointer",
+    "optionD": "It cannot be used to implement a stack or a queue",
+    "correct": "C"
+  },
+  {
+    "qNum": 78,
+    "module": 3,
+    "text": "In a circular singly linked list represented by a pointer last to its last node, the first node is accessed as:",
+    "optionA": "last->prev",
+    "optionB": "last->next->next",
+    "optionC": "last",
+    "optionD": "last->next",
+    "correct": "D"
+  },
+  {
+    "qNum": 79,
+    "module": 3,
+    "text": "In a circular doubly linked list, the prev pointer of the first node stores the address of:",
+    "optionA": "The last node",
+    "optionB": "NULL",
+    "optionC": "The second node",
+    "optionD": "The first node itself",
+    "correct": "A"
+  },
+  {
+    "qNum": 80,
+    "module": 3,
+    "text": "Which of the following is a disadvantage of circular linked lists?",
+    "optionA": "Traversal may enter an infinite loop unless a proper stopping condition is used",
+    "optionB": "Insertion at the beginning is impossible",
+    "optionC": "They cannot be used to implement a circular queue",
+    "optionD": "The last node always contains NULL",
+    "correct": "A"
+  },
+  {
+    "qNum": 81,
+    "module": 3,
+    "text": "Assume the functions of the notes are available. What is the output of the following code? struct Node* head = NULL; head = insertAtBeginning(head, 10); head = insertAtBeginning(head, 20); head = insertAtBeginning(head, 30); head = insertAtEnd(head, 40); traverseLinkedList(head);",
+    "optionA": "10 20 30 40",
+    "optionB": "40 30 20 10",
+    "optionC": "30 20 10 40",
+    "optionD": "30 20 40 10",
+    "correct": "C"
+  },
+  {
+    "qNum": 82,
+    "module": 3,
+    "text": "The singly linked list in the figure is modified by the code below. What does traverseLinkedList(head) print? head = removeLastNode(head); head = removeFirstNode(head); head = deleteAtPosition(head, 2); traverseLinkedList(head); head 12 25 7 40 NULL",
+    "optionA": "25 7",
+    "optionB": "25",
+    "optionC": "7",
+    "optionD": "12",
+    "correct": "B"
+  },
+  {
+    "qNum": 83,
+    "module": 3,
+    "text": "A stack is implemented using a singly linked list as in the notes. Starting from an empty stack, the operations push(11), push(22), push(33), pop(), push(44), push(55), pop(), pop() are performed. What does peek() return?",
+    "optionA": "11",
+    "optionB": "22",
+    "optionC": "33",
+    "optionD": "44",
+    "correct": "B"
+  },
+  {
+    "qNum": 84,
+    "module": 3,
+    "text": "Let tail point to the last node of the final list. What does backwardTraversal(tail) print after the following operations on a doubly linked list? struct Node* head = createNode(10); head = insertEnd(head, 20); head = insertEnd(head, 30); head = insertAtPosition(head, 3, 25);",
+    "optionA": "10 20 25 30",
+    "optionB": "30 20 25 10",
+    "optionC": "30 25 10 20",
+    "optionD": "30 25 20 10",
+    "correct": "D"
+  },
+  {
+    "qNum": 85,
+    "module": 3,
+    "text": "A doubly linked list contains 1, 2, 3, 4, 5. The following statements are executed. If tail points to the last node of the resulting list, what does backwardTraversal(tail) print? head = delPos(head, 3); head = delLast(head); head = delHead(head);",
+    "optionA": "4 2",
+    "optionB": "2 4",
+    "optionC": "5 4 2",
+    "optionD": "4 2 1",
+    "correct": "A"
+  },
+  {
+    "qNum": 86,
+    "module": 3,
+    "text": "What is the output of the following code on a circular singly linked list (insertion functions of the notes)? struct Node *last = NULL; last = insertAtBeginning(last, 10); last = insertEnd(last, 20); last = insertAtBeginning(last, 5); last = insertEnd(last, 30); printf(\"%d %d\", last->data, last->next->data);",
+    "optionA": "30 5",
+    "optionB": "30 10",
+    "optionC": "5 30",
+    "optionD": "20 5",
+    "correct": "A"
+  },
+  {
+    "qNum": 87,
+    "module": 3,
+    "text": "A circular singly linked list contains 5, 10, 20, 30 with last pointing to the node 30. After last = deleteFirstNode(last); last = deleteLastNode(last); what does printf(\"%d %d\", last->data, last->next->data) print?",
+    "optionA": "20 5",
+    "optionB": "30 10",
+    "optionC": "20 10",
+    "optionD": "10 20",
+    "correct": "C"
+  },
+  {
+    "qNum": 88,
+    "module": 3,
+    "text": "Inserting a new node between two existing nodes in the middle of a doubly linked list requires updating how many pointer fields in total?",
+    "optionA": "2",
+    "optionB": "4",
+    "optionC": "3",
+    "optionD": "1",
+    "correct": "B"
+  },
+  {
+    "qNum": 89,
+    "module": 3,
+    "text": "A singly linked list contains the two nodes 7 -> 9 -> NULL. What is the state of the list after head = removeLastNode(head); (the function of the notes)?",
+    "optionA": "An empty list",
+    "optionB": "A single node 7 whose next is NULL",
+    "optionC": "A single node 9 whose next is NULL",
+    "optionD": "The list is unchanged because the loop never executes",
+    "correct": "B"
+  },
+  {
+    "qNum": 90,
+    "module": 3,
+    "text": "A singly linked list has 4 nodes. For which value of pos does insertPos(head, pos, data) of the notes print \"Invalid position!\"?",
+    "optionA": "6",
+    "optionB": "5",
+    "optionC": "3",
+    "optionD": "1",
+    "correct": "A"
+  },
+  {
+    "qNum": 91,
+    "module": 4,
+    "text": "Which node of a tree has no parent?",
+    "optionA": "Root node",
+    "optionB": "Leaf node",
+    "optionC": "Sibling node",
+    "optionD": "Internal node",
+    "correct": "A"
+  },
+  {
+    "qNum": 92,
+    "module": 4,
+    "text": "A node with no children (a node of degree zero) is called a:",
+    "optionA": "Root node",
+    "optionB": "Internal node",
+    "optionC": "Sibling node",
+    "optionD": "Leaf (external or terminal) node",
+    "correct": "D"
+  },
+  {
+    "qNum": 93,
+    "module": 4,
+    "text": "A tree with N nodes has how many edges?",
+    "optionA": "N - 1",
+    "optionB": "N",
+    "optionC": "N + 1",
+    "optionD": "2N - 1",
+    "correct": "A"
+  },
+  {
+    "qNum": 94,
+    "module": 4,
+    "text": "In the tree shown in the figure, what is the degree of node D? A B C D E F G H I J K L M",
+    "optionA": "2",
+    "optionB": "4",
+    "optionC": "3",
+    "optionD": "1",
+    "correct": "C"
+  },
+  {
+    "qNum": 95,
+    "module": 4,
+    "text": "For the tree shown in the figure, using the convention of the notes (levels, heights and depths counted in edges, with the root at level 0), the depth of node M and the height of node B are, respectively: A B C D E F G H I J K L M",
+    "optionA": "2 and 3",
+    "optionB": "4 and 2",
+    "optionC": "3 and 3",
+    "optionD": "3 and 2",
+    "correct": "D"
+  },
+  {
+    "qNum": 96,
+    "module": 4,
+    "text": "In the left child - right sibling representation of a tree, each node contains:",
+    "optionA": "A data field, a reference to its left (first) child and a reference to its right sibling",
+    "optionB": "A data field and references to all of its children",
+    "optionC": "A data field, a parent reference and a degree field",
+    "optionD": "A data field and a reference to the root",
+    "correct": "A"
+  },
+  {
+    "qNum": 97,
+    "module": 4,
+    "text": "A tree in which every node can have at most two children (a left child and a right child) is called a:",
+    "optionA": "Threaded tree",
+    "optionB": "General tree",
+    "optionC": "Binary tree",
+    "optionD": "Forest",
+    "correct": "C"
+  },
+  {
+    "qNum": 98,
+    "module": 4,
+    "text": "In a strictly binary tree (full binary tree), every node has:",
+    "optionA": "Exactly one child",
+    "optionB": "Either zero or two children",
+    "optionC": "At most one child",
+    "optionD": "Exactly two children, with all leaves at the same level",
+    "correct": "B"
+  },
+  {
+    "qNum": 99,
+    "module": 4,
+    "text": "In a binary tree whose root is on level 1, the maximum number of nodes on level i is:",
+    "optionA": "2^i",
+    "optionB": "2^(i-1)",
+    "optionC": "2i - 1",
+    "optionD": "i^2",
+    "correct": "B"
+  },
+  {
+    "qNum": 100,
+    "module": 4,
+    "text": "A non-empty binary tree has 7 leaf nodes. The number of nodes having two children is:",
+    "optionA": "6",
+    "optionB": "7",
+    "optionC": "8",
+    "optionD": "3",
+    "correct": "A"
+  },
+  {
+    "qNum": 101,
+    "module": 4,
+    "text": "A strictly binary tree has 15 internal nodes (all of degree 2). The total number of nodes in the tree is:",
+    "optionA": "31",
+    "optionB": "30",
+    "optionC": "32",
+    "optionD": "16",
+    "correct": "A"
+  },
+  {
+    "qNum": 102,
+    "module": 4,
+    "text": "A complete binary tree is stored in a one-dimensional array with the root at index 1. For the node at index 6, which statement is correct?",
+    "optionA": "Parent at index 2, left child at index 12 and right child at index 13",
+    "optionB": "Parent at index 3, left child at index 11 and right child at index 12",
+    "optionC": "Parent at index 5, left child at index 7 and right child at index 8",
+    "optionD": "Parent at index 3, left child at index 12 and right child at index 13",
+    "correct": "D"
+  },
+  {
+    "qNum": 103,
+    "module": 4,
+    "text": "A complete binary tree with 12 nodes is stored in an array with the root at index 1. Which statement is true?",
+    "optionA": "Node 6 has no children",
+    "optionB": "Node 6 has a left child (index 12) but no right child",
+    "optionC": "Node 5 has no right child",
+    "optionD": "The parent of node 12 is node 5",
+    "correct": "B"
+  },
+  {
+    "qNum": 104,
+    "module": 4,
+    "text": "The inorder traversal of a binary tree visits the nodes in the order:",
+    "optionA": "Root, left subtree, right subtree",
+    "optionB": "Left subtree, root, right subtree",
+    "optionC": "Left subtree, right subtree, root",
+    "optionD": "Right subtree, root, left subtree",
+    "correct": "B"
+  },
+  {
+    "qNum": 105,
+    "module": 4,
+    "text": "Which traversal visits the root node after both of its subtrees have been visited?",
+    "optionA": "Preorder",
+    "optionB": "Inorder",
+    "optionC": "Postorder",
+    "optionD": "Level-order",
+    "correct": "C"
+  },
+  {
+    "qNum": 106,
+    "module": 4,
+    "text": "What is the postorder traversal of the binary tree shown in the figure? A B C D F G H I J K",
+    "optionA": "I J D F B K G H C A",
+    "optionB": "A B D I J F C G K H",
+    "optionC": "I D J B F A G K C H",
+    "optionD": "I J D F B G K H C A",
+    "correct": "A"
+  },
+  {
+    "qNum": 107,
+    "module": 4,
+    "text": "The preorder traversal of a binary tree is A B D E C F and its inorder traversal is D B E A F C. Its postorder traversal is:",
+    "optionA": "D B E F C A",
+    "optionB": "D E B F C A",
+    "optionC": "E D B F C A",
+    "optionD": "D E B C F A",
+    "correct": "B"
+  },
+  {
+    "qNum": 108,
+    "module": 4,
+    "text": "An expression tree is built from the postfix expression A B / C * D * E +. Its level-order traversal is:",
+    "optionA": "+ * * / A B C D E",
+    "optionB": "+ * E * D / C A B",
+    "optionC": "A B / C * D * E +",
+    "optionD": "+ * E * D C / A B",
+    "correct": "B"
+  },
+  {
+    "qNum": 109,
+    "module": 4,
+    "text": "A binary tree has root 4 with a left child 2 and a right child 6 (both leaves). What is the output of the following function when called as trav(root)? void trav(tree_pointer p) { if (p) { printf(\"%d \", p->data); trav(p->left_child); trav(p->right_child); printf(\"%d \", p->data); } }",
+    "optionA": "4 2 6 6 2 4",
+    "optionB": "4 2 6 4",
+    "optionC": "2 6 4 4 2 6",
+    "optionD": "4 2 2 6 6 4",
+    "correct": "D"
+  },
+  {
+    "qNum": 110,
+    "module": 4,
+    "text": "Level-order traversal of a binary tree is implemented using a:",
+    "optionA": "Stack",
+    "optionB": "Queue",
+    "optionC": "Linked list sorted by key",
+    "optionD": "Hash table",
+    "correct": "B"
+  },
+  {
+    "qNum": 111,
+    "module": 4,
+    "text": "In the iterative inorder traversal (iter_inorder) of an n-node binary tree, each node is placed on and removed from the stack:",
+    "optionA": "Exactly once, giving O(n) time",
+    "optionB": "Exactly twice, giving O(n^2) time",
+    "optionC": "log n times, giving O(n log n) time",
+    "optionD": "Only if it is a leaf, giving O(log n) time",
+    "correct": "A"
+  },
+  {
+    "qNum": 112,
+    "module": 4,
+    "text": "In a threaded binary tree node, if ptr->leftThread = TRUE, then ptr->leftChild contains:",
+    "optionA": "A pointer to the left child",
+    "optionB": "The address of the right sibling",
+    "optionC": "A thread, not a pointer to the left child",
+    "optionD": "Always NULL",
+    "correct": "C"
+  },
+  {
+    "qNum": 113,
+    "module": 4,
+    "text": "A header node is assumed for all threaded binary trees in order to:",
+    "optionA": "Store the total number of nodes of the tree",
+    "optionB": "Convert the tree into a complete binary tree",
+    "optionC": "Make the tree a binary search tree",
+    "optionD": "Avoid loose (dangling) threads; the original tree becomes the left subtree of the header node",
+    "correct": "D"
+  },
+  {
+    "qNum": 114,
+    "module": 4,
+    "text": "In a binary search tree, for every node:",
+    "optionA": "Keys in its left subtree are larger and keys in its right subtree are smaller than its key",
+    "optionB": "All keys in the tree are equal",
+    "optionC": "Keys in its left subtree are smaller and keys in its right subtree are larger than its key",
+    "optionD": "The left child is always a leaf",
+    "correct": "C"
+  },
+  {
+    "qNum": 115,
+    "module": 4,
+    "text": "If h is the height of a binary search tree, searching for a key (recursively or iteratively) takes:",
+    "optionA": "O(1) time",
+    "optionB": "O(h) time",
+    "optionC": "O(h^2) time",
+    "optionD": "O(n^2) time",
+    "correct": "B"
+  },
+  {
+    "qNum": 116,
+    "module": 4,
+    "text": "In a binary search tree, a new node is always inserted as a:",
+    "optionA": "Root node",
+    "optionB": "Internal node",
+    "optionC": "Left child of the root",
+    "optionD": "Leaf node",
+    "correct": "D"
+  },
+  {
+    "qNum": 117,
+    "module": 4,
+    "text": "The keys 10, 12, 5, 4, 20, 8, 7, 15, 13 are inserted, in this order, into an initially empty binary search tree. Taking the height of a tree with a single node as 0, the height of the resulting tree is:",
+    "optionA": "3",
+    "optionB": "5",
+    "optionC": "4",
+    "optionD": "6",
+    "correct": "C"
+  },
+  {
+    "qNum": 118,
+    "module": 4,
+    "text": "The keys 10, 12, 5, 4, 20, 8, 7, 15, 13 are inserted, in this order, into an initially empty binary search tree. Its preorder traversal is:",
+    "optionA": "10 5 4 8 7 12 20 15 13",
+    "optionB": "4 5 7 8 10 12 13 15 20",
+    "optionC": "10 5 12 4 8 20 7 15 13",
+    "optionD": "10 12 5 4 20 8 7 15 13",
+    "correct": "A"
+  },
+  {
+    "qNum": 119,
+    "module": 4,
+    "text": "To delete a node having two children from a binary search tree, the node is replaced by:",
+    "optionA": "Its parent node",
+    "optionB": "The smallest key in its left subtree or the largest key in its right subtree",
+    "optionC": "Either the largest key in its left subtree or the smallest key in its right subtree",
+    "optionD": "The root of the tree",
+    "correct": "C"
+  },
+  {
+    "qNum": 120,
+    "module": 4,
+    "text": "In the binary search tree built from the keys 10, 12, 5, 4, 20, 8, 7, 15, 13, the root 10 is deleted by replacing it with the largest key of its left subtree. Which key becomes the replacement?",
+    "optionA": "7",
+    "optionB": "12",
+    "optionC": "5",
+    "optionD": "8",
+    "correct": "D"
+  },
+  {
+    "qNum": 121,
+    "module": 5,
+    "text": "The length of a path in a graph is:",
+    "optionA": "The number of vertices in the path",
+    "optionB": "The number of edges in the path",
+    "optionC": "The sum of the degrees of its vertices",
+    "optionD": "The number of cycles in the path",
+    "correct": "B"
+  },
+  {
+    "qNum": 122,
+    "module": 5,
+    "text": "A graph G = (V, E) consists of:",
+    "optionA": "A set of edges only",
+    "optionB": "A set of vertices only, with no relation between them",
+    "optionC": "A finite non-empty set of vertices V and a set E of pairs of vertices called edges",
+    "optionD": "A set of nodes arranged in levels",
+    "correct": "C"
+  },
+  {
+    "qNum": 123,
+    "module": 5,
+    "text": "In an undirected graph, the pairs (u, v) and (v, u):",
+    "optionA": "Represent two different edges",
+    "optionB": "Represent the same edge",
+    "optionC": "Represent a self loop",
+    "optionD": "Cannot both be present in the graph",
+    "correct": "B"
+  },
+  {
+    "qNum": 124,
+    "module": 5,
+    "text": "How many edges does a complete undirected graph with 6 vertices have?",
+    "optionA": "30",
+    "optionB": "12",
+    "optionC": "21",
+    "optionD": "15",
+    "correct": "D"
+  },
+  {
+    "qNum": 125,
+    "module": 5,
+    "text": "An edge of the form (v, v), which starts and ends at the same vertex, is called a:",
+    "optionA": "Multi-edge",
+    "optionB": "Cycle of length two",
+    "optionC": "Weighted edge",
+    "optionD": "Self loop (self edge)",
+    "correct": "D"
+  },
+  {
+    "qNum": 126,
+    "module": 5,
+    "text": "For the directed graph shown in the figure, the in-degree and the out-degree of vertex c are, respectively: a b d c",
+    "optionA": "1 and 2",
+    "optionB": "2 and 1",
+    "optionC": "2 and 2",
+    "optionD": "3 and 1",
+    "correct": "B"
+  },
+  {
+    "qNum": 127,
+    "module": 5,
+    "text": "A directed graph G is said to be strongly connected if:",
+    "optionA": "For every pair of distinct vertices u and v there is a directed path from u to v and from v to u",
+    "optionB": "It contains no cycles",
+    "optionC": "Every vertex has at least one outgoing edge",
+    "optionD": "Every vertex has in-degree equal to its out-degree",
+    "correct": "A"
+  },
+  {
+    "qNum": 128,
+    "module": 5,
+    "text": "The adjacency matrix of an undirected graph is always:",
+    "optionA": "Symmetric",
+    "optionB": "Upper triangular",
+    "optionC": "A diagonal matrix",
+    "optionD": "An identity matrix",
+    "correct": "A"
+  },
+  {
+    "qNum": 129,
+    "module": 5,
+    "text": "For an undirected graph with n vertices and e edges, the adjacency list representation requires an array of size n and how many chain nodes?",
+    "optionA": "e",
+    "optionB": "n + e",
+    "optionC": "n^2",
+    "optionD": "2e",
+    "correct": "D"
+  },
+  {
+    "qNum": 130,
+    "module": 5,
+    "text": "In the adjacency multilist representation of a graph:",
+    "optionA": "Each edge is represented by two nodes, one in each end vertex's list",
+    "optionB": "Each vertex is represented by n nodes",
+    "optionC": "Only the edge weights are stored, not the vertices",
+    "optionD": "Each edge is represented by exactly one node, which appears in the lists of both of its end vertices",
+    "correct": "D"
+  },
+  {
+    "qNum": 131,
+    "module": 5,
+    "text": "Which data structure is used to maintain the current position in the adjacency lists during depth first search?",
+    "optionA": "Queue",
+    "optionB": "Priority queue",
+    "optionC": "Stack",
+    "optionD": "Hash table",
+    "correct": "C"
+  },
+  {
+    "qNum": 132,
+    "module": 5,
+    "text": "Breadth first search of a graph uses which data structure to hold the visited vertices whose adjacency lists are yet to be examined?",
+    "optionA": "Stack",
+    "optionB": "Queue",
+    "optionC": "Binary tree",
+    "optionD": "Array of weights",
+    "correct": "B"
+  },
+  {
+    "qNum": 133,
+    "module": 5,
+    "text": "For a graph with n vertices and e edges, the time taken by depth first search when the graph is represented by an adjacency list and by an adjacency matrix is, respectively:",
+    "optionA": "O(e) and O(n^2)",
+    "optionB": "O(n^2) and O(e)",
+    "optionC": "O(n) and O(n)",
+    "optionD": "O(e) and O(e)",
+    "correct": "A"
+  },
+  {
+    "qNum": 134,
+    "module": 5,
+    "text": "A depth first search is started from vertex 0 of the undirected graph in the figure. The adjacency lists are 0: 1, 2; 1: 0, 3, 4; 2: 0, 4; 3: 1; 4: 1, 2, and the vertices of each list are examined in the given order. The vertices are visited in the order: 0 1 2 3 4",
+    "optionA": "0 1 3 4 2",
+    "optionB": "0 1 2 3 4",
+    "optionC": "0 2 4 1 3",
+    "optionD": "0 1 4 2 3",
+    "correct": "A"
+  },
+  {
+    "qNum": 135,
+    "module": 5,
+    "text": "A directed graph has the adjacency lists 0: 2, 1, 3; 1: 4; 2: 5, 4; 3: 5; 4: 6; 5: 6; 6: (none). A breadth first search is started from vertex 0 and the adjacency lists are scanned in the given order. The vertices are visited in the order:",
+    "optionA": "0 1 2 3 4 5 6",
+    "optionB": "0 2 1 3 5 4 6",
+    "optionC": "0 2 5 6 4 1 3",
+    "optionD": "0 2 1 3 4 5 6",
+    "correct": "B"
+  },
+  {
+    "qNum": 136,
+    "module": 5,
+    "text": "Insertion sort (as given in the notes) is applied to the list 5, 2, 4, 6, 1, 3. The total number of times an element is shifted one position to the right (a[i+1] = a[i]) during the sort is:",
+    "optionA": "9",
+    "optionB": "10",
+    "optionC": "8",
+    "optionD": "15",
+    "correct": "A"
+  },
+  {
+    "qNum": 137,
+    "module": 5,
+    "text": "Radix sort (least significant digit first, with each bucket preserving the input order) is applied to 348, 143, 361, 423, 538, 128, 321, 543, 366. The list after the first pass (units digit) is:",
+    "optionA": "321 361 143 423 543 366 538 348 128",
+    "optionB": "128 143 321 348 361 366 423 538 543",
+    "optionC": "361 321 143 423 543 366 348 538 128",
+    "optionD": "348 143 361 423 538 128 321 543 366",
+    "correct": "C"
+  },
+  {
+    "qNum": 138,
+    "module": 5,
+    "text": "If each number in a list has s digits (radix d), the radix sort algorithm requires:",
+    "optionA": "d passes",
+    "optionB": "s passes",
+    "optionC": "n passes",
+    "optionD": "log n passes",
+    "correct": "B"
+  },
+  {
+    "qNum": 139,
+    "module": 5,
+    "text": "The function f used in address calculation sort must be order preserving, which means:",
+    "optionA": "If x <= y then f(x) <= f(y)",
+    "optionB": "If x <= y then f(x) >= f(y)",
+    "optionC": "f(x) is different for every key x",
+    "optionD": "f(x) is chosen randomly for every key",
+    "correct": "A"
+  },
+  {
+    "qNum": 140,
+    "module": 5,
+    "text": "In hashing, a collision occurs when:",
+    "optionA": "A key is not found in the hash table",
+    "optionB": "The hash table becomes empty",
+    "optionC": "Two or more keys map to the same memory location",
+    "optionD": "The hash function returns a negative value",
+    "correct": "C"
+  },
+  {
+    "qNum": 141,
+    "module": 5,
+    "text": "In the division method of hashing, the hash function is:",
+    "optionA": "h(x) = x div M",
+    "optionB": "h(x) = x * M",
+    "optionC": "h(x) = M - x",
+    "optionD": "h(x) = x mod M",
+    "correct": "D"
+  },
+  {
+    "qNum": 142,
+    "module": 5,
+    "text": "A hash table of size 10 uses H(k) = k mod 10 with linear probing. The keys 72, 27, 36, 24, 63, 81, 92, 101 are inserted in this order. At which index is the key 101 stored?",
+    "optionA": "5",
+    "optionB": "8",
+    "optionC": "1",
+    "optionD": "9",
+    "correct": "B"
+  },
+  {
+    "qNum": 143,
+    "module": 5,
+    "text": "The keys 72, 27, 36, 24, 63, 81, 92, 101 are stored, in this order, in a hash table of size 10 using H(k) = k mod 10 and linear probing. The average search length (total probes needed to find all 8 keys divided by 8) is:",
+    "optionA": "2.0",
+    "optionB": "1.5",
+    "optionC": "2.25",
+    "optionD": "3.0",
+    "correct": "C"
+  },
+  {
+    "qNum": 144,
+    "module": 5,
+    "text": "A hash table of size 10 uses H(k) = k mod 10 with quadratic probing (probes h, h+1, h+4, h+9, ...). The keys 22, 32 and 42 are inserted in this order. At which index is 42 stored?",
+    "optionA": "4",
+    "optionB": "3",
+    "optionC": "5",
+    "optionD": "6",
+    "correct": "D"
+  },
+  {
+    "qNum": 145,
+    "module": 5,
+    "text": "Double hashing with H1(key) = key % 10 and H2(key) = 7 - (key % 7) is used, and a collision is resolved with (H1(key) + i x H2(key)) % 10. The keys 37, 90, 45, 22, 17, 49, 55 are inserted in this order. At which index is the key 17 stored?",
+    "optionA": "1",
+    "optionB": "8",
+    "optionC": "4",
+    "optionD": "7",
+    "correct": "A"
+  },
+  {
+    "qNum": 146,
+    "module": 5,
+    "text": "Using the folding method for a hash table with 100 locations, the key 123456 is divided into the parts 12, 34 and 56, which are added, ignoring any carry. The hash value is:",
+    "optionA": "102",
+    "optionB": "12",
+    "optionC": "56",
+    "optionD": "2 (that is, 02)",
+    "correct": "D"
+  },
+  {
+    "qNum": 147,
+    "module": 5,
+    "text": "Words are stored using chaining in a table of size 5 with H(str) = (sum of the positions of its letters in the English alphabet) % 5. The words like, a, tree, you, first, a, place, to are inserted in this order at the rear of their chains. The words in the chain of index 2 are:",
+    "optionA": "a, you, a",
+    "optionB": "tree, first, place",
+    "optionC": "like, first, place",
+    "optionD": "like, tree, place",
+    "correct": "C"
+  },
+  {
+    "qNum": 148,
+    "module": 5,
+    "text": "In rehashing, when the hash table becomes nearly full:",
+    "optionA": "The entries are copied to the same positions of a bigger table",
+    "optionB": "A new table of double the size is created and every entry is re-inserted using its newly computed hash value",
+    "optionC": "The size of the table is halved and the entries are rehashed",
+    "optionD": "All the chains are deleted and the table is emptied",
+    "correct": "B"
+  },
+  {
+    "qNum": 149,
+    "module": 5,
+    "text": "Which of the following is a drawback of static hashing?",
+    "optionA": "The table size is fixed, so it cannot accommodate data growth and collisions increase as the data grows",
+    "optionB": "It requires a directory of pointers that must be doubled",
+    "optionC": "It cannot use chaining or linear probing",
+    "optionD": "The hash function cannot be computed in constant time",
+    "correct": "A"
+  },
+  {
+    "qNum": 150,
+    "module": 5,
+    "text": "Which statement about dynamic hashing is correct?",
+    "optionA": "Linear hashing uses a directory that is doubled, whereas extendible hashing splits buckets in round-robin order",
+    "optionB": "Both extendible and linear hashing use a table of fixed size",
+    "optionC": "Extendible hashing uses a directory that is doubled, splitting only the bucket that overflowed, whereas linear hashing uses no directory and splits buckets in round-robin order",
+    "optionD": "Extendible hashing needs overflow pages, whereas linear hashing needs none",
+    "correct": "C"
+  }
+]

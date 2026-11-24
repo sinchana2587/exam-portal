@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1
+FROM eclipse-temurin:17-jdk-alpine AS builder
+
+WORKDIR /build
+COPY LabServer.java .
+
+RUN javac -d classes LabServer.java
+
+FROM eclipse-temurin:17-jre-alpine AS runner
+
+WORKDIR /app
+
+RUN addgroup -S campusexam && adduser -S campusexam -G campusexam
+
+COPY --from=builder /build/classes ./
+
+RUN mkdir -p /app/lab_server_keys /app/lab_storage/packages /app/lab_storage/submissions /app/lab_storage/results /app/lab_storage/credentials && \
+    chown -R campusexam:campusexam /app
+
+USER campusexam
+
+ENV PORT=8082 \
+    BIND=0.0.0.0 \
+    LAB_ID=LAB-CSE-01 \
+    CENTRAL_URL=http://central:8081 \
+    LAB_KEYS_DIR=/app/lab_server_keys \
+    LAB_STORAGE_BASE_DIR=/app/lab_storage
+
+EXPOSE 8082
+
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:8082/health || exit 1
+
+ENTRYPOINT ["java", "-cp", ".", "LabServer"]

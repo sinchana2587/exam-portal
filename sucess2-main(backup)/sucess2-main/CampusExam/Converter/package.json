@@ -1,0 +1,47 @@
+{
+  "name": "converter-protick",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Examination Document Converter for ProTick Examination Portal - Maharaja Institute of Technology Mysore",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT\" -c \"blue.bold,cyan.bold\" \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
+    "start": "npm run start --workspace=server",
+    "build": "npm run build --workspace=client && node -e \"const fs=require('fs'); if(fs.existsSync('client/dist')){ fs.cpSync('client/dist', 'dist', {recursive:true}); }\"",
+    "server": "npm run dev --workspace=server",
+    "client": "npm run dev --workspace=client",
+    "test:all": "curl.exe -s -X POST http://localhost:5001/api/samples/run-all",
+    "postinstall": "node -e \"const fs=require('fs'); if(fs.existsSync('node_modules/@rollup/wasm-node/dist')){ fs.cpSync('node_modules/@rollup/wasm-node/dist/wasm-node', 'node_modules/rollup/dist/wasm-node', {recursive:true}); fs.copyFileSync('node_modules/@rollup/wasm-node/dist/native.js', 'node_modules/rollup/dist/native.js'); }\""
+  },
+  "devDependencies": {
+    "@rollup/wasm-node": "^4.34.8",
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "protick",
+    "document-converter",
+    "examination-system",
+    "mit-mysore",
+    "question-paper-converter",
+    "student-list-converter"
+  ],
+  "author": "Maharaja Institute of Technology Mysore - Controller of Examinations",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "mammoth": "^1.8.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "pdf2json": "^4.1.1",
+    "tesseract.js": "^5.1.1",
+    "uuid": "^11.0.5",
+    "xlsx": "^0.18.5"
+  }
+}

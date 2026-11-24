@@ -1,0 +1,1268 @@
+# MIT MYSORE ADMIN & HOD PORTAL
+# COMPLETE DOCUMENT CONVERSION AND BACKEND INTEGRATION IMPLEMENTATION
+
+## Student List PDF/Image-to-Excel Converter and Module-Wise Question PDF/Image-to-Excel Converter
+
+You are working inside my existing MIT Mysore Examination Management System Admin/HOD Portal project.
+
+The frontend has already been designed and reviewed. The student-list converter and question converter have also been demonstrated using mock/demo functionality.
+
+We are now moving towards genuine backend integration.
+
+Your task is to inspect, correct and implement both document-conversion workflows so they work with actual uploaded documents, real extraction and validation, standard Excel generation, and the Java backend.
+
+**This is not a request to build two demo converters. These must be genuine document-processing features that continue working after all demo data is removed.**
+
+Do not redesign the entire application.
+
+Do not create a new project.
+
+Do not replace the approved frontend.
+
+Preserve the current Setup Class, Questions, upload, validation, preview, editing, download and manual-upload interfaces wherever possible.
+
+---
+
+# PART 1 — UNDERSTAND THE TWO CONVERSION WORKFLOWS
+
+There are two separate conversion features.
+
+## Converter A: Student List Converter
+
+Location:
+
+HOD Portal → Setup Class → Student Lists.
+
+Purpose:
+
+The HOD uploads student information in different supported document formats. The system extracts student information and converts it into the institution's standard Excel template.
+
+Required student information:
+
+1. USN.
+2. Student Name.
+3. DOB.
+
+The section is determined by the selected Student Lists section tab.
+
+If the uploaded document contains department, semester or section information, use it to validate the selected context.
+
+## Converter B: Module-Wise Question Converter
+
+Location:
+
+HOD Portal → Questions → Question Pool & Upload.
+
+Purpose:
+
+The HOD uploads questions belonging to one selected module at a time. The system extracts the questions, options, correct answers and associated images, and converts them into the institution's standard Excel format.
+
+Required information:
+
+1. Module Number.
+2. Question Text.
+3. Option A.
+4. Option B.
+5. Option C.
+6. Option D.
+7. Correct Option.
+
+Images may appear inside:
+
+- Question statements.
+- Option A.
+- Option B.
+- Option C.
+- Option D.
+
+**CRITICAL MODULE-WISE RULE: The HOD must upload questions separately for each module. Do not combine questions from different modules into a single upload batch.**
+
+Both workflows must produce genuine downloadable Excel workbooks.
+
+Both workflows must require the HOD to manually upload the converted Excel through the existing normal Excel upload process.
+
+Conversion must NOT automatically save records to the student database or question bank.
+
+---
+
+# PART 2 — SUPPORTED ORIGINAL DOCUMENT FORMATS
+
+Support the following input formats where the backend processing service can reliably handle them.
+
+### Student List Converter
+
+- Text-based PDF.
+- Scanned PDF.
+- JPG/JPEG.
+- PNG.
+- Multiple-page PDF.
+- Documents containing tables with different layouts.
+
+### Question Converter
+
+- Text-based PDF.
+- Scanned PDF.
+- JPG/JPEG.
+- PNG.
+- Multiple-page PDF.
+- Documents containing mixed text and images.
+- Documents containing images inside question statements.
+- Documents containing image-based answer options.
+- Documents containing diagrams, charts and illustrations.
+
+Do not claim to support every possible file format.
+
+Only advertise file formats that have an implemented and working parser.
+
+For unsupported formats, display a clear message explaining the supported formats.
+
+The architecture should allow additional document parsers to be added later without rebuilding the entire converter.
+
+---
+
+# PART 3 — STUDENT LIST PDF/IMAGE-TO-EXCEL CONVERTER
+
+## 3.1 Existing location and UI
+
+Keep the converter inside:
+
+HOD Portal → Setup Class → Student Lists → PDF-to-Excel Conversion Helper.
+
+Preserve the existing interface wherever possible.
+
+The HOD must be able to:
+
+1. Select the semester.
+2. Select the section.
+3. Upload the original document.
+4. Process the document.
+5. Review extracted records.
+6. Correct extraction errors.
+7. Validate all records.
+8. Download standard Excel.
+9. Manually upload the downloaded Excel using the existing normal Excel upload section.
+
+Do not create a separate student management workflow.
+
+## 3.2 Student document extraction
+
+The backend must extract:
+
+- USN.
+- Student Name.
+- DOB.
+
+The system must identify actual student table headings and correctly associate every field with its value.
+
+Do not simply read consecutive text lines and assume three consecutive values form a student row.
+
+Support:
+
+- Different table layouts.
+- Multiple-page tables.
+- Different column widths.
+- Different fonts.
+- Different DOB formats.
+- Text-based PDFs.
+- Scanned PDFs.
+- Image-based student lists.
+
+## 3.3 Department, semester and section context
+
+The Department must come from the authenticated HOD account.
+
+The Semester must come from the Setup Class semester selector.
+
+The Section must come from the selected Student Lists section tab.
+
+If the uploaded document contains department, semester or section information, extract it as document-level metadata.
+
+Do NOT insert document metadata into student rows.
+
+Example document header:
+
+Department: CSE  
+Semester: 5  
+Section: B
+
+The standard Excel student table must contain only:
+
+| USN | Student Name | DOB |
+|---|---|---|
+| 4MH24CS071 | Aarav Deshmukh | 2006-03-12 |
+| 4MH24CS072 | Bhavana Krishnamurthy | 2006-06-19 |
+
+These are illustrative records only.
+
+Compare extracted document metadata against:
+
+- Authenticated HOD department.
+- Selected semester.
+- Selected section.
+
+If metadata conflicts with the selected context, block the conversion from being marked valid and display a clear context mismatch.
+
+If section metadata is unavailable, retain the selected section context and require appropriate HOD confirmation according to the existing workflow.
+
+If a document contains student records belonging to different sections, do not silently merge them into the selected section. Identify those records and require the HOD to resolve the mismatch.
+
+Do not add Department, Semester or Section columns to the standard student Excel template unless the approved institutional template is deliberately revised.
+
+## 3.4 Student list validation
+
+Reuse the existing student validation rules.
+
+Validate:
+
+- Missing USN.
+- Invalid USN format.
+- Department-prefix mismatch.
+- Duplicate USN within the uploaded document.
+- Duplicate USN across registered sections/departments.
+- Missing student name.
+- Invalid or missing DOB.
+- Incorrect document context.
+- Unreadable or incomplete records.
+- Corrupted PDF/image.
+- Incorrect field mapping.
+
+Show:
+
+- Row number.
+- Extracted field.
+- Extracted value.
+- Validation status.
+- Error explanation.
+- Suggested correction where safe.
+
+Do not invent missing names, USNs or DOBs.
+
+## 3.5 Student preview and correction
+
+After extraction, display the student records in an editable preview.
+
+Allow the HOD to correct:
+
+- USN.
+- Student Name.
+- DOB.
+
+Whenever a field is changed:
+
+1. Revalidate the affected row.
+2. Revalidate duplicate USNs.
+3. Revalidate the complete student list.
+4. Update validation status.
+
+Only allow Excel download when all blocking validation errors are resolved.
+
+Uncertain OCR fields must be highlighted for manual review.
+
+## 3.6 Standard Student Excel output
+
+Generate an actual `.xlsx` workbook.
+
+Use exactly these visible data columns:
+
+1. USN.
+2. Student Name.
+3. DOB.
+
+Use the existing institutional Excel template formatting where available.
+
+Do not include document metadata as student records.
+
+The authenticated department and selected section must remain associated with the upload through the backend request context.
+
+Generate a meaningful filename such as:
+
+`CSE_Sem5_SectionB_Student_List.xlsx`
+
+Do not download a workbook containing unresolved blocking errors.
+
+## 3.7 Normal Excel upload workflow
+
+After downloading the converted Excel, the HOD manually uploads it through:
+
+Setup Class → Student Lists → Upload / Replace Eligible Student List via Excel.
+
+The normal Excel uploader must:
+
+1. Parse the actual workbook.
+2. Validate all student rows again.
+3. Check existing registrations and duplicates through the backend.
+4. Show the preview.
+5. Require explicit confirmation.
+6. Save only after validation succeeds.
+7. Preserve student-list revision history.
+
+Never automatically import converted data.
+
+The PDF conversion service and student-list saving service must remain separate operations.
+
+---
+
+# PART 4 — MODULE-WISE QUESTION PDF/IMAGE-TO-EXCEL CONVERTER
+
+## 4.1 Existing location and UI
+
+Keep the question converter inside:
+
+HOD Portal → Questions → Question Pool & Upload.
+
+Preserve the existing upload interface and standard Excel question-upload workflow.
+
+The HOD must upload questions separately for each module.
+
+The workflow is:
+
+1. Select semester.
+2. Select subject.
+3. Select exactly one module.
+4. Upload the original PDF or image containing questions for that selected module.
+5. Extract questions, options, correct answers and associated images.
+6. Review extracted records.
+7. Correct extraction errors.
+8. Verify image associations.
+9. Validate all questions.
+10. Download the standard Excel workbook.
+11. Manually upload the downloaded Excel through the normal bulk question-upload section.
+
+**Do not combine different modules into a single conversion batch.**
+
+Do not automatically insert converted questions into the question bank.
+
+## 4.2 Module selection is mandatory
+
+Before allowing a question document upload, require the HOD to select:
+
+- Semester.
+- Subject.
+- Module.
+
+The module options must load dynamically from the selected subject's Setup Class configuration.
+
+Do not hardcode five modules or any fixed module count.
+
+The selected module becomes the context for the entire conversion operation.
+
+For example:
+
+Subject: Data Structures (BCS550)
+
+Selected Module: Module 2
+
+Uploaded document:
+
+`Module_2_Questions.pdf`
+
+Every extracted question must belong to Module 2.
+
+The converter must not automatically assign questions to another module based on unrelated document headings.
+
+## 4.3 STRICT MODULE-WISE QUESTION UPLOAD RULE
+
+This is a mandatory institutional requirement.
+
+Each conversion and Excel upload batch must contain questions belonging to exactly ONE selected module.
+
+Example:
+
+| Conversion | Subject | Selected Module | Output |
+|---|---|---|---|
+| 1 | BCS550 | Module 1 | Module 1 Excel |
+| 2 | BCS550 | Module 2 | Module 2 Excel |
+| 3 | BCS550 | Module 3 | Module 3 Excel |
+| 4 | BCS550 | Module 4 | Module 4 Excel |
+
+The HOD must process Module 1, Module 2, Module 3 and so on independently.
+
+Do not generate one Excel workbook containing questions from several different modules as part of a single conversion batch.
+
+### If the uploaded document contains multiple module headings
+
+Detect whether the document contains more than one module.
+
+For example, the uploaded PDF may contain:
+
+- Module 1 questions.
+- Module 2 questions.
+- Module 3 questions.
+
+In this case:
+
+1. Identify the module groups where possible.
+2. Inform the HOD that the source document contains multiple modules.
+3. Show the detected module grouping.
+4. Require the HOD to process the required module separately.
+5. Allow the HOD to select the relevant page range or question range if the document supports reliable segmentation.
+6. Generate an Excel workbook only for the currently selected module.
+7. Never silently mix questions from other modules into the selected module's workbook.
+
+If the module cannot be identified confidently, mark it for manual review.
+
+Do not silently assign all questions to the currently selected module if the source clearly contains multiple modules.
+
+If page or question boundaries cannot be reliably determined, request a separate module document rather than generating a misleading workbook.
+
+### Module Number in the Excel template
+
+The standard question Excel must retain a Module Number column.
+
+However, every data row in one generated workbook must contain the same selected module number.
+
+For example, a Module 2 workbook must contain Module Number = 2 in every question row.
+
+Validate this against the selected module context.
+
+The Module Number must not be left blank or incorrectly assigned.
+
+## 4.4 Question extraction
+
+The converter must identify and extract:
+
+- Module Number.
+- Question Text.
+- Option A.
+- Option B.
+- Option C.
+- Option D.
+- Correct Option, where available.
+
+Support:
+
+- Question numbering.
+- Multiple questions per page.
+- Questions spanning multiple pages.
+- Different document layouts.
+- Numbered and lettered answer options.
+- Text inside tables.
+- Text mixed with diagrams.
+- Scanned question documents.
+- Image-based question statements.
+- Image-based answer options.
+- Multiple images associated with one question or option.
+
+All extracted questions must remain associated with the selected module.
+
+## 4.5 IMAGE PRESERVATION — CRITICAL REQUIREMENT
+
+Some examination questions contain diagrams or pictures in their question statement.
+
+Some answer options themselves contain images instead of text.
+
+The converter must preserve these images accurately.
+
+### Example A: Image inside question statement
+
+Question 1: Identify the following diagram.
+
+[Diagram image]
+
+A. Stack  
+B. Queue  
+C. Tree  
+D. Graph
+
+### Example B: Image inside answer options
+
+A. [Image 1]  
+B. [Image 2]  
+C. [Image 3]  
+D. [Image 4]
+
+The converted Excel must preserve the original images in their correct positions.
+
+Do not:
+
+- Discard images.
+- Replace images with blank cells.
+- Replace images with filenames.
+- Use temporary computer file paths.
+- Use external image URLs.
+- Attach all document images to one unrelated question.
+- Shift an image into the wrong answer option.
+- Generate placeholder images.
+
+### Image extraction
+
+The backend must:
+
+1. Extract embedded PDF images where possible.
+2. Extract meaningful raster images from scanned pages.
+3. Preserve image resolution and aspect ratio.
+4. Associate each image with the correct question or answer option.
+5. Maintain its position within the question layout.
+6. Preserve multiple images belonging to the same question or option.
+7. Detect images that cannot be reliably associated.
+
+Use PDF layout coordinates, surrounding text, question numbering and option boundaries to determine image placement.
+
+If image-to-question or image-to-option association is uncertain, mark it for manual HOD review.
+
+Do not guess image placement and silently generate an incorrect workbook.
+
+### Image preview and reassignment
+
+The preview must show extracted images inside the relevant question and option fields.
+
+Allow the HOD to:
+
+- View each extracted image.
+- Zoom or open it in a larger preview.
+- Associate an image with the correct question.
+- Associate an image with Question Text, Option A, Option B, Option C or Option D.
+- Remove an incorrectly associated image.
+- Reorder multiple images where necessary.
+- Review uncertain image associations.
+
+Maintain the original image binary and association throughout conversion.
+
+## 4.6 Standard Question Excel template
+
+The standard question Excel template must contain exactly these visible columns:
+
+1. Module Number.
+2. Question Text.
+3. Option A.
+4. Option B.
+5. Option C.
+6. Option D.
+7. Correct Option.
+
+Do not include:
+
+- Difficulty.
+- Set Number.
+- Question Version.
+- Department Name.
+- Student Information.
+
+Do not add Easy, Medium or Hard classifications.
+
+Every row must belong to the currently selected module.
+
+For example, if the HOD selects Module 2, every exported question row must have Module Number = 2.
+
+### Image-enabled Excel requirements
+
+All images belonging to question text or options must be embedded as actual image objects inside the `.xlsx` workbook and anchored to their correct cells or positions.
+
+A normal cell containing an image filename is not sufficient.
+
+A normal cell containing an external image URL is not sufficient.
+
+The actual image bytes must be embedded within the `.xlsx` file.
+
+Maintain an internal image association map containing:
+
+- Image Asset ID.
+- Question row identifier.
+- Question field or option field.
+- Embedded image relationship.
+- Image sequence where multiple images belong to one field.
+- Alternative text/caption where available.
+
+This mapping may be maintained through an internal workbook metadata sheet, such as a hidden `_ImageMap` worksheet, and/or an equivalent structured workbook mechanism.
+
+The standard user-facing question table must remain readable and must not expose unnecessary technical asset metadata.
+
+The generated workbook must:
+
+- Open normally in Microsoft Excel.
+- Show embedded images in their correct question/option locations.
+- Retain image association when downloaded and reopened.
+- Remain compatible with the normal backend question Excel parser.
+- Not depend on local file paths or external URLs.
+
+Set appropriate column widths and row heights so images and question text remain visible.
+
+If a question or option contains both text and an image, preserve both.
+
+## 4.7 Correct answer extraction
+
+If the source document contains an answer key, extract the correct option where reliably identifiable.
+
+If no correct answer is present:
+
+- Leave Correct Option unresolved.
+- Mark it as Missing Correct Option.
+- Allow the HOD to enter the correct answer manually.
+
+Do not infer correct answers using AI guesses.
+
+Do not fabricate answer keys.
+
+Do not silently assign option A as the answer.
+
+The correct-answer value must be A, B, C or D, subject to approved institutional rules.
+
+## 4.8 Question IDs
+
+Question IDs must be generated by the backend after the HOD successfully uploads and saves valid question records through the normal question-upload workflow.
+
+Do not create authoritative permanent Question IDs merely because a conversion was performed.
+
+Temporary preview identifiers may be used to track extracted questions before upload.
+
+On successful question-bank import, the backend assigns stable Question IDs and returns them to the frontend.
+
+These IDs must remain stable for later:
+
+- Question publication.
+- Numbered set generation.
+- Examination paper versions.
+- Student response mapping.
+- Answer-key corrections.
+- Result recalculation.
+
+## 4.9 Question validation
+
+Reuse the existing question-bank validation rules.
+
+Validate:
+
+- Missing question text.
+- Missing options.
+- Duplicate question text.
+- Invalid module number.
+- Module outside the selected subject's module count.
+- Module number different from the selected module context.
+- Duplicate option content where prohibited.
+- Missing correct option.
+- Invalid correct-option value.
+- Unreadable or incomplete question.
+- Missing image asset.
+- Broken image reference.
+- Incorrect image association.
+- Unsupported image format.
+- Invalid workbook image mapping.
+- Image extraction or processing failure.
+- Questions detected from a different module.
+- Uncertain module assignment.
+
+Show detailed question-level validation.
+
+Allow HOD to manually correct:
+
+- Question text.
+- Options.
+- Module assignment, where permitted.
+- Correct answer.
+- Image association.
+
+Do not enable Excel download while blocking validation errors remain.
+
+## 4.10 Module-specific Excel download
+
+After the HOD has corrected and validated all blocking errors, generate a genuine module-specific `.xlsx` workbook.
+
+Examples:
+
+`CSE_Sem5_BCS550_Module_1_Questions.xlsx`
+
+`CSE_Sem5_BCS550_Module_2_Questions.xlsx`
+
+Each workbook must contain only questions from its selected module.
+
+Do not include questions from other modules.
+
+Before export, revalidate the complete dataset.
+
+If any blocking error remains, disable Excel download.
+
+Do not generate incomplete workbooks or display false success messages.
+
+## 4.11 Normal manual question upload workflow
+
+After downloading the converted workbook, the HOD manually uploads it through:
+
+Questions → Question Pool & Upload → Bulk Excel Question Upload.
+
+The normal uploader must:
+
+1. Identify the selected subject.
+2. Identify the selected module.
+3. Parse the actual XLSX cells.
+4. Extract embedded images from the workbook.
+5. Read the internal image association mapping.
+6. Reconstruct which images belong to each question or option.
+7. Validate the selected module context.
+8. Validate that every row belongs to the selected module.
+9. Validate every question and its options.
+10. Validate the correct answer.
+11. Validate all image associations.
+12. Show the question preview.
+
+The existing question preview should show:
+
+- Question ID, once assigned by backend.
+- Module.
+- Question.
+- Options.
+- Correct Answer.
+- Validation Status.
+- Available editing and image-preview actions.
+
+Then:
+
+13. Allow editing where approved.
+14. Require explicit confirmation.
+15. Upload question records and image assets to the backend.
+16. Save only after backend validation succeeds.
+17. Return authoritative Question IDs.
+18. Update the selected module's question pool count.
+
+Do not discard embedded images while parsing the downloaded Excel.
+
+Do not treat images as irrelevant workbook decorations.
+
+Do not automatically save data during conversion.
+
+Do not mix multiple modules during normal Excel import.
+
+---
+
+# PART 5 — UNIFIED VALIDATION AND DOWNLOAD RULES
+
+Both converters must follow consistent behaviour.
+
+### Processing state
+
+- Display actual processing progress where available.
+- Do not enable Excel download while extraction is incomplete.
+- Show file-processing failures accurately.
+- Keep the HOD informed of extraction status.
+
+### Validation failed
+
+When blocking validation errors exist:
+
+- Highlight the field.
+- Show the affected student or question row.
+- Explain the problem.
+- Allow manual correction when possible.
+- Disable Excel download.
+- Do not generate invalid Excel.
+
+### Manual correction
+
+Whenever the HOD edits extracted information:
+
+- Revalidate the affected record.
+- Revalidate duplicates.
+- Revalidate related image mapping.
+- Revalidate department, semester and section context for students.
+- Revalidate selected subject and module context for questions.
+- Revalidate the entire upload dataset.
+- Update the download eligibility state.
+
+### All records valid
+
+Only when all blocking errors are resolved:
+
+- Show Validation Passed.
+- Show the valid record count.
+- Enable Download Standard Excel.
+- Generate the actual `.xlsx` file.
+
+The HOD must still upload the downloaded workbook through the normal upload section.
+
+### Important distinction
+
+A missing or uncertain OCR value must not be automatically invented.
+
+If the data cannot be extracted confidently, request human review.
+
+---
+
+# PART 6 — REAL BACKEND DOCUMENT PROCESSING
+
+Demo data and mock generators must not be required for these features.
+
+The converters must continue working after all demo data has been removed.
+
+They must be integrated with the Java backend and PostgreSQL-compatible application architecture.
+
+Do not attempt to implement production-grade PDF extraction and image-aware Excel processing entirely through fragile frontend-only mock logic.
+
+### Recommended Java backend technology
+
+The backend team may use appropriate maintained libraries.
+
+Suggested technologies include:
+
+**PDF processing**
+- Apache PDFBox for PDF text and image extraction.
+- Apache Tika for document detection and extraction.
+
+**Scanned document OCR**
+- Locally hosted Tesseract OCR with appropriate language configuration.
+- Layout-aware table and text processing.
+- Suitable image-processing libraries for scanned documents.
+
+**Excel generation and parsing**
+- Apache POI or another suitable XLSX implementation that genuinely supports embedded images and workbook drawings.
+
+The selected implementation must preserve document structure and correctly associate values, images, questions and answer options.
+
+Do not rely on SheetJS alone if the selected configuration cannot reliably preserve or extract embedded Excel images.
+
+Equivalent libraries may be used, but the functionality and image round-trip correctness are mandatory.
+
+### Offline and institutional data handling
+
+Prefer local/on-premises document processing wherever possible.
+
+Do not silently upload confidential student information or examination question papers to external AI/OCR services.
+
+Any external document-processing service requires explicit institutional approval.
+
+### Temporary files
+
+- Store temporary uploads securely.
+- Associate every conversion with the authenticated HOD.
+- Restrict conversion access to that HOD and authorised administrators.
+- Provide appropriate retention and deletion policies.
+- Avoid permanent storage of unnecessary original documents.
+- Keep actual student and question records in their authorised backend workflows.
+
+---
+
+# PART 7 — FRONTEND AND JAVA BACKEND API CONTRACTS
+
+Create or refine central API services for both converters.
+
+Use the existing project's naming conventions.
+
+## Student conversion APIs
+
+Suggested contracts:
+
+POST `/api/hod/student-lists/conversions`
+
+Purpose: Upload PDF/image for extraction.
+
+POST `/api/hod/student-lists/conversions/{conversionId}/validate`
+
+Purpose: Validate extracted student records and context.
+
+GET `/api/hod/student-lists/conversions/{conversionId}`
+
+Purpose: Retrieve extracted data, errors, context and processing status.
+
+PUT `/api/hod/student-lists/conversions/{conversionId}/records`
+
+Purpose: Submit HOD manual corrections.
+
+GET `/api/hod/student-lists/conversions/{conversionId}/excel`
+
+Purpose: Download the valid standard Excel workbook.
+
+POST `/api/hod/student-lists/import`
+
+Purpose: Manually upload the converted standard Excel through the ordinary student-list import flow.
+
+## Question conversion APIs
+
+Suggested contracts:
+
+POST `/api/hod/question-banks/conversions`
+
+Purpose: Upload PDF/image documents for module-specific question and image extraction.
+
+GET `/api/hod/question-banks/conversions/{conversionId}`
+
+Purpose: Retrieve extracted questions, image assets, confidence and validation status.
+
+PUT `/api/hod/question-banks/conversions/{conversionId}/records`
+
+Purpose: Correct question text, options, selected module, answers and image associations.
+
+POST `/api/hod/question-banks/conversions/{conversionId}/validate`
+
+Purpose: Validate questions, module context and image mapping.
+
+GET `/api/hod/question-banks/conversions/{conversionId}/excel`
+
+Purpose: Download the valid module-specific image-enabled standard Excel workbook.
+
+POST `/api/hod/question-banks/import`
+
+Purpose: Manually upload the downloaded module-specific XLSX through the ordinary question-bank import flow.
+
+These are proposed API contracts. Align them with existing Java backend conventions and document any changes required by the backend team.
+
+Use multipart/form-data for original document uploads.
+
+Use structured JSON for extracted record corrections and validation responses.
+
+Use actual file downloads for Excel generation.
+
+## Module-specific request context
+
+Every question conversion and question Excel upload must include:
+
+- Department ID derived from authenticated HOD identity.
+- Semester ID.
+- Subject ID.
+- Selected Module ID or Module Number.
+- Conversion ID where applicable.
+
+The backend must independently validate that the selected module belongs to the selected subject and semester.
+
+Do not trust frontend-supplied department or subject IDs without server-side permission validation.
+
+Do not allow a conversion from one module to be imported into another module accidentally.
+
+## Typed conversion responses
+
+Conversion responses should expose appropriate fields such as:
+
+- Conversion ID.
+- Authenticated HOD context.
+- Department ID.
+- Semester ID.
+- Subject ID where applicable.
+- Section ID for student lists.
+- Selected Module ID for questions.
+- Original filename.
+- File type.
+- Processing status.
+- Extracted records.
+- Extracted image assets and associations where relevant.
+- Validation errors.
+- Confidence/uncertainty flags.
+- Download eligibility.
+- Created timestamp.
+- Expiry/cleanup information.
+
+Do not expose another HOD's conversion records.
+
+The backend must derive department permissions from authenticated identity.
+
+---
+
+# PART 8 — ERROR HANDLING AND EMPTY STATES
+
+Because demo records are being removed, both converters must handle real backend conditions.
+
+Display honest states:
+
+- Waiting for file.
+- Uploading.
+- Processing.
+- Extracting text.
+- Extracting tables.
+- Extracting images.
+- Identifying modules.
+- Validation pending.
+- Validation failed.
+- Manual review required.
+- Ready for Excel download.
+- Download failed.
+- Backend unavailable.
+- Unsupported format.
+- Corrupted document.
+- Processing timeout.
+- Module mismatch.
+- Department mismatch.
+- Section mismatch.
+
+Do not show fake progress or artificial success.
+
+If the Java backend is unavailable, show a clear backend connection error.
+
+Do not silently fall back to sample student or question records.
+
+Do not use filenames to return hardcoded results.
+
+The actual uploaded document content must be processed regardless of its filename.
+
+---
+
+# PART 9 — DEMO DATA REMOVAL COMPATIBILITY
+
+The overall application is being prepared for real backend integration.
+
+Keep both converters as genuine application features.
+
+Remove dependence on:
+
+- Demo student PDF generators.
+- Demo question PDF generators.
+- Fake OCR responses.
+- Hardcoded extracted student rows.
+- Hardcoded question rows.
+- Pre-filled image assets.
+- Simulated extraction.
+- Sample Excel download files.
+- Automatic sample record insertion.
+- Artificially generated question content used as real upload data.
+
+Do not remove the actual converter UI.
+
+Do not remove the standard templates.
+
+Do not remove file parsing, extraction, validation, preview, manual correction, Excel generation or manual upload functionality.
+
+The converters must remain available in production when the corresponding Java backend services are implemented and deployed.
+
+No demo-only toggle should be required to use them.
+
+---
+
+# PART 10 — SECURITY AND DATA QUALITY
+
+Every conversion must be scoped to the authenticated HOD and authorised academic context.
+
+Enforce:
+
+- HOD department isolation.
+- Semester validation.
+- Section context validation.
+- Subject context validation.
+- Selected module validation.
+- File type validation.
+- File size limits.
+- Safe file handling.
+- Image type and size validation.
+- PDF integrity checks.
+- Duplicate USN checks.
+- Duplicate question checks.
+- Correct Question ID generation by backend.
+- Proper temporary file cleanup.
+
+Do not expose:
+
+- Student DOB in audit descriptions.
+- Private uploaded question-bank files to another department.
+- Backend file storage paths.
+- Authentication tokens.
+- External unauthorised file URLs.
+
+Maintain audit history for:
+
+- Original file upload.
+- Conversion start and completion.
+- Manual corrections.
+- Validation result.
+- Excel download.
+- Student-list import.
+- Module-wise question import.
+- Failed processing attempts where appropriate.
+
+Audit records must not contain sensitive raw document content or passwords.
+
+---
+
+# PART 11 — TESTING REQUIREMENTS
+
+Do not test only with one clean PDF.
+
+## A. Student converter tests
+
+1. Text-based PDF with a normal table.
+2. Scanned student-list PDF.
+3. Multiple-page PDF.
+4. Different student table layouts.
+5. PDF containing department, semester and section headers.
+6. PDF with duplicate USNs.
+7. PDF with invalid departmental USNs.
+8. Missing student name.
+9. Missing or invalid DOB.
+10. Corrupted PDF.
+11. Wrong section metadata.
+12. Unclear OCR records requiring manual correction.
+13. Converted Excel download and reopening.
+14. Manual Excel re-upload.
+15. Backend save and student-list history update.
+
+Verify that document metadata never becomes a student row.
+
+## B. Question converter tests
+
+1. Text-only question PDF for Module 1.
+2. Scanned question PDF for Module 1.
+3. Multi-page question PDF for one module.
+4. PDF with diagrams inside question statements.
+5. PDF with image-based answer options.
+6. PDF containing text and images together.
+7. Multiple images within one question.
+8. Images positioned between question text and options.
+9. Answer key included in PDF.
+10. Answer key missing.
+11. Unreadable image.
+12. Ambiguous image-to-question association.
+13. Incorrect module heading.
+14. Duplicate question.
+15. Missing options.
+16. Excel generation with embedded images.
+17. Open generated XLSX in Excel.
+18. Manually re-upload the same XLSX.
+19. Verify every image is extracted and associated with the correct question or option.
+20. Verify saved question records retain images after import.
+
+## C. Strict module-wise tests
+
+These are mandatory.
+
+### Test 1: Single-module upload
+
+- Select BCS550.
+- Select Module 1.
+- Upload a document containing 20 Module 1 questions.
+
+Expected:
+- Extract 20 questions.
+- Every row is assigned Module 1.
+- Download one Module 1 Excel file.
+- No other module questions are included.
+
+### Test 2: Different module upload
+
+- Select BCS550.
+- Select Module 2.
+- Upload a separate Module 2 document.
+
+Expected:
+- Extract only Module 2 questions.
+- Every row contains Module Number = 2.
+- Generate a separate Module 2 Excel file.
+- Do not combine it with Module 1.
+
+### Test 3: Multi-module document
+
+Upload a PDF containing questions from Modules 1, 2 and 3 while Module 1 is selected.
+
+Expected:
+- Detect different module groups where possible.
+- Display a clear multi-module document warning.
+- Require the HOD to review or separately process the required module.
+- Do not silently include Module 2 and Module 3 questions in Module 1 Excel.
+
+### Test 4: Wrong module upload
+
+Select Module 2 but upload a document clearly containing Module 1 questions.
+
+Expected:
+- Detect the mismatch.
+- Block successful validation.
+- Do not generate a misleading Module 2 workbook.
+
+### Test 5: Image preservation
+
+Use a question containing:
+
+- One image inside its question statement.
+- One image inside Option A.
+- One image inside Option C.
+
+After conversion:
+
+1. Generate XLSX.
+2. Download and open it.
+3. Confirm all three images are visible in their correct positions.
+4. Upload the same XLSX through the normal question importer.
+5. Confirm all three images are extracted.
+6. Confirm the question and option associations are unchanged.
+7. Confirm there are no broken image references.
+
+### Test 6: Question ID generation
+
+Verify that:
+
+- Conversion preview identifiers are temporary.
+- No permanent Question IDs are claimed before import.
+- Backend generates stable Question IDs only after valid question-bank import.
+- Returned Question IDs remain associated with the correct module.
+
+## D. Production-mode tests
+
+Confirm:
+
+- No demo generators remain.
+- No sample student or question records appear.
+- No fake extraction responses.
+- No mock success notifications.
+- Backend failures are shown honestly.
+- The converters do not automatically save converted data.
+- Excel downloads are enabled only after successful validation.
+- Module-wise question upload restrictions are enforced by the backend.
+- Image round-trip works with actual files.
+
+---
+
+# PART 12 — FINAL IMPLEMENTATION EXPECTATION
+
+The finished HOD Portal must have two genuinely functional document-conversion workflows.
+
+## Student List Converter
+
+Original PDF/image → Real extraction → Student preview → Validation → Manual correction → Standard Excel download → Manual Excel upload → Backend validation → Student-list save.
+
+Standard student Excel:
+
+USN | Student Name | DOB
+
+Department, semester and section are determined through authenticated HOD context and selected page settings.
+
+## Module-Wise Question Converter
+
+Select Subject → Select One Module → Original PDF/image → Real text and image extraction → Question/option/image preview → Validation → Manual correction and image association → Standard module-specific Excel download → Manual Excel upload → Backend validation → Question-bank save.
+
+Standard question Excel:
+
+Module Number | Question Text | Option A | Option B | Option C | Option D | Correct Option
+
+Each generated question workbook must contain questions from exactly one selected module.
+
+Images must remain embedded and correctly associated through the Excel download and re-upload process.
+
+Both converters must operate independently of demo data.
+
+The actual extraction, OCR, image processing, Excel generation and Excel parsing must be performed by genuine backend processing services.
+
+Do not falsely claim that production document extraction works if only the frontend interface has been implemented.
+
+---
+
+# PART 13 — FINAL IMPLEMENTATION REPORT
+
+After implementation, report:
+
+1. Existing converter components inspected.
+2. Student PDF/image converter changes.
+3. Question PDF/image converter changes.
+4. Strict module-wise upload implementation.
+5. Module mismatch detection.
+6. Image extraction implementation.
+7. Image-enabled XLSX generation.
+8. Image extraction during XLSX re-upload.
+9. Student-list validation and conversion.
+10. Question validation and conversion.
+11. Manual correction and preview workflow.
+12. Backend API services and contracts prepared.
+13. Java backend processing dependencies still required.
+14. OCR and image-processing dependencies.
+15. Build and TypeScript verification.
+16. Module-wise test results.
+17. Image round-trip test results.
+18. Any remaining errors or incomplete functionality.
+
+FINAL NON-NEGOTIABLE INSTRUCTIONS:
+
+- Implement both converters as real backend-integrated application features.
+- Do not rely on demo data or simulated OCR.
+- Use one standard Excel format for all HODs.
+- Student-list Excel must contain USN, Student Name and DOB.
+- Question Excel must contain Module Number, Question Text, Option A, Option B, Option C, Option D and Correct Option.
+- Student lists are uploaded under the selected section context.
+- Questions are uploaded separately, one selected module per conversion and upload batch.
+- Do not mix questions from different modules into one workbook.
+- Preserve all question images and option images in the generated Excel workbook.
+- Preserve image associations during subsequent Excel upload.
+- Require HOD review, validation, download and manual upload.
+- Keep conversion separate from saving student and question records.
+- Enforce HOD department, subject and module permissions in the backend.
+- Preserve the existing approved MIT Mysore Admin/HOD application and modify it in place.

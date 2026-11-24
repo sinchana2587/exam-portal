@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "verify system health and authenticated identity lifecycle",
+    "description": "Verify GET /api/health returns status ok. Authenticate with valid username and password through POST /api/login, then verify GET /api/me returns the matching identity, role, and department scope. Check missing credentials return 400, invalid credentials return 401, and POST /api/logout revokes an active session while unauthenticated logout is rejected. Verify GET /api/audit returns audit records for an authenticated user."
+  },
+  {
+    "id": "TC002",
+    "title": "verify institutional administration and access control",
+    "description": "As an admin, create and list academic groups and subjects, provision accounts with valid roles and credentials, list accounts, and bind faculty to a group and subject. Verify invalid account roles or password lengths are rejected, duplicate groups, usernames, and faculty scopes return conflicts, and unauthorized roles cannot perform administrative writes."
+  },
+  {
+    "id": "TC003",
+    "title": "verify faculty scopes and question bank authoring",
+    "description": "Verify GET /api/my-scopes returns the faculty member’s assigned scopes. Create and list a draft bank through POST and GET /api/banks, checking that out-of-scope group assignments are forbidden. Add and list MCQ questions through POST and GET /api/questions; confirm distinct options are required and duplicate prompts or additions to non-draft banks are rejected."
+  },
+  {
+    "id": "TC004",
+    "title": "verify question bank approval transitions",
+    "description": "Exercise POST /api/bank-state across valid bank lifecycle transitions, including faculty submission and admin approval or archiving. Verify invalid transitions and unauthorized state changes are rejected, and confirm each successful transition returns its transition identifier."
+  },
+  {
+    "id": "TC005",
+    "title": "verify exam publication and visibility",
+    "description": "As an admin, publish an exam from an approved bank with valid scheduling, attempt, pass-mark, difficulty-mix, and group settings, then verify it appears in GET /api/exams for the appropriate roles. Confirm publication rejects unapproved banks, pass marks above selected marks, invalid official attempt counts, insufficient difficulty questions, and groups without eligible students."
+  },
+  {
+    "id": "TC006",
+    "title": "verify student exam start and attempt content",
+    "description": "Verify a student can start an assigned exam during its availability window through POST /api/start and load its questions through GET /api/attempt. Confirm unassigned exams return 404, unavailable exams or exhausted attempt limits return 409, and answer keys remain masked until scores are released."
+  },
+  {
+    "id": "TC007",
+    "title": "verify answer autosave and concurrency protection",
+    "description": "Save an answer through POST /api/answer using the current version and verify the response reports a saved status with an incremented version. Submit an outdated version and confirm the API returns a stale-version conflict without overwriting the latest saved answer."
+  },
+  {
+    "id": "TC008",
+    "title": "verify attempt heartbeat and submission",
+    "description": "Send a heartbeat through POST /api/heartbeat for an active student attempt and verify the active status. Submit the attempt through POST /api/submit and verify the submitted status and score calculation; confirm repeated or unauthorized submission requests are handled according to attempt state and access rules."
+  },
+  {
+    "id": "TC009",
+    "title": "verify score release prerequisites and answer unmasking",
+    "description": "As an admin, verify POST /api/release rejects release while the exam window is open or unsubmitted attempts remain. After the window closes and attempts are submitted, verify release succeeds and GET /api/attempt exposes correct answers and explanations."
+  },
+  {
+    "id": "TC010",
+    "title": "verify live exam monitoring permissions",
+    "description": "Verify GET /api/monitor returns live candidate telemetry for an authorized observer or admin viewing an exam. Confirm the response reflects active attempt status and that users without monitoring permission cannot access the telemetry."
+  }
+]

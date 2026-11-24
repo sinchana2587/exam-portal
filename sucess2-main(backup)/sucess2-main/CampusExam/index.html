@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maharaja Institute of Technology Mysore - Examination System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #141b2d;
+      --card-header: #1b243b;
+      --border: #24304f;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --accent-muted: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #1e293b;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+    .container { width: 100%; max-width: 980px; display: flex; flex-direction: column; gap: 20px; }
+
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .brand { display: flex; flex-direction: column; gap: 2px; }
+    .brand-title { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+    .brand-sub { font-size: 12px; color: var(--text-muted); }
+    .brand-badge { display: inline-block; font-size: 11px; background: var(--accent-muted); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; width: fit-content; margin-top: 4px; }
+
+    .nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 8px; overflow-x: auto; }
+    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .nav-btn.active, .nav-btn:hover { background: var(--input-bg); color: #fff; border-color: var(--primary); }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); font-size: 14px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 11px 16px; background: var(--primary); color: #fff; font-size: 14px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--input-bg); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-success { background: var(--accent); }
+    .btn-success:hover { background: #059669; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .stat-box { background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; text-align: center; }
+    .stat-val { font-size: 24px; font-weight: 700; color: var(--primary); }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+
+    .hidden { display: none !important; }
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: rgba(16, 185, 129, 0.18); color: var(--accent); }
+    .badge-blue { background: rgba(59, 130, 246, 0.18); color: var(--primary); }
+    .badge-orange { background: rgba(245, 158, 11, 0.18); color: var(--warning); }
+    .badge-red { background: rgba(239, 68, 68, 0.18); color: var(--danger); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; background: var(--card-header); }
+
+    pre { background: #0a0d14; border: 1px solid var(--border); border-radius: 6px; padding: 12px; font-size: 12px; color: #a5b4fc; overflow-x: auto; max-height: 250px; }
+
+    .option-btn { width: 100%; padding: 12px; margin-bottom: 8px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); font-size: 14px; text-align: left; cursor: pointer; transition: all 0.15s; }
+    .option-btn:hover { border-color: var(--primary); }
+    .option-btn.selected { background: rgba(59, 130, 246, 0.2); border-color: var(--primary); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-title">Maharaja Institute of Technology Mysore</div>
+        <div class="brand-sub">Examination Management Platform • Internal Project Reference</div>
+        <div class="brand-badge" id="sessionStatusBadge">Central System Connected</div>
+      </div>
+      <div style="text-align: right;">
+        <span id="userDisplay" style="font-size: 13px; color: var(--text-muted); margin-right: 12px;">Not signed in</span>
+        <button id="logoutBtn" class="btn btn-secondary hidden" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="logout()">Sign Out</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="nav-btn active" onclick="switchTab('auth')">1. Sign In</button>
+      <button class="nav-btn" onclick="switchTab('studentExam')">2. Student Exam Portal</button>
+      <button class="nav-btn" onclick="switchTab('principal')">3. Principal Portal</button>
+      <button class="nav-btn" onclick="switchTab('hod')">4. HOD Portal</button>
+      <button class="nav-btn" onclick="switchTab('coe')">5. COE Portal</button>
+      <button class="nav-btn" onclick="switchTab('lab')">6. Lab Management</button>
+      <button class="nav-btn" onclick="switchTab('audit')">7. Audit Trail</button>
+    </div>
+
+    <!-- TAB 1: Authentication -->
+    <div id="tab-auth" class="card">
+      <div class="card-title">Portal Sign In</div>
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--primary);">Staff Authentication (Principal, HOD, COE, Lab Admin)</h3>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="loginUser" placeholder="e.g. admin, hod_cse, coe_admin" value="admin" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPass" value="password1234" />
+          </div>
+          <button class="btn" onclick="loginStaff()">Sign In</button>
+        </div>
+        <div>
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--accent);">Offline Student Lab Login</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            Authenticate against the frozen session roster in the active lab package. Requires valid USN and Date of Birth.
+          </p>
+          <div class="form-group">
+            <label>Student USN</label>
+            <input type="text" id="studentUsn" placeholder="e.g. 4MH24CS001" />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth (YYYY-MM-DD)</label>
+            <input type="text" id="studentDob" placeholder="2004-05-15" />
+          </div>
+          <div class="form-group">
+            <label>Computer Number</label>
+            <input type="text" id="studentPc" placeholder="PC-01" value="PC-01" />
+          </div>
+          <button class="btn btn-success" onclick="loginStudent()">Enter Offline Examination</button>
+        </div>
+      </div>
+      <div id="authOutput" style="margin-top: 14px;" class="hidden">
+        <pre id="authOutputPre"></pre>
+      </div>
+    </div>
+
+    <!-- TAB 2: Student Examination Portal -->
+    <div id="tab-studentExam" class="card hidden">
+      <div class="card-title">
+        <span>Offline Examination Workspace</span>
+        <span id="studentVersionBadge" class="status-badge badge-blue">Version Assigned: None</span>
+      </div>
+
+      <div id="studentInstructions" class="stat-box" style="text-align: left; margin-bottom: 16px;">
+        <h4 style="color: #fff; margin-bottom: 6px;">Examination Instructions</h4>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          • Answer all 30 MCQs. Stable Question IDs ensure robust scoring regardless of question order.<br/>
+          • Responses are saved continuously to the local lab server.<br/>
+          • Timer is authoritative and strictly controlled by the lab server.
+        </p>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <span id="studentCandidateTag" style="font-size: 13px; font-weight: 600; color: #fff;"></span>
+          <span style="font-size: 14px; font-weight: 700; color: var(--warning);">Time Remaining: <span id="examTimer">60:00</span></span>
+        </div>
+      </div>
+
+      <div id="examQuestionArea" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 13px; font-weight: 600; color: var(--primary);">Question <span id="currentQNum">1</span> of 30</span>
+          <span id="currentQUid" style="font-size: 11px; color: var(--text-muted); font-family: monospace;"></span>
+        </div>
+        <p id="currentQPrompt" style="font-size: 15px; margin-bottom: 16px; color: #fff; line-height: 1.5;"></p>
+        <div id="currentQOptions"></div>
+
+        <div style="display: flex; gap: 10px; margin-top: 16px;">
+          <button class="btn btn-secondary" onclick="prevQuestion()" style="width: auto; padding: 8px 16px;">Previous</button>
+          <button class="btn btn-secondary" onclick="nextQuestion()" style="width: auto; padding: 8px 16px;">Next</button>
+          <button class="btn btn-danger" onclick="submitExam()" style="margin-left: auto; width: auto; padding: 8px 20px;">Submit Examination</button>
+        </div>
+      </div>
+
+      <div id="examSubmittedArea" class="hidden stat-box" style="padding: 30px;">
+        <h3 style="color: var(--accent); margin-bottom: 8px;">Examination Successfully Submitted</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">Your responses have been securely committed to the laboratory evaluation unit.</p>
+        <div style="font-size: 14px; font-weight: 600; color: #fff; font-family: monospace;" id="submitConfirmCode"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Principal Portal -->
+    <div id="tab-principal" class="card hidden">
+      <div class="card-title">Principal & Institution Setup</div>
+      <div class="grid-4" id="principalStats" style="margin-bottom: 16px;">
+        <div class="stat-box"><div class="stat-val" id="pStatDepts">0</div><div class="stat-lbl">Departments</div></div>
+        <div class="stat-box"><div class="stat-val" id="pStatStudents">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val" id="pStatBanks">0</div><div class="stat-lbl">Finalized Banks</div></div>
+        <div class="stat-box"><div class="stat-val" id="pStatExams">0</div><div class="stat-lbl">Completed Exams</div></div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <h4 style="margin-bottom: 10px;">Create Department</h4>
+          <div class="form-group"><label>Code</label><input type="text" id="newDeptCode" placeholder="CSE" /></div>
+          <div class="form-group"><label>Name</label><input type="text" id="newDeptName" placeholder="Computer Science and Engineering" /></div>
+          <button class="btn" onclick="createDept()">Add Department</button>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Create HOD / COE Account</h4>
+          <div class="form-group"><label>Username</label><input type="text" id="newAccUser" placeholder="hod_cse" /></div>
+          <div class="form-group"><label>Role</label>
+            <select id="newAccRole">
+              <option value="HOD">HOD (Department Admin)</option>
+              <option value="COE">COE (Controller of Examinations)</option>
+              <option value="LAB_ADMIN">Lab Administrator</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Department ID (required for HOD)</label><input type="text" id="newAccDept" placeholder="1" /></div>
+          <button class="btn" onclick="createStaffAccount()">Create Account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: HOD Portal -->
+    <div id="tab-hod" class="card hidden">
+      <div class="card-title">HOD Department Portal (Strict Department Boundary Enforced)</div>
+      <div class="grid-2">
+        <div>
+          <h4 style="margin-bottom: 10px;">Subject Question Bank Management</h4>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+            HOD prepares 300 MCQs across 5 modules (60 Qs/module). Finalization triggers Stage A Engine (Papers 1-4).
+          </p>
+          <div class="form-group"><label>Subject ID</label><input type="text" id="hodSubjectId" placeholder="1" /></div>
+          <div class="form-group"><label>Academic Session</label><input type="text" id="hodSession" value="2026-27" /></div>
+          <div class="form-group"><label>Semester</label><input type="text" id="hodSem" value="4" /></div>
+          <div class="form-group"><label>Bank Title</label><input type="text" id="hodBankTitle" placeholder="DBMS Question Bank" /></div>
+          <button class="btn" onclick="createBankHOD()">Create Draft Bank</button>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Student Roster Upload</h4>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Upload student roster with USN, Name, and Date of Birth.</p>
+          <div class="form-group"><label>Academic Group ID</label><input type="text" id="rosterGroupId" placeholder="1" /></div>
+          <div class="form-group"><label>Sample Roster JSON</label>
+            <textarea id="rosterJsonArea" rows="4">[{"usn":"4MH24CS001","full_name":"Alice","date_of_birth":"2004-05-15"}]</textarea>
+          </div>
+          <button class="btn btn-secondary" onclick="uploadRosterHOD()">Upload Roster</button>
+        </div>
+      </div>
+      <div style="margin-top: 18px;">
+        <h4 style="margin-bottom: 8px;">My Department Question Banks</h4>
+        <div id="hodBanksTable"></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: COE Portal -->
+    <div id="tab-coe" class="card hidden">
+      <div class="card-title">COE Portal (Cycles, Sessions, Packaging & Approvals)</div>
+      <div class="grid-2">
+        <div>
+          <h4 style="margin-bottom: 10px;">Schedule Examination Sitting</h4>
+          <div class="form-group"><label>Cycle ID</label><input type="text" id="coeCycleId" placeholder="1" /></div>
+          <div class="form-group"><label>Subject ID</label><input type="text" id="coeSubjectId" placeholder="1" /></div>
+          <div class="form-group"><label>Department ID</label><input type="text" id="coeDeptId" placeholder="1" /></div>
+          <div class="form-group"><label>Group ID</label><input type="text" id="coeGroupId" placeholder="1" /></div>
+          <div class="form-group"><label>Assigned Lab</label><input type="text" id="coeLab" value="Lab 301 - CSE Lab" /></div>
+          <div class="form-group"><label>Date (YYYY-MM-DD)</label><input type="text" id="coeDate" value="2026-11-13" /></div>
+          <div class="form-group"><label>Sitting</label>
+            <select id="coeSitting"><option value="MORNING">MORNING (09:00 - 10:00)</option><option value="AFTERNOON">AFTERNOON (14:00 - 15:00)</option></select>
+          </div>
+          <button class="btn" onclick="scheduleSessionCOE()">Schedule Session with Conflict Check</button>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Session Operations & Cryptographic Export</h4>
+          <div class="form-group"><label>Target Session ID</label><input type="text" id="coeTargetSession" placeholder="1" /></div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-secondary" onclick="selectPaperCOE()">Select Paper (Stage B: Versions A-D)</button>
+            <button class="btn btn-secondary" onclick="finalizeSessionCOE()">Freeze Roster Snapshot & Settings</button>
+            <button class="btn btn-success" onclick="exportPackageCOE()">Export Secure Encrypted & Signed Package</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 18px;">
+        <h4 style="margin-bottom: 8px;">Scheduled Examination Sittings</h4>
+        <div id="coeSessionsTable"></div>
+      </div>
+    </div>
+
+    <!-- TAB 6: Lab Management -->
+    <div id="tab-lab" class="card hidden">
+      <div class="card-title">Offline Lab Server Console</div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+        Verify package digital signature, activate session, configure computer-to-version mapping, and evaluate results offline.
+      </p>
+      <div class="grid-2">
+        <div>
+          <h4 style="margin-bottom: 10px;">Package Ingestion & Activation</h4>
+          <div class="form-group"><label>Session ID</label><input type="text" id="labSessionId" placeholder="1" /></div>
+          <button class="btn" onclick="activateLab()">Activate & Decrypt Package Internally</button>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Local MCQ Evaluation & Export</h4>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+            Scores submissions against decrypted answer key and digitally signs the result payload using Lab Server's RSA key.
+          </p>
+          <button class="btn btn-success" onclick="evaluateAndExportLab()">Evaluate Attempts & Export Signed Results</button>
+        </div>
+      </div>
+      <div id="labOutputArea" style="margin-top: 14px;" class="hidden">
+        <pre id="labOutputPre"></pre>
+      </div>
+    </div>
+
+    <!-- TAB 7: Audit Trail -->
+    <div id="tab-audit" class="card hidden">
+      <div class="card-title">
+        <span>Immutable Append-Only Audit Trail</span>
+        <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;" onclick="fetchAudit()">Refresh</button>
+      </div>
+      <div id="auditTableArea"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://127.0.0.1:8080/api';
+    let token = '';
+    let currentRole = '';
+    let currentDeptId = null;
+    let studentExamData = null;
+    let currentQIndex = 0;
+    let studentSavedAnswers = {};
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('[id^="tab-"]').forEach(c => c.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      if (tabId === 'principal') loadPrincipalReports();
+      if (tabId === 'hod') loadHodBanks();
+      if (tabId === 'coe') loadCoeSessions();
+      if (tabId === 'audit') fetchAudit();
+    }
+
+    async function loginStaff() {
+      const u = document.getElementById('loginUser').value;
+      const p = document.getElementById('loginPass').value;
+      const res = await fetch(`${API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username: u, password: p }).toString()
+      });
+      const data = await res.json();
+      if (data.token) {
+        token = data.token;
+        currentRole = data.role;
+        currentDeptId = data.departmentId;
+        document.getElementById('userDisplay').textContent = `${data.fullName} [${data.role}]`;
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        document.getElementById('authOutput').classList.remove('hidden');
+        document.getElementById('authOutputPre').textContent = JSON.stringify(data, null, 2);
+        alert(`Signed in as ${data.role}`);
+      } else {
+        alert('Authentication failed: ' + (data.error || 'Invalid credentials'));
+      }
+    }
+
+    async function loginStudent() {
+      const usn = document.getElementById('studentUsn').value;
+      const dob = document.getElementById('studentDob').value;
+      const pc = document.getElementById('studentPc').value;
+      const res = await fetch(`${API}/student/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ usn: usn, dob: dob, computer_number: pc }).toString()
+      });
+      const data = await res.json();
+      if (data.token) {
+        token = data.token;
+        currentRole = 'STUDENT';
+        document.getElementById('userDisplay').textContent = `${data.fullName} (${data.usn})`;
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        document.getElementById('studentVersionBadge').textContent = `Assigned Version: ${data.assignedVersion} • Workstation: ${data.computerNumber}`;
+        document.getElementById('studentCandidateTag').textContent = `Candidate: ${data.fullName} (${data.usn})`;
+        switchTab('studentExam');
+        loadStudentPaper();
+      } else {
+        alert('Student Login Failed: ' + (data.error || 'Check active lab session, USN, and DOB'));
+      }
+    }
+
+    async function loadStudentPaper() {
+      const res = await fetch(`${API}/student/paper`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.questions) {
+        studentExamData = data;
+        studentSavedAnswers = data.savedAnswers || {};
+        currentQIndex = 0;
+        document.getElementById('examQuestionArea').classList.remove('hidden');
+        renderCurrentQuestion();
+      } else {
+        alert('Failed to load paper: ' + (data.error || 'Check session status'));
+      }
+    }
+
+    function renderCurrentQuestion() {
+      if (!studentExamData || !studentExamData.questions) return;
+      const q = studentExamData.questions[currentQIndex];
+      document.getElementById('currentQNum').textContent = currentQIndex + 1;
+      document.getElementById('currentQUid').textContent = `ID: ${q.questionUid}`;
+      document.getElementById('currentQPrompt').textContent = q.prompt;
+
+      const optsDiv = document.getElementById('currentQOptions');
+      optsDiv.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosen = studentSavedAnswers[q.questionUid];
+
+      q.options.forEach((optText, idx) => {
+        const choiceNum = idx + 1;
+        const btn = document.createElement('button');
+        btn.className = 'option-btn' + (chosen === choiceNum ? ' selected' : '');
+        btn.textContent = `${letters[idx]}. ${optText}`;
+        btn.onclick = () => saveAnswer(q.questionUid, choiceNum);
+        optsDiv.appendChild(btn);
+      });
+    }
+
+    async function saveAnswer(qUid, choiceNum) {
+      studentSavedAnswers[qUid] = choiceNum;
+      renderCurrentQuestion();
+      await fetch(`${API}/student/answer`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ question_uid: qUid, choice: choiceNum }).toString()
+      });
+    }
+
+    function prevQuestion() {
+      if (currentQIndex > 0) { currentQIndex--; renderCurrentQuestion(); }
+    }
+    function nextQuestion() {
+      if (studentExamData && currentQIndex < studentExamData.questions.length - 1) {
+        currentQIndex++; renderCurrentQuestion();
+      }
+    }
+
+    async function submitExam() {
+      if (!confirm('Are you sure you want to finish and submit your exam?')) return;
+      const res = await fetch(`${API}/student/submit`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      document.getElementById('examQuestionArea').classList.add('hidden');
+      document.getElementById('examSubmittedArea').classList.remove('hidden');
+      document.getElementById('submitConfirmCode').textContent = `Confirmation Code: ${data.confirmationCode || 'SUBMITTED'}`;
+    }
+
+    async function loadPrincipalReports() {
+      if (!token) return;
+      const res = await fetch(`${API}/principal/reports`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.totalDepartments !== undefined) {
+        document.getElementById('pStatDepts').textContent = data.totalDepartments;
+        document.getElementById('pStatStudents').textContent = data.totalStudents;
+        document.getElementById('pStatBanks').textContent = data.totalFinalizedBanks;
+        document.getElementById('pStatExams').textContent = data.totalCompletedSessions;
+      }
+    }
+
+    async function loadHodBanks() {
+      if (!token) return;
+      const res = await fetch(`${API}/hod/question-banks`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const banks = await res.json();
+      let html = '<table><tr><th>ID</th><th>Subject</th><th>Title</th><th>Revision</th><th>Status</th><th>Stage A Papers</th></tr>';
+      banks.forEach(b => {
+        html += `<tr><td>${b.id}</td><td>${b.subject_name}</td><td>${b.title}</td><td>Rev ${b.revision_number}</td><td><span class="status-badge ${b.state === 'FINALIZED' ? 'badge-green' : 'badge-orange'}">${b.state}</span></td><td>${b.generated_papers} sets</td></tr>`;
+      });
+      html += '</table>';
+      document.getElementById('hodBanksTable').innerHTML = html;
+    }
+
+    async function loadCoeSessions() {
+      if (!token) return;
+      const res = await fetch(`${API}/coe/sessions`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const sessions = await res.json();
+      let html = '<table><tr><th>ID</th><th>Date</th><th>Sitting</th><th>Lab</th><th>Subject</th><th>Status</th></tr>';
+      sessions.forEach(s => {
+        html += `<tr><td>${s.id}</td><td>${s.session_date}</td><td>${s.sitting}</td><td>${s.assigned_lab}</td><td>${s.subject_name}</td><td><span class="status-badge badge-blue">${s.status}</span></td></tr>`;
+      });
+      html += '</table>';
+      document.getElementById('coeSessionsTable').innerHTML = html;
+    }
+
+    async function fetchAudit() {
+      if (!token) return;
+      const res = await fetch(`${API}/audit`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const audits = await res.json();
+      let html = '<table><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>Detail</th></tr>';
+      audits.slice(0, 50).forEach(a => {
+        html += `<tr><td>${new Date(a.happened).toLocaleTimeString()}</td><td>#${a.actor || 'System'}</td><td><span class="status-badge badge-blue">${a.action}</span></td><td>${a.entity}</td><td>${a.detail}</td></tr>`;
+      });
+      html += '</table>';
+      document.getElementById('auditTableArea').innerHTML = html;
+    }
+
+    async function createDept() {
+      if (!token) return alert('Please sign in as Principal first!');
+      const code = document.getElementById('newDeptCode').value.trim();
+      const name = document.getElementById('newDeptName').value.trim();
+      const res = await fetch(`${API}/principal/departments`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ code, name }).toString()
+      });
+      const data = await res.json();
+      if (data.id) { alert(`Department ${code} created successfully (ID: ${data.id})`); loadPrincipalReports(); }
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function createStaffAccount() {
+      if (!token) return alert('Please sign in as Principal first!');
+      const username = document.getElementById('newAccUser').value.trim();
+      const role = document.getElementById('newAccRole').value;
+      const deptId = document.getElementById('newAccDept').value.trim();
+      const res = await fetch(`${API}/principal/accounts`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username, password: 'password1234', role, department_id: deptId }).toString()
+      });
+      const data = await res.json();
+      if (data.id) alert(`Account ${username} [${role}] created (ID: ${data.id})`);
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function createBankHOD() {
+      if (!token) return alert('Please sign in as HOD first!');
+      const subject_id = document.getElementById('hodSubjectId').value.trim();
+      const session = document.getElementById('hodSession').value.trim();
+      const semester = document.getElementById('hodSem').value.trim();
+      const title = document.getElementById('hodBankTitle').value.trim();
+      const res = await fetch(`${API}/hod/question-bank`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ subject_id, session, semester, title }).toString()
+      });
+      const data = await res.json();
+      if (data.id) { alert(`Draft Question Bank created (ID: ${data.id})`); loadHodBanks(); }
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function uploadRosterHOD() {
+      if (!token) return alert('Please sign in as HOD first!');
+      const group_id = document.getElementById('rosterGroupId').value.trim();
+      let rosterList;
+      try { rosterList = JSON.parse(document.getElementById('rosterJsonArea').value); }
+      catch(e) { return alert('Invalid JSON in roster field'); }
+      const res = await fetch(`${API}/hod/upload-roster`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ group_id, roster: rosterList })
+      });
+      const data = await res.json();
+      if (data.count !== undefined) alert(`Uploaded ${data.count} students to roster for group ${group_id}`);
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function scheduleSessionCOE() {
+      if (!token) return alert('Please sign in as COE first!');
+      const cycle_id = document.getElementById('coeCycleId').value.trim();
+      const subject_id = document.getElementById('coeSubjectId').value.trim();
+      const department_id = document.getElementById('coeDeptId').value.trim();
+      const group_id = document.getElementById('coeGroupId').value.trim();
+      const assigned_lab = document.getElementById('coeLab').value.trim();
+      const session_date = document.getElementById('coeDate').value.trim();
+      const sitting = document.getElementById('coeSitting').value;
+      const res = await fetch(`${API}/coe/session`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          cycle_id, subject_id, department_id, group_id, assigned_lab,
+          session_date, sitting, start_time: '09:00:00', end_time: '10:00:00', duration_minutes: 60
+        }).toString()
+      });
+      const data = await res.json();
+      if (data.id) { alert(`Session scheduled in ${assigned_lab} (ID: ${data.id})`); loadCoeSessions(); }
+      else alert('Scheduling Conflict/Error: ' + (data.error || 'Failed'));
+    }
+
+    async function selectPaperCOE() {
+      const sessionId = document.getElementById('coeTargetSession').value.trim();
+      const paperId = prompt('Enter Prepared Numbered Paper ID (1-4):', '1');
+      if (!sessionId || !paperId) return;
+      const res = await fetch(`${API}/coe/select-paper`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ session_id: sessionId, paper_id: paperId }).toString()
+      });
+      const data = await res.json();
+      if (data.stageBVersions) { alert(`Stage B Permutation Complete: Versions A, B, C, D generated for session ${sessionId}`); loadCoeSessions(); }
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function finalizeSessionCOE() {
+      const sessionId = document.getElementById('coeTargetSession').value.trim();
+      if (!sessionId) return alert('Enter Target Session ID');
+      const res = await fetch(`${API}/coe/finalize-session`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ session_id: sessionId }).toString()
+      });
+      const data = await res.json();
+      if (data.status === 'FROZEN') { alert(`Session ${sessionId} FROZEN: ${data.frozenStudents} candidates locked.`); loadCoeSessions(); }
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function exportPackageCOE() {
+      const sessionId = document.getElementById('coeTargetSession').value.trim();
+      if (!sessionId) return alert('Enter Target Session ID');
+      const res = await fetch(`${API}/coe/export-package`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ session_id: sessionId }).toString()
+      });
+      const data = await res.json();
+      if (data.packageUid) {
+        alert(`Secure Package Exported: ${data.packageUid}\nPayload Encrypted with Lab Public Key & Digitally Signed.`);
+        loadCoeSessions();
+      } else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function activateLab() {
+      const sessionId = document.getElementById('labSessionId').value.trim();
+      if (!sessionId) return alert('Enter Session ID');
+      const res = await fetch(`${API}/lab/activate`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ sessionId }).toString()
+      });
+      const data = await res.json();
+      document.getElementById('labOutputArea').classList.remove('hidden');
+      document.getElementById('labOutputPre').textContent = JSON.stringify(data, null, 2);
+      if (data.status === 'ACTIVE') alert(`Lab activated for session ${sessionId}. Answer keys and ${data.candidatesLoaded} candidates loaded.`);
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    async function evaluateAndExportLab() {
+      const res = await fetch(`${API}/lab/evaluate-and-export`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      document.getElementById('labOutputArea').classList.remove('hidden');
+      document.getElementById('labOutputPre').textContent = JSON.stringify(data, null, 2);
+      if (data.labSignatureHex) alert('MCQ responses evaluated locally and result document digitally signed!');
+      else alert('Error: ' + (data.error || 'Failed'));
+    }
+
+    function logout() {
+      token = '';
+      currentRole = '';
+      document.getElementById('userDisplay').textContent = 'Not signed in';
+      document.getElementById('logoutBtn').classList.add('hidden');
+      alert('Signed out.');
+      switchTab('auth');
+    }
+  </script>
+</body>
+</html>

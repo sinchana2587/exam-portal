@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+*.key
+*.bak
+backups/
+CampusExam/database_dump.sql
+**/node_modules
+**/dist
+**/*.log

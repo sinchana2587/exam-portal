@@ -1,0 +1,16 @@
+.git
+.env*
+*.sql
+*.bak*
+*.pdf
+keys/
+lab_server_keys/
+lab_storage/
+audit_storage/
+testsprite_tests/
+build_dev/
+docker-build/
+Converter/
+converted_excel/
+docs/
+*.py

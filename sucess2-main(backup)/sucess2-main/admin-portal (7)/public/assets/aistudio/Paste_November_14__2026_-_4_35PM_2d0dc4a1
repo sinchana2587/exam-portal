@@ -1,0 +1,1708 @@
+# MASTER IMPLEMENTATION PROMPT
+## MIT Mysore Examination Management System
+### Principal & HOD Portal — Complete Frontend Refinement and Backend Integration Preparation
+
+You are working inside my existing Google AI Studio project. This project already contains a React and TypeScript application for the MIT Mysore Examination Management System.
+
+Your task is to **inspect, refine, restructure and implement the approved Principal and HOD portals within the existing application**.
+
+This is an implementation task, not a request to generate a design concept, static prototype, wireframe or a completely new application.
+
+Do not start from scratch. Do not replace the existing project with a newly generated one. Work with the existing source code and preserve useful, functioning components and logic wherever possible.
+
+---
+
+# PART 1 — UNDERSTAND THE EXISTING PROJECT AND REFERENCES
+
+Before making changes, inspect the existing project thoroughly.
+
+Review:
+- Existing package.json and dependencies.
+- Existing React and TypeScript structure.
+- Existing pages, layouts, components and routing.
+- Existing services, types, state management and mock data.
+- Existing authentication and role handling.
+- Existing MIT Mysore institutional branding.
+- Existing responsive layout and UI components.
+
+The project already includes the following reference documents:
+
+1. MIT Mysore Exam System Architecture and Workflow.
+2. MIT Mysore UI/UX Style Guide.
+
+Use these documents as the institutional and architectural references.
+
+I am also attaching an MIT Mysore login-page picture with this prompt.
+
+Use that image as an important visual reference for the login page, especially the institutional header, logo placement, branding, identity and overall composition.
+
+Do not use the login screenshot as an instruction to redesign every other page. Use the separate UI/UX guide for the portal's overall design language.
+
+### Priority of requirements
+
+When references or existing code conflict, follow this order:
+
+1. Explicit requirements and decisions in this prompt.
+2. MIT Mysore Architecture and Workflow document.
+3. MIT Mysore UI/UX Style Guide.
+4. Existing project implementation, preserving useful functionality where it does not conflict with the above.
+
+The old implementation may contain obsolete pages, assumptions, fixed limits and workflow logic. Do not preserve those merely because they exist in the code.
+
+---
+
+# PART 2 — PROJECT SCOPE
+
+This implementation covers only:
+
+1. Common Principal/HOD Login.
+2. Principal Portal.
+3. HOD Portal.
+4. Shared Profile and Settings experience.
+5. Frontend integration architecture for the Java backend.
+
+The COE Portal and Student Portal are separate applications and must not be merged into this project.
+
+However, the Principal and HOD portals must correctly reflect the examination workflow controlled by the separate COE Portal.
+
+The system is intended for Maharaja Institute of Technology Mysore.
+
+Use the official MIT Mysore branding already available in the project and attached references. Do not invent institutional logos, names, affiliations or approval details.
+
+---
+
+# PART 3 — COMMON LOGIN PAGE
+
+There must be a single login page for Principal and HOD.
+
+### Institutional header
+
+Use the attached MIT login-page picture as the visual reference.
+
+Preserve the full institutional identity, including the relevant official branding and information visible in the reference:
+
+- MIT Mysore logo and branding.
+- Maharaja Education Trust identity.
+- Institute name.
+- Original Kannada institutional text where shown.
+- Autonomous/VTU affiliation and relevant approval information.
+
+Use the actual available institutional assets. Do not replace the official identity with generic branding.
+
+### Login card
+
+Include:
+
+- Title: MIT Mysore Examination Management System.
+- Subtitle exactly: **Examination Management System**.
+- Username field.
+- Password field.
+- Show/hide password control.
+- Sign In button.
+- Supporting text: **For Principal / HOD Access Only**.
+
+Do not display:
+- Demo usernames or passwords.
+- Fill Demo Credentials button.
+- A demo credential panel.
+- Fake Forgot Password functionality.
+- Technical architecture explanations.
+- Backend endpoint information.
+- Demo Reset Data controls.
+- A hardcoded year in the footer.
+
+A Forgot Password option must not be shown unless a genuine, authorised recovery workflow is implemented.
+
+### Authentication and role-based routing
+
+The backend authenticates the username and password and returns the authorised role and account information.
+
+- Principal accounts go to the Principal Dashboard.
+- HOD accounts go to the HOD Dashboard.
+- Do not provide a manual role selector on the login page.
+- Do not allow users to choose their own department or role during login.
+
+The frontend must use the authenticated role to control routes, sidebar navigation and page permissions.
+
+### Account provisioning
+
+The Principal account is provisioned separately by an authorised college IT/system administrator.
+
+The Principal does not create the COE account.
+
+There is exactly one COE for MIT Mysore, and the COE account is provisioned separately through its authorised process. Do not introduce COE account creation into the Principal/HOD portal.
+
+---
+
+# PART 4 — SHARED DESIGN SYSTEM
+
+Follow the MIT Mysore UI/UX Style Guide.
+
+Maintain the existing institutional visual identity.
+
+### General design requirements
+
+- Professional institutional dashboard.
+- Clean, modern, readable interface.
+- Consistent sidebar, header and account menu.
+- Consistent spacing, typography, cards, buttons, icons, tables and forms.
+- Clear status indicators.
+- Properly designed empty states, confirmation dialogs, validation messages and loading states.
+- Responsive layout for desktop, laptop and tablet.
+- Avoid unnecessarily large cards and excessive empty space.
+- Avoid excessive explanatory text.
+- Avoid clutter and duplicate information.
+- Use charts only when they communicate useful information.
+
+Increase readability where necessary:
+
+- Main page headings around 26–28px.
+- Section headings around 19–21px.
+- Body text around 14–16px.
+- Table text around 14px.
+- Labels around 14px.
+- Secondary text around 12–13px.
+
+These are design targets, not rigid constraints if the existing style guide specifies otherwise.
+
+Use the same overall layout and design language across the Principal and HOD portals.
+
+### Theme
+
+Support Light Mode and Dark Mode consistently across the entire application.
+
+The selected theme should persist after refresh and logout/login, preferably using an authenticated user preference stored through the backend. In development mode, a local preference may be used.
+
+---
+
+# PART 5 — PRINCIPAL PORTAL
+
+The Principal has institution-wide administrative access.
+
+The Principal can:
+- Manage HOD accounts and departments.
+- View institution-wide examination reports based on released results.
+- View institution-wide audit history.
+- Manage their own profile and settings.
+
+The Principal does not manage subject question banks or execute examination scheduling.
+
+## 5.1 Principal navigation
+
+The sidebar should contain only:
+
+1. Dashboard
+2. HOD Management
+3. Institution Reports & Analytics
+4. Audit Logs
+
+Profile and Settings must be accessible through the top-right account menu, not separate sidebar items.
+
+Remove obsolete navigation entries such as:
+- Academic Structure.
+- Department Management as a separate page.
+- Staff Management.
+- Separate User Management.
+- Examination Cycles.
+- Question Bank Monitoring.
+- Any redundant or duplicate pages.
+
+## 5.2 Principal Dashboard
+
+Create a simplified institutional overview.
+
+### Summary cards
+
+Display:
+
+- Total Departments.
+- Total HOD Accounts.
+- Total Registered Students.
+- Upcoming Examinations.
+- Examinations In Progress.
+- Completed Examinations.
+
+Use data from the backend.
+
+Registered Students must represent unique USNs. Do not count the same student repeatedly because the student is associated with multiple subjects.
+
+### Main dashboard sections
+
+Include:
+
+1. Institutional Examination Activity.
+2. Recent Administrative Activities.
+3. Useful quick action: Create HOD & Department.
+
+Do not include:
+- Examination Cycle summaries.
+- Staff counts or staff management.
+- Question-bank readiness.
+- Published question-set counts.
+- Semester-wise academic structure administration.
+- HOD question-bank submission monitoring.
+
+The Principal creates departments together with their HOD accounts.
+
+HODs themselves create and manage subjects and questions for their own departments.
+
+## 5.3 HOD Management
+
+This is the single management page for both HOD accounts and their departments.
+
+Do not create separate Department Management, Assign HOD or Staff Management pages.
+
+### Create HOD & Department
+
+Provide a form containing:
+
+**HOD details**
+- Full Name.
+- Employee ID.
+- Official Email.
+- Contact Number, where required.
+
+**Department details**
+- Department Name.
+- Department Code.
+
+Backend-generated IDs should be used.
+
+Create the HOD account and department assignment in a single backend transaction.
+
+### Important business rule
+
+There must be only one active HOD assigned to a department at a time.
+
+The Principal can:
+- Create an HOD and department.
+- View existing HOD accounts.
+- Search by name, employee ID or department.
+- View HOD details.
+- Edit permitted information.
+- Activate or deactivate an HOD.
+- Replace an existing HOD.
+
+When replacing an HOD:
+- Deactivate the existing HOD account.
+- Assign the new HOD to that department.
+- Preserve the old HOD's historical records and audit trail.
+- Perform the assignment safely through one backend transaction.
+
+Do not delete historical account information.
+
+Use secure account provisioning. Never display plain-text passwords or generate insecure shared credentials in the frontend. Use an authorised initial password or secure invitation flow implemented by the backend.
+
+The Principal cannot create COE accounts through this page.
+
+## 5.4 Institution Reports & Analytics
+
+This page provides institution-wide results and performance analysis.
+
+Use only results that have been explicitly released by the COE.
+
+Unapproved, pending or correction-pending results must never appear as official institutional results.
+
+### Page structure
+
+Create two internal tabs:
+
+1. Results Overview.
+2. Performance Analytics.
+
+### Filters
+
+Provide:
+
+- Academic Year.
+- Department.
+- Semester.
+- Subject / Examination.
+
+Use dynamic backend data. Do not hardcode departments, subjects or examination options.
+
+Remove the concept of Examination Cycle. Use actual examination records.
+
+### Results Overview
+
+Display institutional result information with useful filters.
+
+Show relevant statistics:
+
+- Students Evaluated.
+- Pass Percentage.
+- Fail Percentage.
+- Highest Marks or Percentage.
+- Average Percentage.
+- Lowest Marks or Percentage.
+
+Include department-wise and subject-wise views.
+
+### Performance Analytics
+
+Include:
+- Department-wise performance.
+- Subject-wise performance.
+- Section-wise performance where applicable.
+- Comparison across examinations.
+- Appropriate graphs and charts.
+
+When comparing different subjects with different maximum marks, use percentages rather than directly comparing raw marks.
+
+Student counts must represent unique students in the relevant filtered scope.
+
+Do not include:
+- Question-bank completeness.
+- Published-set readiness.
+- HOD question submission status.
+- Staff performance.
+- Unreleased examination results.
+
+Provide useful exports where supported, especially PDF, Excel and CSV.
+
+## 5.5 Principal Audit Logs
+
+This page provides institution-wide audit history.
+
+The Principal can filter by:
+- Department.
+- Role.
+- Activity category.
+- Date range.
+- Search text or user.
+
+Relevant activity categories include:
+
+- HOD and department creation.
+- HOD update, activation, deactivation and replacement.
+- Student-list uploads and replacements.
+- Subject creation and updates.
+- Question uploads and publication.
+- Key correction requests.
+- Examination scheduling and status events.
+- Result import and release.
+- Report viewing and exports.
+- Account and security-related events.
+
+Use real backend audit records.
+
+Provide CSV export.
+
+The page must be read-only. Do not allow ordinary users to edit or delete audit entries.
+
+Avoid claims of cryptographic immutability in a mock/demo environment. The production backend should store protected, append-only audit records.
+
+---
+
+# PART 6 — HOD PORTAL
+
+An HOD has authority only over their assigned department.
+
+Every HOD-facing page must obtain the department scope from the authenticated backend account.
+
+Do not trust a department ID supplied by the frontend to grant access.
+
+The backend must enforce department isolation on every relevant endpoint.
+
+## 6.1 HOD navigation
+
+The new sidebar should contain:
+
+1. Dashboard
+2. Setup Class
+3. Questions
+4. Key Correction
+5. Examination Status
+6. Department Results & Performance Analytics
+7. Audit Logs
+
+Profile and Settings are accessible through the account menu.
+
+Remove the old navigation items and merge their useful functionality into the new pages.
+
+Remove:
+- My Department as an unnecessary independent page.
+- My Subjects as a separate page.
+- Student Management as a separate page.
+- Upload Questions as a separate page.
+- Question Bank Review as a separate page.
+- Submission History as a separate page.
+- Session Information as a separate page.
+- Separate Department Results and Performance Analytics sidebar entries.
+- Separate Profile and Settings sidebar entries.
+
+Do not create staff accounts or staff management functionality.
+
+## 6.2 HOD Dashboard
+
+Create a concise department dashboard.
+
+### Summary cards
+
+Display:
+
+- My Subjects.
+- Eligible Students.
+- Published Subjects.
+- Upcoming Examinations.
+- Released Results.
+
+### Quick actions
+
+Include useful actions:
+
+- Create / Manage Subjects.
+- Upload Eligible Students.
+- Upload Questions.
+- Submit Key Correction Request.
+- View Department Results.
+
+These actions must navigate to the relevant page or section. Do not create duplicate forms or duplicate data workflows in the dashboard.
+
+### Other sections
+
+Include:
+- Department Examination Activity.
+- Recent Department Activities.
+- Summary of Released Results.
+
+Use dynamic records.
+
+Show the HOD's assigned department as read-only information.
+
+Do not show:
+- Long security explanations.
+- Staff details.
+- Fixed question-bank limits.
+- Question-bank completeness as a dashboard metric.
+- Obsolete exam cycles.
+- Separate duplicate section-level examination records.
+
+## 6.3 Setup Class
+
+This is a combined page replacing separate subject management and student management pages.
+
+It must have:
+- A common Semester selector.
+- Two internal tabs: Subjects and Student Lists.
+
+The HOD's assigned department must appear as read-only information.
+
+Changing the semester should refresh the subject list and student lists for that semester.
+
+### Tab A — Subjects
+
+The HOD creates and manages subjects for their department.
+
+Provide these fields:
+
+- Subject Code.
+- Subject Name.
+- Module Count.
+- Applicable Sections.
+
+The number of modules must be flexible. Do not fix it to five.
+
+The applicable sections must be configurable based on the actual academic records. Do not assume that every department has only sections A, B and C.
+
+Allow:
+- Create Subject.
+- Edit Subject.
+- View Subject.
+- Deactivate or archive Subject.
+- Delete only when the subject has no dependent question-bank, examination or result records.
+
+If dependent records exist, preserve history and use deactivation/archive instead of physical deletion.
+
+Subjects must be identified by their department, semester, subject ID and relevant academic context.
+
+### Tab B — Student Lists
+
+The HOD uploads only eligible students for examinations.
+
+Eligibility is determined by the HOD according to college rules.
+
+Support a separate student list for each applicable section.
+
+The section should come from the selected Student Lists tab. Do not require a Section column in the Excel template.
+
+Use a standard Excel template with these columns:
+
+1. USN.
+2. Student Name.
+3. DOB.
+
+DOB is required because the Student Portal uses USN and DOB for student login validation.
+
+The list must support:
+
+- Download Excel Template.
+- Upload Excel File.
+- Preview Before Saving.
+- Validate Data.
+- Submit / Save.
+- Replace Existing Section List.
+- Add Individual Student.
+- Edit Individual Student.
+- Remove Individual Student, subject to dependency and historical-record rules.
+- View Previous Uploads and Replacements.
+
+### Excel validation
+
+Validate:
+
+- Blank required cells.
+- Duplicate USNs within a file.
+- Duplicate USNs across sections and departments.
+- Invalid USN format.
+- Department-prefix mismatch where identifiable.
+- Missing or invalid DOB.
+- Incorrect headings or spreadsheet structure.
+- Invalid data types.
+
+Show row-level and column-level errors before accepting the upload.
+
+Do not silently accept invalid student entries.
+
+Use a genuine Excel parser such as SheetJS or an appropriate maintained library. Do not use `file.text()` as a substitute for parsing an XLSX workbook.
+
+### PDF-to-Excel conversion workflow
+
+The HOD should also be able to upload student details in PDF format.
+
+Implement this workflow:
+
+1. Select the required section.
+2. Upload the student PDF.
+3. Extract the student data.
+4. Convert the extracted data to the standard Excel structure.
+5. Show a preview and validation report.
+6. Highlight uncertain or unreadable entries.
+7. Allow the HOD to review and correct extracted fields.
+8. Download the converted `.xlsx` file.
+9. The HOD manually uploads that downloaded Excel file through the normal Excel upload process.
+10. Validate and save the uploaded list.
+
+Do not silently save extracted PDF data without HOD review.
+
+Production PDF extraction should use a genuine backend PDF processing/OCR service. Keep uncertain records for manual verification.
+
+### Development-only PDF demo generator
+
+In development/mock mode, provide a clearly labelled demo PDF generator.
+
+It should generate actual downloadable PDF files for scenarios such as:
+
+- Valid student list.
+- Duplicate USN.
+- Missing name or DOB.
+- Incorrect department USN.
+- Unclear or corrupted entries.
+
+The HOD should manually upload the generated PDF through the normal PDF converter.
+
+The converter should produce an actual downloadable Excel file. The HOD must then manually upload that Excel file through the normal Excel upload process.
+
+Do not bypass these steps by automatically inserting demo data into the student list.
+
+All demo PDF generator controls must be completely hidden in production.
+
+The demo extraction process must be labelled as simulated. Do not claim that mock extraction is genuine OCR.
+
+### Student privacy
+
+DOB is sensitive information. Display it only where necessary for authorised student-list management and validation.
+
+Never expose DOB in ordinary examination reports, audit descriptions, dashboards or unnecessary HOD views.
+
+---
+
+# PART 7 — QUESTIONS PAGE
+
+Keep a separate sidebar page called **Questions**.
+
+The question bank belongs to the subject, not to individual sections, because the participating sections of the same department and semester share the subject syllabus and common examination.
+
+Question-bank identity should be associated with:
+
+- Department.
+- Semester.
+- Subject.
+- Academic context.
+- Module.
+- Question revision.
+
+### Select subject
+
+The HOD selects a subject created through Setup Class.
+
+The system must dynamically load its module count and details.
+
+Do not hardcode five modules.
+
+### Question upload methods
+
+Support:
+
+1. Add an individual question manually.
+2. Bulk upload through Excel.
+3. PDF-to-Excel conversion followed by manual Excel upload.
+
+### Standard question Excel template
+
+Use these columns:
+
+1. Module Number.
+2. Question Text.
+3. Option A.
+4. Option B.
+5. Option C.
+6. Option D.
+7. Correct Option.
+
+Do not include a difficulty column.
+
+All questions are assumed to be at the same difficulty level for this system. Do not create Easy, Medium or Hard classification.
+
+### Module-wise question pool
+
+Allow the HOD to:
+- Select which modules to upload.
+- Upload a flexible number of questions for each selected module.
+- Add questions individually.
+- View existing questions by module.
+- Edit questions before publication.
+- Remove or archive questions before publication, subject to dependency rules.
+
+Validate:
+- Required fields.
+- Four distinct options.
+- Valid correct answer.
+- Valid module number.
+- Module number within the configured subject module count.
+- Duplicate question text.
+- Duplicate identifiers.
+- Sufficient available questions for the requested paper configuration.
+
+Use a stable Question ID for each question. The same Question ID must remain traceable across paper versions and examination records.
+
+### Final examination question distribution
+
+HOD configures:
+- Final paper question count.
+- Module-wise question distribution.
+
+The interface may suggest an even distribution, but the HOD must be able to adjust it.
+
+For example, if the final paper contains 30 questions, the HOD must be able to define how many questions come from each module.
+
+Do not fix:
+- 300 total questions.
+- 60 questions per module.
+- Five modules.
+- Any other obsolete fixed count.
+
+### Numbered question sets
+
+The backend generates numbered Sets 1, 2, 3 and 4 based on the HOD's configured question count and module-wise distribution.
+
+All four numbered sets must follow the same configured paper blueprint and question count.
+
+The HOD must be able to preview the generated sets.
+
+The HOD explicitly clicks **Publish** to publish the sets.
+
+Only after successful publication should they be available to the COE.
+
+The HOD should see useful publication status, revision history and publication timestamps.
+
+### Question-set integrity
+
+Do not fabricate questions or silently duplicate questions to fill a set.
+
+If the requested set generation requires more unique questions than are available, display an accurate shortage report and prevent invalid publication.
+
+If the institution configures the four numbered sets to be fully disjoint, four N-question sets require at least 4N valid unique questions for the selected distribution.
+
+Do not silently assume or invent an overlap policy. Follow an existing institutional/backend policy if one is configured. Otherwise, report the availability clearly and make the policy explicit in the backend contract.
+
+### A–D shuffled versions
+
+When the COE selects a numbered set for an examination sitting, the backend generates A, B, C and D versions for that sitting.
+
+The versions contain the same selected questions, but question order and answer-option order are shuffled.
+
+Stable Question IDs must be retained so that student responses and answer-key corrections can be evaluated correctly.
+
+Do not generate A–D versions automatically during HOD publication.
+
+### Question upload implementation
+
+Use a real XLSX parser for Excel uploads.
+
+For PDF-to-Excel conversion, use the same review-and-manual-upload workflow described in Setup Class.
+
+Remove all old fake question generator functionality, especially:
+- Artificial generation of questions to fill a 300-question bank.
+- Fake `FILL_ALL_MODULES_TO_300` logic.
+- Silent fallback to generated sample questions when file parsing fails.
+- Any fake success message after an unsuccessful upload.
+
+If parsing fails, show the real error. Never pretend the file was imported.
+
+### Publication history
+
+Preserve the complete question publication/revision history inside the Questions page.
+
+Do not create a separate Submission History page.
+
+Published revisions must remain traceable. Changes after publication should create an appropriately governed new revision, not silently modify historical examination material.
+
+---
+
+# PART 8 — KEY CORRECTION PAGE
+
+Keep a separate sidebar page named **Key Correction**.
+
+This page allows the HOD to request correction of an answer key for a completed examination.
+
+The HOD must not directly change:
+- The master question bank's published answer key.
+- Examination marks.
+- Student results.
+- Pass/fail status.
+- Toppers.
+
+### Correction request form
+
+Provide:
+
+- Select Examination.
+- Question ID.
+- Existing Correct Answer.
+- Proposed Correct Answer.
+- Reason / Supporting Explanation.
+- Supporting evidence where the backend supports secure attachments.
+
+Only allow correction requests for examinations that are completed and whose results have not yet been released.
+
+The form should load genuine question and answer information from the relevant examination records.
+
+### Approval workflow
+
+1. HOD submits correction request.
+2. Request is saved and logged by the backend.
+3. COE sees it under Result Approval → Answer-Key Corrections in the separate COE Portal.
+4. COE approves or rejects the request.
+5. The HOD can view the request status and correction history.
+
+The HOD cannot approve their own request.
+
+### On COE approval
+
+The correction must update the examination-specific answer key, not the master question bank.
+
+The backend must:
+- Use stable Question IDs.
+- Recalculate all impacted student results.
+- Recalculate across A, B, C and D versions.
+- Recalculate across all relevant sittings.
+- Recalculate total marks.
+- Recalculate pass/fail.
+- Recalculate topper status.
+- Preserve historical answer-key revisions.
+- Record the correction, approval and recalculation in the audit log.
+
+The Lab Server result package must preserve individual student responses mapped to stable Question IDs, assigned version, attendance, submission status and examination/sitting IDs.
+
+Aggregate marks alone are insufficient for recalculating results after an answer-key correction.
+
+The backend must also support authorised evaluation rules such as cancellation of a question or multiple correct answers where applicable.
+
+If a correction request is pending or critical result validation is unresolved, result release must remain blocked until the COE resolves the issue.
+
+The COE reviews recalculated results before releasing them.
+
+Do not implement manual mark editing by HOD.
+
+### Correction history
+
+Show:
+- Request date.
+- Examination.
+- Question ID.
+- Existing answer.
+- Proposed answer.
+- Reason.
+- COE decision.
+- Decision date.
+- Current request status.
+
+Preserve all previous requests and decisions.
+
+---
+
+# PART 9 — EXAMINATION STATUS PAGE
+
+Keep one read-only sidebar page named **Examination Status**.
+
+Remove the separate Session Information sidebar item and its duplicate page/view.
+
+The HOD only monitors examination status for their assigned department.
+
+The HOD does not schedule examinations, allocate sittings, choose numbered question sets, transfer packages or control the COE's examination operations.
+
+### Examination grouping
+
+Display one examination record per:
+
+Department + Semester + Subject.
+
+All participating sections must be grouped together.
+
+For example, if Sections A, B and C are participating in one examination, show one examination with all three sections. Do not display three duplicate examinations.
+
+### Main table or cards
+
+Display:
+- Subject Code.
+- Subject Name.
+- Semester.
+- Participating Sections.
+- Examination Date.
+- Examination Status.
+- Lab Readiness.
+- Result Status.
+
+Provide basic search and filters by semester and status.
+
+### Examination lifecycle statuses
+
+Use these distinct statuses:
+
+- Scheduled.
+- In Progress.
+- Exam Completed.
+- Cancelled.
+
+### Lab readiness
+
+Display:
+- Not Ready.
+- Ready.
+- Issue.
+
+### Result statuses
+
+Display:
+- Not Imported.
+- Awaiting COE Approval.
+- Correction Pending.
+- Released.
+
+Do not confuse Exam Completed with Result Released.
+
+### Sitting Details
+
+Each examination can have one or two sittings.
+
+Provide an expandable Sitting Details section showing:
+- Morning or Afternoon.
+- Sitting date and time.
+- Assigned laboratory.
+- Assigned student count.
+- Sitting status where available.
+
+These details are read-only.
+
+### Remove obsolete information
+
+Do not expose:
+- Examination Cycle terminology.
+- Separate section-level duplicate examination entries.
+- Locked question-bank revision details.
+- Frozen eligible roster snapshot counts.
+- Cryptographic key or package-security internals.
+- COE-only technical controls.
+- Separate Session Information page.
+- Scheduling forms or editing controls.
+
+The HOD should see the meaningful progress of their examination, not backend implementation details.
+
+---
+
+# PART 10 — DEPARTMENT RESULTS & PERFORMANCE ANALYTICS
+
+Use one sidebar page named:
+
+**Department Results & Performance Analytics**
+
+Do not keep separate sidebar entries for Department Results and Performance Analytics.
+
+Inside the page, use two internal tabs:
+
+1. Individual Student Results.
+2. Performance Analytics.
+
+Only results explicitly released by the COE should be displayed.
+
+### Tab A — Individual Student Results
+
+Display:
+- USN.
+- Student Name.
+- Examination / Subject.
+- Semester.
+- Original Section.
+- Marks Obtained / Maximum Marks.
+- Percentage.
+- Attendance.
+- Pass / Fail status where evaluated.
+
+Provide:
+- Search by name or USN.
+- Filters for academic year, semester, examination/subject and section.
+- Clear All / Reset Filters.
+
+The options must come dynamically from actual records.
+
+Do not hardcode only particular semesters or only Sections A and B.
+
+### Attendance and result handling
+
+Display Absent separately.
+
+Do not automatically classify absent students as failed unless an explicit institutional policy says so.
+
+Do not show individual answers, answer keys or confidential response details.
+
+### Tab B — Performance Analytics
+
+Show meaningful statistics:
+
+- Students Evaluated.
+- Pass Percentage.
+- Fail Percentage.
+- Average Percentage.
+- Highest Percentage.
+- Lowest Percentage.
+- Absent Students.
+
+Include:
+- Top-performing students.
+- Tied topper handling.
+- Subject-wise performance.
+- Section-wise performance.
+- Semester-wise performance where useful.
+
+Use percentages to compare different subjects with different maximum marks.
+
+Avoid misleading comparisons based on raw marks alone.
+
+### Data and access rules
+
+The HOD can see only their department's released results.
+
+This restriction must be enforced by the Java backend, not just by hiding other departments in the UI.
+
+### Exports
+
+Provide appropriate PDF, Excel and CSV exports for authorised departmental results.
+
+Do not expose results before COE release.
+
+---
+
+# PART 11 — HOD AUDIT LOGS
+
+Keep a separate sidebar page named **Audit Logs**.
+
+The purpose is to allow the HOD to view the activity history of their own department.
+
+The HOD must see relevant activities performed by:
+- HOD.
+- Principal.
+- COE.
+- System.
+
+### Record relevant activity
+
+Include:
+- HOD/department changes made by Principal.
+- Subject created, updated, archived or deactivated.
+- Student-list upload, replacement and individual changes.
+- Question upload and validation.
+- Question publication and revisions.
+- Key correction request, approval or rejection.
+- Examination scheduling and status changes.
+- Result import and release.
+- Department result reports viewed or exported.
+- Relevant account and security-related events.
+
+Do not include sensitive values such as passwords, authentication tokens, DOBs or confidential student answers in audit messages.
+
+### Filters
+
+Provide:
+- Search by activity, person, subject or student USN.
+- Date range.
+- Activity category.
+- Performed By: HOD, Principal, COE or System.
+
+Do not provide a Department filter for HOD because the HOD is already limited to their own department.
+
+Provide CSV export.
+
+### Access control
+
+Principal:
+- Institution-wide audit history.
+- Department and role filters.
+
+HOD:
+- Only assigned department activity history.
+- No access to another department's records.
+
+Backend must enforce this restriction.
+
+Audit logs are read-only in the frontend. Use protected append-only records in production.
+
+Do not create a duplicate history workflow. Detailed histories must remain on their relevant pages:
+- Question publication/revisions inside Questions.
+- Student uploads/replacements inside Setup Class → Student Lists.
+- Key correction history inside Key Correction.
+- Combined departmental activity inside Audit Logs.
+
+Do not delete historical data when removing the old Submission History page.
+
+---
+
+# PART 12 — SHARED PROFILE & SETTINGS
+
+Remove separate Profile and Settings sidebar pages.
+
+Use a top-right account menu for both Principal and HOD.
+
+The account menu should contain:
+- Profile & Settings.
+- Logout.
+
+The profile information displayed must depend on the authenticated role.
+
+### Profile information
+
+Display:
+- Full Name.
+- Employee ID.
+- Official Email.
+- Designation / Role.
+- Assigned Department for HOD.
+- Contact Number.
+- Last Login.
+
+Official identity fields must be read-only.
+
+Contact Number can be editable with backend validation and authorised saving.
+
+Do not allow HOD to change their own role, employee ID or assigned department.
+
+Do not allow Principal to edit restricted institutional identity fields through this page.
+
+### Change Password
+
+Provide:
+- Current Password.
+- New Password.
+- Confirm New Password.
+- Update Password.
+
+Validate that:
+- Current password is verified.
+- New password satisfies backend password policy.
+- Confirmation matches.
+- Errors are displayed clearly.
+
+The backend must securely process the password change.
+
+Never store raw passwords in frontend storage or logs.
+
+### Appearance
+
+Support:
+- Light Mode.
+- Dark Mode.
+
+The selected appearance must apply across the entire portal and persist across refresh and logout/login.
+
+### Demo Data Management
+
+Provide Reset Demo Data only in a clearly identified development/mock environment.
+
+On reset:
+1. Ask for confirmation.
+2. Explain that modified demo records will be restored/lost.
+3. Restore the original sample demo records.
+4. Preserve appearance preference.
+5. Refresh all relevant UI data.
+
+This must be completely hidden or unavailable in production.
+
+Do not allow a frontend demo reset to delete real institutional data.
+
+### Remove obsolete settings elements
+
+Remove:
+- API endpoint/adapter configuration panels.
+- Technical security-posture panels.
+- Duplicate Logout controls.
+- Editable official identity fields.
+- Production-accessible demo reset.
+
+Use one shared experience for Principal and HOD with role-specific profile information.
+
+---
+
+# PART 13 — NAVIGATION AND LEGACY PAGE CLEANUP
+
+Refactor the routing and sidebar carefully.
+
+### Final Principal sidebar
+
+- Dashboard.
+- HOD Management.
+- Institution Reports & Analytics.
+- Audit Logs.
+
+### Final HOD sidebar
+
+- Dashboard.
+- Setup Class.
+- Questions.
+- Key Correction.
+- Examination Status.
+- Department Results & Performance Analytics.
+- Audit Logs.
+
+### Account menu
+
+- Profile & Settings.
+- Logout.
+
+Remove obsolete pages from navigation and retire unused legacy components when safe.
+
+Do not leave broken routes, duplicate pages, dead links or buttons that navigate nowhere.
+
+Preserve useful historical records and relevant existing services.
+
+If existing route names are used elsewhere in the project, update the navigation and routing consistently rather than leaving broken links.
+
+---
+
+# PART 14 — EXAMINATION WORKFLOW AND CROSS-PORTAL DATA CONSISTENCY
+
+Although the COE Portal is a separate application, the Principal and HOD portals must be consistent with its workflow.
+
+Follow this sequence:
+
+1. Principal creates the department and HOD account.
+2. HOD logs in and accesses only their assigned department.
+3. HOD uses Setup Class to create subjects.
+4. HOD uploads eligible student lists for each applicable section.
+5. HOD uploads questions module-wise.
+6. HOD configures the final question count and module-wise distribution.
+7. Backend generates the numbered question sets.
+8. HOD previews and publishes the numbered sets.
+9. Published sets become available to the COE Portal.
+10. COE schedules one examination per department + semester + subject, with applicable sections combined.
+11. COE configures one or two sittings and sends the relevant examination package to the Lab Server.
+12. Students write the examination through the separate Student Portal on the college LAN.
+13. Lab Server evaluates responses and sends the signed result package to the central backend.
+14. COE imports the results.
+15. HOD may submit an examination-specific key correction request before results are released.
+16. COE approves/rejects corrections and recalculates affected results.
+17. COE approves and releases final results.
+18. Released results become visible to the appropriate HOD and Principal.
+19. Department and institutional analytics use those released results.
+20. Audit history records the relevant activities throughout the workflow.
+
+### Examination rules
+
+- Sections belonging to the same department, semester and subject participate in one combined examination.
+- Preserve each student's original section for result filtering and reporting.
+- HOD determines examination eligibility by uploading the eligible student list.
+- COE schedules the examination and assigns students to sittings according to the approved allocation workflow.
+- The HOD does not control COE scheduling or sitting allocation.
+- Numbered Sets 1–4 are selected by the COE.
+- A–D shuffled versions are generated for the selected numbered set by the backend.
+- There is no negative marking.
+- Do not introduce question difficulty levels.
+- Do not reintroduce obsolete examination cycles.
+- Do not create multiple section-level duplicate examination records.
+
+### Distinguish all statuses correctly
+
+Do not treat these as interchangeable:
+
+**Examination lifecycle**
+- Scheduled.
+- In Progress.
+- Exam Completed.
+- Cancelled.
+
+**Package readiness**
+- Not Prepared.
+- Preparing.
+- Transfer Pending / Transferring.
+- Verification Pending.
+- Ready for Examination.
+- Transfer Failed / Rejected.
+
+**Result lifecycle**
+- Not Imported.
+- Imported / Awaiting COE Approval.
+- Correction Pending.
+- Released.
+
+The HOD interface should show only the simple statuses relevant to the HOD. Do not expose unnecessary package security or internal technical information.
+
+---
+
+# PART 15 — BACKEND INTEGRATION PREPARATION
+
+The frontend is developed in React and TypeScript. The backend team is responsible for Java backend development and PostgreSQL database integration.
+
+Your responsibility is to prepare the frontend architecture properly so it can connect to the real backend.
+
+Do not pretend that a backend operation has succeeded when only mock frontend state has changed.
+
+### Recommended frontend structure
+
+Preserve the existing project's conventions, but separate responsibilities clearly:
+
+- Pages.
+- Shared components.
+- Layouts.
+- Types / interfaces.
+- API services.
+- Authentication services.
+- Role and route guards.
+- Data adapters.
+- Validation utilities.
+- File upload utilities.
+- Theme management.
+
+Avoid putting all logic inside a single large page component.
+
+### Central API client
+
+Create or refine a central API client.
+
+It should handle:
+- Base URL configuration through environment variables.
+- Authentication tokens.
+- Request and response handling.
+- Error handling.
+- Loading and timeout states.
+- Appropriate unauthorised-session handling.
+- Consistent error messages.
+
+Do not hardcode production server addresses.
+
+Do not put secrets, database credentials, signing keys or private keys in frontend code.
+
+### Authentication and permissions
+
+Create reliable authentication context/state.
+
+The frontend must know:
+- Authenticated user ID.
+- Role.
+- Assigned department ID for HOD.
+- Permitted routes and actions.
+- Authentication/session status.
+
+Use role-based route guards.
+
+Never treat hidden sidebar links as the only access-control mechanism. The Java backend must independently enforce all permissions.
+
+HOD endpoints must derive or validate department scope using authenticated server-side identity.
+
+### Typed API services
+
+Create clean, typed API service functions for relevant features:
+
+**Authentication**
+- Login.
+- Logout.
+- Current authenticated user.
+- Change password.
+
+**Principal**
+- Dashboard overview.
+- Create HOD and department.
+- HOD listing and details.
+- HOD update, activation, deactivation and replacement.
+- Institutional reports and analytics.
+- Institutional audit history.
+
+**HOD Setup Class**
+- Subject CRUD.
+- Student-list upload.
+- Student-list replacement.
+- Student validation.
+- Individual student management.
+- Student-list upload history.
+- PDF conversion and Excel download workflows.
+
+**Questions**
+- Subject and module details.
+- Question upload and validation.
+- Bulk Excel upload.
+- PDF conversion.
+- Question listing and editing.
+- Paper blueprint configuration.
+- Numbered set preview and publication.
+- Question publication history.
+
+**Key Correction**
+- Eligible examination listing.
+- Correction request creation.
+- Correction request status.
+- Correction history.
+
+**Examination Status**
+- Department examination list.
+- Sitting details.
+- Examination status.
+- Lab readiness.
+- Result status.
+
+**Department Results**
+- Released result list.
+- Result filters.
+- Performance analytics.
+- Exports.
+
+**Audit Logs**
+- Principal institution-wide audit queries.
+- HOD department-scoped audit queries.
+- CSV export.
+
+**Settings**
+- Profile details.
+- Contact number update.
+- Password update.
+- Theme preference.
+
+Define reusable TypeScript request and response interfaces for the above operations.
+
+The exact endpoint URLs should be aligned with the backend team's Java API design. Do not invent claims that these APIs already exist.
+
+You may provide proposed endpoint names and integration contracts in the source code or a short API integration document.
+
+### Suggested backend entity relationships
+
+Ensure the frontend data model can represent the following independently identified records:
+
+- User.
+- Role.
+- Department.
+- HOD assignment.
+- Academic year.
+- Semester.
+- Section.
+- Subject.
+- Module.
+- Student.
+- Eligible student list and its revision.
+- Question.
+- Question bank revision.
+- Numbered question set.
+- Question paper blueprint.
+- Examination.
+- Examination sitting.
+- Sitting student assignment.
+- A–D paper version.
+- Student response mapped to stable Question ID.
+- Result package.
+- Student result.
+- Examination-specific answer-key revision.
+- Key correction request.
+- Audit event.
+
+Use stable IDs. Do not rely only on display names or hardcoded array positions.
+
+### API response behaviour
+
+All pages must handle:
+- Loading.
+- Empty state.
+- Successful response.
+- Validation failure.
+- Permission denied.
+- Network error.
+- Server error.
+- Session expiration.
+
+Show useful messages rather than fake success alerts.
+
+Use appropriate confirmation dialogs for destructive or consequential actions.
+
+### File uploads
+
+For Excel and PDF uploads:
+- Use the correct file input and file type validation.
+- Display file name and size.
+- Provide upload progress when supported.
+- Show preview and validation errors.
+- Handle failed parsing accurately.
+- Do not silently replace valid data.
+- Require explicit confirmation for replacement.
+- Use actual backend upload APIs in production.
+
+For downloads, generate or retrieve actual PDF, XLSX and CSV files as appropriate.
+
+---
+
+# PART 16 — DEVELOPMENT MODE VS PRODUCTION MODE
+
+The application must clearly separate development/demo behaviour from real institutional operations.
+
+### Development/mock mode
+
+It may include:
+- Synthetic sample records.
+- Mock authentication adapters.
+- Demo PDF generator.
+- Mock PDF conversion.
+- Sample question and student data.
+- Demo reset.
+- Simulated API responses.
+
+All demo features must be clearly identifiable as demo functionality.
+
+Use synthetic data only. Do not use real student DOBs or sensitive personal records.
+
+Demo mode should use a dedicated mock data adapter/service layer. Do not mix mock fallback logic into production services.
+
+### Production mode
+
+In production:
+- Demo generators are hidden.
+- Demo reset is disabled.
+- Mock authentication is disabled.
+- Real APIs are used.
+- Real institutional records come from PostgreSQL through the Java backend.
+- Permissions are enforced on the backend.
+- No fake success responses.
+- No hardcoded credentials.
+- No sample data injected into real database operations.
+- No exposed secrets.
+
+Do not automatically fall back to demo data when a production API fails. Show the genuine error.
+
+Use environment-based configuration to select the appropriate adapter.
+
+---
+
+# PART 17 — FUNCTIONALITY AND QUALITY REQUIREMENTS
+
+This must be a working frontend application, not a static UI.
+
+Ensure that:
+
+- Every sidebar item opens the correct page.
+- Every tab switches correctly.
+- Every working button performs its intended action.
+- Forms validate required fields.
+- Forms display backend validation messages.
+- Search and filters actually affect displayed data.
+- Sorting and pagination work where needed.
+- Tables use real state and API data.
+- Charts use actual filtered data.
+- Confirmation dialogs work.
+- File downloads produce actual files.
+- Uploads validate actual files.
+- Demo reset restores sample records only in development.
+- Theme changes work across the entire portal.
+- Route guards prevent unauthorised page access.
+- Loading, error and empty states are properly designed.
+- The application remains responsive.
+- No broken imports or TypeScript errors remain.
+
+Do not add decorative controls that appear functional but have no working action.
+
+Do not invent fake backend functionality to make the interface appear complete.
+
+Where backend endpoints are not yet available, use an explicitly labelled development adapter and keep the production API integration point ready.
+
+---
+
+# PART 18 — STRICTLY REMOVE OBSOLETE ASSUMPTIONS
+
+The old application may contain legacy assumptions. Remove them wherever they conflict with this specification.
+
+Do not retain:
+
+- Fixed 300-question question banks.
+- Fixed 60 questions per module.
+- Exactly five modules for every subject.
+- Easy/Medium/Hard difficulty levels.
+- Fixed semester options.
+- Hardcoded section options limited to A/B.
+- Duplicate examination rows for every section.
+- Examination Cycle concepts.
+- Separate academic structure administration.
+- Staff account management.
+- Separate Submission History page.
+- Separate Session Information page.
+- Duplicate Department Results and Performance Analytics sidebar pages.
+- Separate Student Management page.
+- Separate My Subjects page.
+- Separate Question Bank Review page.
+- Separate Profile and Settings sidebar pages.
+- Fake question generation when uploads fail.
+- Fake success notifications.
+- Manual HOD mark editing.
+- HOD authority to schedule examinations.
+- HOD authority to select examination paper sets.
+- HOD authority to release results.
+- Principal authority to create COE accounts through this portal.
+
+Do not delete valuable historical records while removing old UI components.
+
+---
+
+# PART 19 — IMPLEMENTATION ORDER
+
+Work systematically.
+
+### Phase 1 — Inspect
+
+Inspect the entire existing project and identify:
+- Existing routes.
+- Existing pages.
+- Existing shared components.
+- Existing role logic.
+- Existing mock data.
+- Existing service layer.
+- Existing obsolete components.
+- Existing build errors, if any.
+
+### Phase 2 — Common foundation
+
+Implement/refine:
+- Institutional branding and login.
+- Shared layouts.
+- Principal/HOD role-based navigation.
+- Authentication state and route guards.
+- Shared theme.
+- Account menu.
+- Profile and Settings.
+
+### Phase 3 — Principal Portal
+
+Implement in this order:
+1. Dashboard.
+2. HOD Management.
+3. Institution Reports & Analytics.
+4. Audit Logs.
+
+### Phase 4 — HOD Portal
+
+Implement in this order:
+1. Dashboard.
+2. Setup Class.
+3. Questions.
+4. Key Correction.
+5. Examination Status.
+6. Department Results & Performance Analytics.
+7. Audit Logs.
+
+### Phase 5 — Integration preparation
+
+Implement:
+- Central API client.
+- Typed interfaces.
+- Service modules.
+- Mock/production adapter separation.
+- Upload/download handling.
+- Permission and error handling.
+- Backend integration contracts.
+
+### Phase 6 — Testing and verification
+
+Run the available project checks.
+
+At minimum:
+- Resolve TypeScript errors.
+- Resolve broken imports.
+- Run the build.
+- Verify routing.
+- Verify Principal/HOD access separation.
+- Verify page navigation.
+- Verify form validation.
+- Verify the demo flows.
+- Verify responsive behaviour.
+- Verify that production mode cannot access demo reset or demo generators.
+
+Do not stop after generating a plan or screenshots. Implement the changes in the actual project files.
+
+---
+
+# PART 20 — FINAL EXPECTED RESULT
+
+I expect the existing project to be refined into a consistent MIT Mysore Principal and HOD Examination Management frontend.
+
+The final application should have:
+
+### Common
+- Official MIT Mysore login page.
+- Secure role-based navigation.
+- Shared institutional design.
+- Theme support.
+- Profile & Settings through account menu.
+
+### Principal
+- Dashboard.
+- HOD Management.
+- Institution Reports & Analytics.
+- Audit Logs.
+
+### HOD
+- Dashboard.
+- Setup Class.
+- Questions.
+- Key Correction.
+- Examination Status.
+- Department Results & Performance Analytics.
+- Audit Logs.
+
+### Technical readiness
+- Maintainable React/TypeScript code.
+- Consistent typed data structures.
+- Central API layer.
+- Java backend integration points.
+- PostgreSQL-compatible data model.
+- Strong department-level access separation.
+- Real upload, validation and download workflows.
+- Separate development and production configurations.
+
+### Final reporting
+
+After implementation, provide:
+
+1. Summary of changes made.
+2. Pages created or redesigned.
+3. Obsolete pages and navigation removed.
+4. Main files/components modified.
+5. New dependencies added, with reasons.
+6. API services and backend contracts prepared.
+7. Features currently using mock data.
+8. Features requiring actual Java backend endpoints.
+9. Build and TypeScript verification results.
+10. Any remaining errors or incomplete functionality.
+
+Be honest about what is implemented and what still requires backend support.
+
+**Final instruction: Work inside the existing MIT Mysore application. Preserve the existing project identity and improve its architecture and functionality. Do not create a separate replacement project, do not merge the COE Portal, and do not reduce this specification to a visual-only prototype.**

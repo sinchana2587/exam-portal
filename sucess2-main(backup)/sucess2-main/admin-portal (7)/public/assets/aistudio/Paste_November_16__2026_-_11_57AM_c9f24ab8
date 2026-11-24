@@ -1,0 +1,1545 @@
+# MIT MYSORE ADMIN & HOD PORTAL — COMPREHENSIVE REFINEMENT
+
+## Dashboard, Semester Management, Department Header Cleanup, Setup Class, FRONTEND-ONLY Document Converters and Integrated Key Correction
+
+You are modifying my existing MIT Mysore Examination Management System Admin/HOD Portal project.
+
+The frontend has already been developed and approved. Several additional corrections and enhancements are now required.
+
+Your task is to inspect the latest existing source code and implement the changes specified below.
+
+**This is a targeted refinement of the existing website, NOT a request to create a new application or redesign the entire portal.**
+
+Preserve:
+- Existing React and TypeScript architecture.
+- Existing institutional branding.
+- MIT Mysore login page and official identity.
+- Existing authentication and role-based access.
+- Approved Principal and HOD layouts.
+- Existing sidebar navigation except for the explicitly requested Key Correction change.
+- Existing working pages, forms, tables and functionality.
+
+Use the latest project source as the primary reference. Older seed data and earlier code versions may contain obsolete assumptions. Do not restore outdated fixed question-bank limits or obsolete workflows.
+
+Implement all requirements below without introducing unrelated changes.
+
+---
+
+# PART 1 — REMOVE THE GLOBAL DEPARTMENT-BOUND HEADER
+
+The HOD portal currently displays a secondary top header resembling:
+
+Department Bound: CSE · Computer Science and Engineering
+
+It may also contain a lock icon and duplicate department identification.
+
+Remove this entire department-bound bar from all HOD pages.
+
+Remove:
+- Department Bound label.
+- Department code from the duplicate header.
+- Duplicate department name from the global header.
+- Lock icon.
+- Department-bound watermark.
+- Associated duplicate horizontal strip.
+
+Apply this throughout:
+- Dashboard.
+- Setup Class.
+- Questions.
+- Examination Status.
+- Department Results & Performance Analytics.
+- Audit Logs.
+- Profile & Settings.
+
+Do not leave it visible at desktop, tablet or mobile breakpoints.
+
+### Preserve department identification where actually necessary
+
+Do NOT remove:
+- MIT Mysore institutional identity.
+- HOD name and account menu.
+- Department information inside the Setup Class heading.
+- Relevant department information in forms, records and reports.
+- Backend department access restrictions.
+
+For example, the Setup Class heading must still display:
+
+**Setup Class — Computer Science and Engineering**
+
+Use the authenticated HOD's department dynamically.
+
+Do not display the department name unnecessarily in multiple locked badges or global watermarks.
+
+---
+
+# PART 2 — HOD DASHBOARD COMPLETE REFINEMENT
+
+Modify only the existing HOD Dashboard.
+
+The new dashboard must provide three department-wide summary cards and a semester-wise overview covering all eight semesters.
+
+## 2.1 Remove Duplicate Department Badge
+
+Remove the existing badge:
+
+Assigned Department: Computer Science and Engineering
+
+The department name can remain in the dashboard heading.
+
+Do not display an additional locked department badge.
+
+## 2.2 Retain Exactly Three Summary Cards
+
+The dashboard must contain exactly these three main summary cards:
+
+1. Total Students.
+2. Upcoming Examinations.
+3. Released Results.
+
+Remove:
+- My Subjects.
+- Eligible Students.
+- Published Subjects.
+- Question Bank Status.
+- Quick Actions.
+- Recent Department Activities.
+- Summary of Released Results.
+- Department Examination Activity.
+- Lab Readiness summary.
+
+### Card A — Total Students
+
+Display the total number of unique students enrolled in the entire department.
+
+The total must include all applicable semesters from 1st through 8th Semester.
+
+Do not calculate this using examination-eligible student lists alone.
+
+The eligible student roster uploaded by HOD is different from the complete departmental enrolment record.
+
+Use the authoritative department-wide student enrolment dataset.
+
+Count unique USNs and avoid duplicate counting.
+
+When the HOD clicks the Total Students card:
+
+- Navigate smoothly to or expand the Semester-wise Department Overview.
+- Show all eight semesters in ascending order.
+- Display the student count for each semester.
+- Allow the HOD to open the detailed student count for a selected semester.
+
+Where available, the detail view may show a section-wise breakdown.
+
+Do not expose DOB unnecessarily.
+
+If the complete department enrolment dataset does not exist yet, show a genuine unavailable state. Do not substitute examination-eligible counts.
+
+### Card B — Upcoming Examinations
+
+Display the number of distinct upcoming examinations assigned to the HOD's department.
+
+When clicked:
+- Navigate to Examination Status.
+- Apply the Upcoming/Scheduled filter.
+- Display relevant departmental examinations.
+
+Do not count individual sections or individual sittings as separate examinations.
+
+### Card C — Released Results
+
+Display the number of distinct examination records whose results have been explicitly released by COE.
+
+When clicked:
+- Navigate to Department Results & Performance Analytics.
+- Apply the Released Results filter.
+- Display actual released examinations.
+
+Do not count individual student result rows as separate examinations.
+
+## 2.3 Replace Department Examination Activity with Semester-wise Department Overview
+
+Remove the Department Examination Activity table entirely from the dashboard.
+
+Replace it with a section titled:
+
+**Semester-wise Department Overview**
+
+This section must always display all eight semesters:
+
+1. 1st Semester.
+2. 2nd Semester.
+3. 3rd Semester.
+4. 4th Semester.
+5. 5th Semester.
+6. 6th Semester.
+7. 7th Semester.
+8. 8th Semester.
+
+Display them in ascending order.
+
+### Required table
+
+| Semester | Total Students | Upcoming Examinations | Released Results |
+|---|---:|---:|---:|
+| 1st Semester | Actual count | Actual count | Actual count |
+| 2nd Semester | Actual count | Actual count | Actual count |
+| 3rd Semester | Actual count | Actual count | Actual count |
+| 4th Semester | Actual count | Actual count | Actual count |
+| 5th Semester | Actual count | Actual count | Actual count |
+| 6th Semester | Actual count | Actual count | Actual count |
+| 7th Semester | Actual count | Actual count | Actual count |
+| 8th Semester | Actual count | Actual count | Actual count |
+
+The table structure is fixed. The numerical values must come from actual available records.
+
+### All three metrics must be clickable
+
+**Total Students**
+
+When clicked:
+- Open a semester-specific dialog, drawer or detail view.
+- Show total unique enrolled students for that semester.
+- Display section-wise distribution where available.
+- Do not use only examination-eligible student lists as the departmental enrolment total.
+
+**Upcoming Examinations**
+
+When clicked:
+- Navigate to Examination Status.
+- Automatically apply the selected semester.
+- Display upcoming/scheduled examinations for that semester only.
+
+**Released Results**
+
+When clicked:
+- Navigate to Department Results & Performance Analytics.
+- Automatically apply the selected semester.
+- Display only results released by COE.
+
+### Dashboard data accuracy
+
+Always display all eight semester rows, even when a semester has no records.
+
+Use:
+- Actual count when records are available.
+- Zero when the backend confirms that the semester has no matching records.
+- A suitable unavailable/loading state when the source data cannot be retrieved.
+
+Do not invent student totals or examination counts.
+
+Do not display failed API requests as successful zero results.
+
+### Final dashboard layout
+
+The final HOD Dashboard must contain only:
+
+1. Dashboard heading and department identification.
+2. Three clickable summary cards.
+3. Semester-wise Department Overview table.
+
+Do not add other duplicate dashboard sections.
+
+---
+
+# PART 3 — ALL EIGHT SEMESTERS EVERYWHERE
+
+This is a portal-wide requirement.
+
+**Every operational semester selector, dropdown and semester filter must contain all eight semesters.**
+
+The options must be:
+
+- 1st Semester.
+- 2nd Semester.
+- 3rd Semester.
+- 4th Semester.
+- 5th Semester.
+- 6th Semester.
+- 7th Semester.
+- 8th Semester.
+
+Apply this throughout the entire Principal and HOD Portal.
+
+This includes, wherever applicable:
+
+### Principal Portal
+- Institution Reports & Analytics.
+- Semester filters.
+- Academic-year/examination filtering where semester selection exists.
+
+### HOD Portal
+- Dashboard semester-wise overview.
+- Dashboard drill-downs.
+- Setup Class.
+- Subject creation and editing.
+- Student Lists.
+- Questions.
+- Question conversion context.
+- Examination Status.
+- Department Results & Performance Analytics.
+- Any other existing semester selector.
+
+### Critical rule
+
+Do not restrict semester options based on:
+- Odd/even semester cycle.
+- Active/Upcoming status.
+- Existing subjects.
+- Existing student records.
+- Existing section records.
+- Existing examination records.
+
+Do not derive semester dropdown options exclusively from existing subject arrays or existing section arrays.
+
+Use one consistent institutional semester master/configuration source.
+
+The semester options must always contain 1–8 in numeric ascending order.
+
+When a semester has no records, it must remain selectable and show a genuine empty state.
+
+Do not invent records merely to populate an empty semester.
+
+### Older seed compatibility
+
+The older project seed data may contain Active/Upcoming flags or incomplete records for certain semesters.
+
+These flags must not remove semesters from operational selectors.
+
+Do not introduce a hardcoded odd-semester-only filter.
+
+Do not use the old seed status as the condition for showing semester options.
+
+---
+
+# PART 4 — SETUP CLASS REFINEMENT
+
+Location:
+
+HOD Portal → Setup Class.
+
+## 4.1 Heading and Department Context
+
+Display:
+
+**Setup Class — [Authenticated Department Name]**
+
+For example:
+
+Setup Class — Computer Science and Engineering.
+
+Remove the redundant locked Department badge that repeats the same department name.
+
+Use authenticated HOD information to determine the department.
+
+Preserve the Semester selector with all eight semester options.
+
+Preserve the existing internal tabs:
+
+- Subjects.
+- Student Lists.
+
+## 4.2 Subjects Tab — Remove All Add Section Controls
+
+Inside Setup Class → Subjects:
+
+Completely remove:
+- Inline Add Section input.
+- Text input placeholder such as Add Section (e.g. Section D).
+- Separate + Add Section button.
+- Any duplicate section creation control.
+
+The Subjects tab should provide subject-management functionality.
+
+Keep:
+- Create Subject.
+- Existing subject listing.
+- Edit Subject.
+- View Subject.
+- Deactivate/archive.
+- Subject Code.
+- Subject Name.
+- Flexible Module Count.
+- Applicable Sections selection.
+
+Do not remove the existing ability to select already-created sections when creating or editing a subject.
+
+Section creation itself must happen through the Student Lists tab.
+
+Do not introduce fixed module counts.
+
+## 4.3 Student Lists Tab — Retain One Add Section Button
+
+Inside Setup Class → Student Lists:
+
+Remove the permanently visible inline text input:
+
+Add Section (e.g. Section D).
+
+Retain exactly one button:
+
+**+ Add Section**
+
+When clicked, open a modal/dialog containing:
+- Section Name.
+- Create Section.
+- Cancel.
+
+Do not keep the text input permanently visible outside the dialog.
+
+Use the selected:
+- Department.
+- Semester.
+- Academic year, where applicable.
+
+Allow the HOD to create sections such as D, E or other approved section names.
+
+Validate duplicates for the same department, semester and academic context.
+
+After successful creation:
+- Close the dialog.
+- Refresh section tabs.
+- Display the new section.
+- Allow the HOD to upload the relevant student list.
+
+Do not allow creation of another department's section.
+
+Preserve existing student records and historical section data when sections are modified.
+
+---
+
+# PART 5 — STUDENT LIST CONVERTER: FULLY FRONTEND-ONLY
+
+This is a strict requirement.
+
+The HOD must be able to upload student documents and convert them into standard Excel entirely within the browser.
+
+**No Java backend, PostgreSQL, cloud OCR endpoint or external AI service must be required for document conversion.**
+
+The converter must continue working before and after Java backend integration.
+
+Connecting the later Java backend must NOT break or redirect the local document conversion process.
+
+## 5.1 Existing location
+
+HOD Portal → Setup Class → Student Lists → Student List PDF / Image-to-Excel Conversion Helper.
+
+Preserve the existing converter interface and improve its real implementation.
+
+## 5.2 Supported input formats
+
+Support:
+- Text-based PDF.
+- Scanned PDF.
+- JPG/JPEG.
+- PNG.
+- Multi-page PDF.
+
+Use the actual uploaded file content.
+
+Do not use filenames to produce hardcoded records.
+
+## 5.3 Browser-side conversion architecture
+
+Perform the full conversion within the browser using real client-side processing libraries.
+
+Suitable libraries include:
+
+- `pdfjs-dist` for PDF text extraction and rendering.
+- `tesseract.js` for client-side OCR.
+- Browser Canvas APIs for image processing.
+- An actual XLSX generation library for Excel creation.
+
+Package PDF workers, OCR workers, WASM files and OCR language data locally where practical.
+
+Do not depend on remote OCR services or CDN downloads during conversion.
+
+Do not send the original student PDF or image to Java backend endpoints.
+
+Do not use external Gemini/GPT APIs.
+
+Use Web Workers where appropriate to prevent large PDF processing from freezing the UI.
+
+Use actual processing progress rather than simulated progress.
+
+## 5.4 Standard Student Excel Template
+
+Every converted student list must use exactly these columns:
+
+1. USN.
+2. Student Name.
+3. DOB.
+
+Example:
+
+| USN | Student Name | DOB |
+|---|---|---|
+| 4MH24CS071 | Aarav Deshmukh | 2006-03-12 |
+| 4MH24CS072 | Bhavana Krishnamurthy | 2006-06-19 |
+
+These are illustrative records only.
+
+The following context must come from the interface and authenticated account:
+
+- Department: Authenticated HOD account.
+- Semester: Selected Setup Class semester.
+- Section: Selected Student Lists section tab.
+
+Do not add Department, Semester or Section as standard Excel columns.
+
+## 5.5 Document Metadata Detection
+
+If an uploaded PDF contains:
+
+- Department.
+- Semester.
+- Section.
+
+Extract these separately as document metadata.
+
+Compare against:
+- Authenticated HOD department.
+- Selected semester.
+- Selected section.
+
+Do not insert document metadata as student records.
+
+If metadata conflicts, display a blocking mismatch error.
+
+If a PDF contains students belonging to different sections, do not silently mix them into the selected section.
+
+Request correction or separate processing.
+
+## 5.6 Student extraction
+
+Identify the actual student table structure.
+
+Support different:
+- Column widths.
+- Fonts.
+- Table layouts.
+- Page layouts.
+- Date formats.
+- Multiple-page records.
+
+Do not blindly map consecutive text lines into USN, name and DOB.
+
+Correctly preserve each student's field association.
+
+Normalize DOB into YYYY-MM-DD.
+
+Do not invent missing records.
+
+## 5.7 Validation
+
+Validate:
+- Missing USN.
+- Invalid USN.
+- Department prefix mismatch.
+- Duplicate USNs within the document.
+- Duplicate USNs across sections and departments where locally available.
+- Missing student name.
+- Missing DOB.
+- Invalid DOB.
+- Invalid or incomplete rows.
+- Department mismatch.
+- Semester mismatch.
+- Section mismatch.
+- OCR uncertainty.
+- Corrupted or unsupported file.
+
+Use the institution's approved USN validation rules rather than hardcoding one illustrative USN pattern.
+
+## 5.8 Editable Preview
+
+After processing, show an editable table.
+
+The HOD must be able to correct:
+- USN.
+- Student Name.
+- DOB.
+
+Show:
+- Row number.
+- Field value.
+- Validation status.
+- Error description.
+- OCR uncertainty.
+
+Whenever the HOD edits a record, revalidate the entire relevant dataset.
+
+Only enable Excel download when all blocking errors are resolved.
+
+## 5.9 Excel Download
+
+Generate a genuine `.xlsx` workbook locally in the browser.
+
+Use exactly the three standard columns.
+
+Example filename:
+
+`CSE_Sem5_SectionB_Student_List.xlsx`
+
+Do not download an Excel file if blocking errors remain.
+
+The browser must generate the file using actual extracted and corrected student records.
+
+## 5.10 Manual Excel Upload
+
+After downloading, the HOD manually uploads the Excel through the existing:
+
+Upload / Replace Eligible Student List via Excel.
+
+This must:
+1. Parse the actual workbook.
+2. Validate the data.
+3. Check department, semester and selected section context.
+4. Check duplicate USNs.
+5. Display the preview.
+6. Require explicit confirmation.
+7. Save through the normal backend student-list import workflow when connected.
+8. Preserve revision history.
+
+The PDF-to-Excel conversion remains frontend-only.
+
+Do not automatically save data just because a document was converted.
+
+If the Java backend is not connected, the local conversion and validation must still work. The final database save should show a genuine backend-not-connected state rather than pretending to succeed.
+
+---
+
+# PART 6 — QUESTION CONVERTER: FULLY FRONTEND-ONLY MULTI-MODULE PDF/IMAGE-TO-EXCEL
+
+This is the second major requirement.
+
+The HOD may upload one PDF containing questions from all modules.
+
+The PDF may contain:
+- Modules in ascending order.
+- Modules in a different order.
+- Questions grouped under module headings.
+- Mixed/interleaved questions explicitly marked M1, M2, M3, M4 and so on.
+- Multiple questions on the same page.
+- Questions spanning pages.
+- Text and images together.
+- Images inside question statements.
+- Images inside answer options.
+
+The converter must process this document entirely within the browser and produce separate standard Excel workbooks for the identified modules.
+
+**No Java backend, PostgreSQL, cloud OCR endpoint or external AI API must be required for the conversion process.**
+
+This local conversion must continue working after the Java backend is integrated.
+
+## 6.1 Existing location
+
+HOD Portal → Questions → Question Pool & Upload → Module-Wise Question PDF / Image-to-Excel Converter.
+
+Preserve the current design and integrate the corrected functionality.
+
+## 6.2 Supported input formats
+
+Support:
+
+- Text-based PDF.
+- Scanned PDF.
+- JPG/JPEG.
+- PNG.
+- Multiple-page PDF.
+- Documents containing mixed text and diagrams.
+
+Use the actual uploaded file content.
+
+## 6.3 Frontend-only processing libraries
+
+Use suitable browser-side libraries, including:
+
+- `pdfjs-dist` for PDF parsing and page rendering.
+- `tesseract.js` for OCR of scanned PDFs and images.
+- Browser Canvas APIs for image extraction and cropping.
+- `ExcelJS` or another suitable library for actual image-enabled XLSX generation.
+- `JSZip` and OpenXML relationship parsing where needed to extract embedded images from uploaded Excel workbooks.
+
+These must perform real operations locally.
+
+Do not merely create a fake converter UI.
+
+Do not call:
+- Java PDF-conversion endpoints.
+- External OCR services.
+- Cloud AI APIs.
+- Gemini/GPT APIs.
+- Remote document processing.
+
+Package workers and OCR language data locally where possible so conversion does not depend on an external internet service.
+
+Use Web Workers where appropriate.
+
+## 6.4 Subject and Module Context
+
+The HOD selects:
+1. Semester.
+2. Subject.
+
+The configured module list must be retrieved from the existing subject configuration available in the application/backend data where accessible.
+
+Do not hardcode five modules or any fixed number.
+
+The converter must support all modules configured for the selected subject.
+
+For example:
+- M1.
+- M2.
+- M3.
+- M4.
+- M5.
+
+Use the actual module names and numbers configured for the subject.
+
+## 6.5 One PDF May Contain ALL Modules
+
+This is a key requirement.
+
+The HOD may upload one PDF that includes questions from multiple modules.
+
+The questions may appear in ascending module order or in a mixed order.
+
+The system must identify the correct module for each question and group it accordingly.
+
+### Module detection methods
+
+Use the following evidence, in priority order:
+
+1. Explicit question-level labels such as M1, M2, M3, M4.
+2. Module headings such as MODULE 1, MODULE 2.
+3. Section headings that apply to subsequent questions.
+4. Page-level module labels.
+5. Available subject module names/topics where sufficient evidence exists.
+
+### Examples
+
+Document A:
+
+Module 1:
+Q1 ...
+Q2 ...
+Q3 ...
+
+Module 2:
+Q4 ...
+Q5 ...
+Q6 ...
+
+The converter must extract and group questions under Modules 1 and 2.
+
+Document B:
+
+Q1 [M2] ...
+Q2 [M1] ...
+Q3 [M3] ...
+Q4 [M1] ...
+Q5 [M2] ...
+
+The converter must assign each question using its own module label, even though the questions are mixed.
+
+Document C:
+
+M1 — Question 1  
+M2 — Question 2  
+M1 — Question 3  
+M3 — Question 4
+
+The converter must group the questions correctly.
+
+### Module context rules
+
+When a module heading applies to subsequent questions, carry that module context until another valid module heading appears.
+
+When individual questions explicitly state M1, M2, etc., use the individual label.
+
+Do not let the previous module heading override an explicit question-level module label.
+
+If the PDF clearly identifies different modules, separate them automatically.
+
+If a question's module cannot be confidently identified:
+- Mark it as Needs Module Review.
+- Allow the HOD to choose its correct module manually.
+- Do not silently assign an incorrect module.
+- Do not discard the question.
+
+Use explicit document labels as the primary classification evidence.
+
+Use configured subject module topics only as supporting classification evidence.
+
+Do not call external AI services to classify modules.
+
+Do not invent module names or syllabus topics.
+
+## 6.6 Automatic Module-Wise Grouping
+
+After extraction, display separate module groups.
+
+For example:
+
+- Module 1 — 20 Questions.
+- Module 2 — 18 Questions.
+- Module 3 — 22 Questions.
+- Module 4 — 16 Questions.
+- Module 5 — 19 Questions.
+
+These are illustrative numbers.
+
+Each group's questions must be editable.
+
+Allow the HOD to:
+- View each module.
+- Review its questions.
+- Change uncertain module assignments.
+- Move a question from one module to another.
+- Correct question text and options.
+- Review image placement.
+- Validate before export.
+
+Do not combine all modules into one Excel workbook.
+
+## 6.7 Separate Excel Workbook for Every Module
+
+After successful validation, generate one separate standard Excel workbook for each module.
+
+Examples:
+
+`CSE_Sem5_BCS550_Module_1_Questions.xlsx`
+
+`CSE_Sem5_BCS550_Module_2_Questions.xlsx`
+
+`CSE_Sem5_BCS550_Module_3_Questions.xlsx`
+
+Generate files only for modules that actually contain valid extracted questions.
+
+Provide:
+- Module-specific preview tabs.
+- Individual Download Excel buttons.
+- Optional Download All Module Workbooks (.zip) containing separate `.xlsx` files.
+
+The ZIP must contain separate module-specific workbooks, not a mixed workbook.
+
+The HOD will manually upload each module-specific Excel file through the existing normal module upload workflow.
+
+## 6.8 Standard Question Excel Template
+
+Every module-specific workbook must contain exactly these visible columns:
+
+1. Module Number.
+2. Question Text.
+3. Option A.
+4. Option B.
+5. Option C.
+6. Option D.
+7. Correct Option.
+
+Example:
+
+| Module Number | Question Text | Option A | Option B | Option C | Option D | Correct Option |
+|---|---|---|---|---|---|---|
+| 1 | What is a stack? | LIFO | FIFO | Tree | Graph | A |
+| 1 | Which operation removes an element? | Push | Pop | Insert | Search | B |
+
+These are illustrative questions.
+
+Every question row in a Module 1 workbook must contain Module Number = 1.
+
+Every row in a Module 2 workbook must contain Module Number = 2.
+
+Do not include:
+- Difficulty.
+- Set Number.
+- Question Version.
+- Department Name.
+- Student Information.
+
+Do not reintroduce Easy/Medium/Hard.
+
+## 6.9 Question Correct Answer Extraction
+
+If the PDF contains an explicitly identifiable answer key, extract the correct option.
+
+If the correct answer is not available:
+- Mark Correct Option as Missing.
+- Allow HOD to enter the answer manually.
+
+Do not invent answers.
+
+Do not guess the answer using a language model.
+
+Do not automatically assign option A.
+
+Correct-option values must be A, B, C or D.
+
+## 6.10 IMAGE PRESERVATION — NON-NEGOTIABLE
+
+The original question document may contain images.
+
+Images can appear:
+- Inside question text.
+- Between question text and options.
+- Inside Option A.
+- Inside Option B.
+- Inside Option C.
+- Inside Option D.
+- Multiple times within a single question.
+- Across multiple PDF pages.
+
+The converter must extract and preserve those images.
+
+### Example A — Image-based Question
+
+Question: Identify the following diagram.
+
+[Diagram image]
+
+A. Stack  
+B. Queue  
+C. Tree  
+D. Graph
+
+### Example B — Image-based Options
+
+A. [Image 1]  
+B. [Image 2]  
+C. [Image 3]  
+D. [Image 4]
+
+The generated Excel must contain the real image content inside the corresponding question or option.
+
+Do not:
+- Replace images with filenames.
+- Insert external image URLs.
+- Discard images.
+- Stretch images.
+- Use local temporary file paths.
+- Put all images in one unrelated worksheet.
+- Associate images with the wrong questions.
+- Generate placeholder images.
+
+### Image extraction
+
+Use PDF page geometry, text coordinates, question numbering, module boundaries and option boundaries.
+
+Extract actual raster images or render and crop the relevant PDF image regions where necessary.
+
+Preserve:
+- Original content.
+- Aspect ratio.
+- Useful resolution.
+- Correct question association.
+- Correct option association.
+- Multiple-image ordering.
+
+### Image preview
+
+Display images inside the relevant extracted question and option fields.
+
+Allow the HOD to:
+- Open a larger image preview.
+- Zoom images.
+- Reassign an image to Question Text.
+- Reassign an image to Option A/B/C/D.
+- Remove an incorrect association.
+- Reorder images.
+- Review uncertain associations.
+
+If an image association is ambiguous, mark it for review and prevent successful export until it is resolved or explicitly handled through an approved workflow.
+
+Do not silently associate images based on guesswork.
+
+## 6.11 Image-Enabled XLSX Generation
+
+The generated Excel file must contain actual embedded image objects.
+
+Use a browser-compatible XLSX library that supports:
+- Real image embedding.
+- Worksheet drawing relationships.
+- Image anchors.
+- Correct row and column sizing.
+- Normal Excel workbook compatibility.
+
+Use an internal image association map such as a hidden `_ImageMap` worksheet or an equivalent structured workbook mechanism.
+
+Maintain:
+- Image Asset ID.
+- Temporary Question ID.
+- Question or option field.
+- Image sequence.
+- Excel image relationship.
+- Alternative text or caption if available.
+
+The visible question worksheet must retain exactly the seven approved columns.
+
+A hidden metadata worksheet is permitted only for the internal image mapping required to reconstruct the workbook.
+
+The workbook must open normally in Microsoft Excel and show the actual images in the appropriate locations.
+
+Do not output CSV and rename it `.xlsx`.
+
+## 6.12 XLSX Re-Upload and Image Recovery
+
+When the HOD uploads the downloaded module-specific Excel through the normal upload process:
+
+1. Parse actual worksheet cells.
+2. Read Module Number and all question fields.
+3. Extract embedded workbook images.
+4. Read image-to-question/option associations.
+5. Reconstruct the correct images in the preview.
+6. Validate the selected module context.
+7. Validate question text, options and answer.
+8. Validate image relationships.
+9. Display the full question preview including images.
+10. Require HOD confirmation before importing.
+
+Do not discard embedded images during Excel parsing.
+
+Use browser-compatible ZIP and OpenXML relationship parsing if required.
+
+The uploaded workbook must retain all question/option image associations from the original PDF conversion.
+
+## 6.13 Question IDs
+
+Do not create authoritative permanent Question IDs during conversion.
+
+Use temporary preview identifiers for tracking extracted questions.
+
+Generate permanent stable Question IDs through the normal question-bank save operation when the backend is connected.
+
+Maintain the correct relationship between:
+- Question.
+- Module.
+- Subject.
+- Image assets.
+- Correct answer.
+
+---
+
+# PART 7 — COMMON VALIDATION AND EXCEL DOWNLOAD BEHAVIOUR
+
+Both converters must use consistent validation behaviour.
+
+### Processing
+
+- Show real upload and processing progress.
+- Do not display simulated progress.
+- Disable Excel download during extraction.
+- Handle large files carefully.
+- Display processing errors accurately.
+
+### Validation failure
+
+If any blocking errors exist:
+- Show the affected student/question.
+- Show field-level errors.
+- Highlight incorrect or uncertain values.
+- Allow manual corrections.
+- Disable Excel export.
+
+### Manual corrections
+
+When the HOD edits a record:
+- Revalidate that record.
+- Revalidate duplicates.
+- Revalidate module or section context.
+- Revalidate image mapping.
+- Revalidate the entire export dataset.
+
+### Successful validation
+
+Only when all blocking errors are resolved:
+- Display Validation Passed.
+- Show valid record count.
+- Enable the relevant standard Excel download.
+
+The converters must never:
+- Fabricate student records.
+- Fabricate questions.
+- Fabricate correct answers.
+- Generate fake Excel files.
+- Return hardcoded extraction results.
+- Pretend a failed upload succeeded.
+
+---
+
+# PART 8 — FRONTEND-ONLY CONVERSION MUST REMAIN WORKING AFTER BACKEND INTEGRATION
+
+This requirement needs special attention.
+
+The document conversion engines must run locally in the browser, independently of the Java backend.
+
+The workflow must remain:
+
+Original PDF/Image → Browser Extraction/OCR → Browser-side Module/Record Classification → Editable Preview → Validation → Browser-side Excel Generation → Download.
+
+No backend request is required for these conversion steps.
+
+### When the Java backend is later connected
+
+The conversion engine must remain unchanged and continue running in the browser.
+
+Only the normal manual Excel upload/save step should connect to the backend.
+
+For example:
+
+Student:
+
+Local PDF conversion → Download standard Excel → Manual Excel upload → Backend validation and database saving.
+
+Questions:
+
+Local multi-module PDF conversion → Download separate module-specific Excel files → Manual Excel upload → Backend validation and question-bank saving.
+
+Do not:
+- Redirect original PDF uploads to Java conversion endpoints.
+- Replace working browser conversion with a backend-only conversion API.
+- Disable browser conversion after authentication or API integration is added.
+- Make converter functionality dependent on PostgreSQL availability.
+- Display Backend Unavailable for the local conversion operation.
+- Use remote AI or cloud OCR.
+
+The Java backend is responsible for persistent storage of manually uploaded, validated Excel records, not document conversion.
+
+If the manual Excel save endpoint is unavailable, show an honest backend-not-connected error while preserving the downloaded Excel and local conversion result.
+
+---
+
+# PART 9 — KEY CORRECTION INSIDE THE QUESTIONS SECTION
+
+Move HOD Key Correction into the Questions page.
+
+The final internal tab order must be:
+
+1. Question Pool & Upload.
+2. Paper Blueprint & Publish Sets.
+3. Key Corrections.
+4. Publication History.
+
+Remove the separate Key Correction sidebar navigation item.
+
+If the old Key Correction route is accessed, redirect it to the Questions → Key Corrections tab.
+
+Do not retain duplicate key correction pages.
+
+## 9.1 Simplified Key Correction Form
+
+The HOD can submit an examination-specific answer-key correction request for a completed examination whose results have not been released.
+
+The form must contain only:
+
+### 1. Completed Examination / Subject
+
+Dropdown containing completed, unreleased examinations belonging to the authenticated HOD's department.
+
+Display:
+- Subject Code.
+- Subject Name.
+- Semester.
+
+### 2. Question ID
+
+After selecting the examination, load only the relevant Question IDs belonging to that examination.
+
+Do not display unrelated Question IDs.
+
+### 3. Original Question
+
+Show the original question and its four options in a read-only area.
+
+### 4. Existing Correct Answer
+
+Show the currently published examination-specific answer in a read-only field.
+
+### 5. Proposed Correct Answer
+
+A dropdown with:
+- Option A.
+- Option B.
+- Option C.
+- Option D.
+
+### 6. Submit
+
+Button:
+
+**Submit Correction Request to COE**
+
+## 9.2 Remove Unnecessary Fields
+
+Remove:
+- Supporting Evidence attachment.
+- PDF/document attachment.
+- Reason field.
+- Supporting Explanation textarea.
+- Textbook citation field.
+- Board of Studies justification.
+- Additional explanation fields.
+- Long policy/security banner.
+- Verbose correction history table inside this tab.
+
+The HOD should only:
+1. Select the completed examination.
+2. Select the Question ID.
+3. View the original question.
+4. View the existing answer.
+5. Select the proposed answer.
+6. Submit the correction request.
+
+After submission, show a simple confirmation.
+
+Detailed activity remains available through the existing Audit Logs page.
+
+## 9.3 Approval Boundary
+
+The HOD may submit a correction request only.
+
+The HOD cannot:
+- Approve their own request.
+- Reject their own request.
+- Directly modify the examination answer key.
+- Manually change student marks.
+- Recalculate results.
+- Release examination results.
+
+Send the request to the separate COE Portal through the existing backend integration contract.
+
+Only COE-authorised users can approve or reject the correction.
+
+The Java backend must enforce this permission independently.
+
+On COE approval:
+- Update the examination-specific answer key.
+- Recalculate all impacted results.
+- Use stable Question IDs.
+- Recalculate across A–D versions and relevant sittings.
+- Preserve historical answer-key revisions.
+- Record correction approval and recalculation in the audit trail.
+- Require COE review before result release.
+
+Do not modify the original master question-bank answer key because of an examination-specific correction.
+
+---
+
+# PART 10 — PRESERVE PREVIOUSLY APPROVED FUNCTIONALITY
+
+Do not modify other approved features.
+
+### Principal Portal
+
+Preserve:
+- Dashboard.
+- HOD Management.
+- Institution Reports & Analytics.
+- Audit Logs.
+- Profile & Settings.
+
+### HOD Portal
+
+Preserve:
+- Dashboard.
+- Setup Class.
+- Questions.
+- Examination Status.
+- Department Results & Performance Analytics.
+- Audit Logs.
+- Profile & Settings.
+
+Preserve:
+- Common login.
+- Principal/HOD role-based routing.
+- Department access restrictions.
+- Subject creation and management.
+- Student management.
+- Module-wise question-bank management.
+- Dynamic numbered question-set generation.
+- Fully disjoint question allocation across available numbered sets.
+- HOD confidentiality of generated set contents.
+- COE examination scheduling.
+- COE result approval and release workflow.
+- Existing audit-history preservation.
+
+Do not reintroduce:
+- Five-module fixed limits.
+- 60 questions per module.
+- 300-question banks.
+- Fixed four numbered sets.
+- Balanced question reuse.
+- Question reuse across numbered sets.
+- Examination Cycle terminology.
+- Staff management.
+- Separate Submission History.
+- Separate Session Information.
+- Separate HOD Key Correction page.
+
+Do not modify COE or Student Portal source code as part of this task.
+
+---
+
+# PART 11 — TECHNICAL IMPLEMENTATION REQUIREMENTS
+
+Inspect the latest source and implement the changes in the existing components.
+
+Do not assume an older seed file represents the latest frontend behaviour.
+
+### Dashboard and semester data
+
+Use reusable semester aggregation logic.
+
+Use stable IDs for:
+- Department.
+- Semester.
+- Subject.
+- Student.
+- Examination.
+- Result.
+
+Ensure card click actions navigate to the correct pre-filtered pages.
+
+Use actual complete departmental enrolment records for Total Students, not eligible examination rosters.
+
+### Shared semester utility
+
+Create or refine one shared semester-options configuration covering semesters 1–8.
+
+Use it consistently throughout Principal and HOD selectors.
+
+### Frontend PDF Converter Libraries
+
+Use compatible browser-side libraries.
+
+Suggested options:
+
+- `pdfjs-dist` for text extraction and page rendering.
+- `tesseract.js` for OCR.
+- Browser Canvas API for raster/image handling.
+- `ExcelJS` or a suitable XLSX library for image-enabled workbook creation.
+- `JSZip` and OpenXML relationship parsing for embedded image extraction from Excel files.
+
+Use actual XLSX generation, not CSV with an `.xlsx` extension.
+
+Bundle the required PDF workers, OCR workers, WASM and language data locally where practical.
+
+Do not require external network access for OCR or conversion.
+
+Use Web Workers and lazy loading where practical.
+
+Do not load large OCR assets until the converter is used.
+
+Handle large documents with proper size limits, memory management and clear error messages.
+
+### Important extraction limitation
+
+OCR and image classification are not guaranteed to be perfect.
+
+Do not claim 100% extraction accuracy.
+
+The application must show uncertain records for manual review rather than silently exporting incorrect information.
+
+Explicit module identifiers such as M1, M2, M3, M4 must take precedence over uncertain semantic classifications.
+
+---
+
+# PART 12 — REQUIRED TESTING
+
+Do not test only with artificial UI interactions.
+
+Use actual sample PDF and image files during local implementation tests.
+
+## Test A — Dashboard
+
+1. Exactly three summary cards.
+2. All three are clickable.
+3. Total Students drill-down displays all eight semester counts.
+4. Upcoming Examinations opens correctly filtered Examination Status.
+5. Released Results opens correctly filtered Department Results.
+6. Department Examination Activity removed.
+7. Semester-wise overview shows Semesters 1–8.
+8. All metrics in all eight rows are clickable.
+9. No duplicate recent activities or result-summary section remains.
+10. Counts use correct backend data sources.
+
+## Test B — Semester selectors
+
+Check:
+- Principal reports.
+- Setup Class.
+- Subjects.
+- Student Lists.
+- Questions.
+- Examination Status.
+- Department Results.
+- Every other semester filter.
+
+Confirm all eight semesters appear in ascending order, including semesters with no existing records.
+
+## Test C — Header and Setup Class
+
+1. Department Bound header removed.
+2. Duplicate locked department badges removed.
+3. Setup Class heading displays the department name once.
+4. Subjects tab has no Add Section controls.
+5. Student Lists has only the + Add Section button.
+6. Add Section opens the proper dialog.
+7. Duplicate section creation is rejected.
+8. Newly created section becomes visible.
+
+## Test D — Student Converter, Frontend-Only
+
+Test with:
+- Normal text PDF.
+- Scanned PDF.
+- Multiple-page PDF.
+- JPG.
+- PNG.
+- Different student table layouts.
+- Duplicate USNs.
+- Missing names.
+- Invalid DOBs.
+- Department mismatch.
+- Section mismatch.
+- Corrupted PDF.
+- Unclear OCR values.
+
+Verify:
+- Real browser extraction.
+- Correct USN/name/DOB mapping.
+- No metadata inserted as a student row.
+- Correct standard three-column workbook.
+- Download works without backend.
+- No external conversion API request occurs.
+
+## Test E — Multi-Module Question Converter
+
+Test with one actual PDF containing five modules.
+
+Include:
+- Questions arranged in module order.
+- Questions labelled M1, M2, M3 and so on.
+- Questions in a mixed/interleaved order.
+- Multiple questions on the same page.
+- A module heading applying to subsequent questions.
+- Questions with diagrams.
+- Questions with image-based options.
+- Multiple images in one question.
+- Missing answer keys.
+- Duplicate questions.
+- Unclear module assignments.
+
+Verify:
+1. Questions are correctly grouped into modules.
+2. Explicit M1/M2 labels are correctly respected.
+3. Interleaved questions are grouped correctly.
+4. Uncertain classifications require manual review.
+5. One separate Excel is generated for each detected module.
+6. No workbook contains questions from multiple modules.
+7. Each workbook has the seven standard columns.
+8. Correct answers are extracted only when explicitly available.
+9. Embedded images remain in the correct questions and options.
+10. Download works without Java backend.
+11. No external AI/OCR API is called.
+
+## Test F — Excel Image Round Trip
+
+Use at least one extracted question with:
+- A question-statement image.
+- An image in Option A.
+- An image in Option C.
+
+Verify:
+
+1. Images are extracted from the source PDF.
+2. HOD sees them in the preview.
+3. Images are embedded in the generated Excel.
+4. The workbook opens correctly in Excel.
+5. The HOD manually uploads that same workbook.
+6. Images are extracted from the workbook again.
+7. Image relationships are restored correctly.
+8. No images are lost or shifted to other questions/options.
+
+## Test G — Key Correction
+
+Verify:
+- Key Corrections appears inside Questions.
+- Tab appears before Publication History.
+- Separate sidebar item is removed.
+- Only completed, unreleased examinations are selectable.
+- Correct Question IDs load.
+- Original question and options are read-only.
+- Existing answer is read-only.
+- Proposed answer is selectable.
+- No evidence attachment.
+- No reason/supporting explanation.
+- HOD cannot approve or reject.
+- Request submission uses the correct backend service.
+
+## Test H — Regression and Build
+
+Run:
+- TypeScript check.
+- Lint.
+- Production build.
+- Route verification.
+- Responsive layout checks.
+- Frontend-only converter tests.
+- Semester selector tests.
+- Role permission checks.
+
+Fix broken imports and stale routes caused by the changes.
+
+---
+
+# PART 13 — FINAL REPORT
+
+After completing the implementation, report:
+
+1. Files modified.
+2. Dashboard changes.
+3. Clickable card behaviour.
+4. Semester-wise dashboard for all eight semesters.
+5. All eight semester selectors updated across the portal.
+6. Department-bound header and duplicate badges removed.
+7. Setup Class section controls corrected.
+8. Student frontend-only PDF/image-to-Excel converter.
+9. Question frontend-only multi-module PDF/image-to-Excel converter.
+10. Module label identification and mixed-order grouping.
+11. Separate Excel workbooks generated per module.
+12. Embedded question and option image support.
+13. Excel image re-upload and round-trip verification.
+14. Key Corrections moved into Questions.
+15. Approval restrictions retained.
+16. TypeScript and build results.
+17. Actual test files and scenarios verified.
+18. Remaining limitations.
+
+Do not claim a feature is fully implemented if it is only a placeholder.
+
+FINAL NON-NEGOTIABLE REQUIREMENTS:
+
+- Preserve the existing MIT Mysore Admin/HOD website.
+- Make only the changes explicitly requested.
+- Include Semesters 1 through 8 in every operational semester selector.
+- Show all eight semesters in the dashboard overview.
+- Make all three dashboard cards and all semester-wise metrics clickable.
+- Remove Department Bound and duplicate department watermarks.
+- Keep department identity in the Setup Class page heading.
+- Remove Add Section controls from Subjects.
+- Keep only the + Add Section button in Student Lists, opening a dialog.
+- Make the Student List converter genuinely frontend-only.
+- Make the Question converter genuinely frontend-only.
+- Support a single PDF containing all modules in ordered or mixed order.
+- Identify modules from M1/M2/M3 labels and module headings.
+- Generate separate standard Excel workbooks for each module.
+- Preserve actual question and option images inside Excel.
+- Require HOD review of uncertain OCR and module classification.
+- Keep conversion separate from database persistence.
+- Keep the existing normal manual Excel upload workflow.
+- Move Key Corrections inside Questions before Publication History.
+- Remove unnecessary correction evidence and explanation fields.
+- Do not allow HOD to approve their own correction.
+- Do not modify unrelated COE or Student Portal functionality.
+
+The objective is to make the existing application behave exactly according to these requirements without introducing new unrelated changes.

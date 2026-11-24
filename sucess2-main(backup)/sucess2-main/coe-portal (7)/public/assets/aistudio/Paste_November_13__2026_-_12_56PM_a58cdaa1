@@ -1,0 +1,954 @@
+# MIT Mysore – Complete COE Portal Redesign and Frontend Implementation
+
+## 1. Your task
+
+You are working on the existing Maharaja Institute of Technology Mysore (MIT Mysore) Offline Examination Management System.
+
+I have provided:
+
+1. The existing COE Portal source code ZIP. This is the actual application that must be modified.
+2. An MIT Mysore Admin Login Page screenshot. Use this as the visual reference for redesigning the COE login page.
+
+Your task is to **modify and improve the existing COE Portal frontend**, implementing the revised requirements below.
+
+This is an actual frontend development task, NOT a static UI design, disposable prototype, Figma mockup, or collection of screenshots.
+
+The frontend will later be integrated with a Java backend, PostgreSQL database and a local Lab Server.
+
+### Non-negotiable instructions
+
+- First inspect the existing source code, architecture, routes, components, services and assets.
+- Preserve useful existing components, working functionality, dependencies and code structure.
+- Do not rebuild the entire application unnecessarily.
+- Do not delete useful code just to simplify the design.
+- Remove the unnecessary pages and features identified below.
+- Maintain the existing React, TypeScript, Tailwind CSS and routing architecture wherever possible.
+- Implement real frontend interactions, forms, navigation, validation, loading states, error handling and API service integration.
+- Every visible button and action must have a meaningful working behaviour.
+- Do not create dummy buttons that do nothing.
+- Do not simulate successful backend operations and present them as genuine results.
+- Keep all backend communication inside a clean, reusable API/service layer.
+- Make the frontend ready for integration with our Java backend.
+
+The final output must be a complete, maintainable frontend application with its source code.
+
+---
+
+# 2. Overall design and institutional branding
+
+Use the existing MIT Mysore institutional branding and the attached login reference image.
+
+Maintain a professional university examination-management appearance.
+
+Preferred visual direction:
+
+- Navy blue and deep indigo for navigation and primary actions.
+- White and light blue-gray backgrounds.
+- Subtle shadows, clean cards and consistent spacing.
+- Professional typography.
+- Simple and meaningful Lucide icons.
+- Consistent tables, forms, badges and status indicators.
+- Responsive layout, with desktop as the main priority.
+
+Do not add unnecessary decorative charts, animations, cards or visual clutter.
+
+Use the actual MIT Mysore logo assets available in the existing project. Never replace the institutional logo with an AI-generated approximation.
+
+# 3. COE Login Page – Important
+
+Redesign the COE login page according to the attached MIT Mysore Admin Login Page screenshot.
+
+The screenshot is the visual reference. Do not simplify or remove any institutional information present in its top header.
+
+### Complete institutional header
+
+Preserve the original information and arrangement, including:
+
+- MIT Mysore institutional logo.
+- MITTMysore branding text.
+- Maharaja Education Trust®, Mysuru.
+- Maharaja Institute of Technology Mysore.
+- The original Kannada institutional text exactly as provided.
+- An Autonomous Institution Affiliated to VTU, Belagavi.
+- Approved by AICTE, New Delhi, Recognized by GoK.
+
+Do not remove the Kannada line or shorten the affiliation and approval information.
+
+### Login card
+
+Place the login card below the institutional header.
+
+Include:
+
+- MIT Mysore logo.
+- Heading: COE Portal.
+- Subtitle: Offline Examination Management System.
+- Username field.
+- Password field.
+- Show/Hide Password eye icon.
+- Sign In button.
+- Text: For COE Access Only.
+
+Preserve the original screenshot's pale blue background, white card, institutional colours, spacing and visual hierarchy.
+
+Retain the institutional copyright footer.
+
+### Authentication requirements
+
+- The application must initially open at the COE login page.
+- Opening `/` must redirect to `/login` when the user is not authenticated.
+- Do not automatically create an authenticated COE user.
+- Remove all default demo login credentials from the production interface.
+- Do not provide public registration or self-sign-up.
+- Only an authorised college authority can create and provision a COE account.
+- The Principal creates HOD accounts but does NOT create COE accounts.
+- Authenticate credentials through the Java backend.
+- Show a clear error for incorrect credentials.
+- Protect every COE page and route.
+- Directly opening an internal URL without authentication must redirect to login.
+- Logging out must invalidate the authenticated session.
+- Refreshing after logout must never automatically log the user back in.
+
+Never hardcode actual passwords or authentication tokens in frontend code.
+
+# 4. Final sidebar and navigation structure
+
+Simplify the current sidebar.
+
+The final sidebar must contain ONLY the following pages:
+
+### Overview
+1. Dashboard
+
+### Examination Management
+2. Schedule Examination
+
+### Live Operations
+3. Session Monitoring
+
+### Result Management
+4. Import Results
+5. Result Approval
+
+### System
+6. Audit Logs
+7. Settings
+
+At the bottom of the sidebar or in a suitable account menu, provide the authenticated COE account information and Logout option.
+
+### Remove these separate pages completely
+
+- Examination Cycles.
+- Student Eligibility.
+- Question Papers.
+- Version Management.
+- Secure Packages.
+- Lab Transfer.
+- Analytics and Reports.
+- Profile.
+
+Their necessary functionality will be incorporated into the remaining pages as described below.
+
+Do not leave obsolete navigation items or broken routes.
+
+---
+
+# 5. Page 1 – COE Dashboard
+
+The Dashboard is the first page displayed after successful login.
+
+Its purpose is to give COE an immediate overview of important examination activities.
+
+### Summary cards
+
+Display these five essential statistics:
+
+1. Upcoming Examinations.
+2. Active Examination Sessions.
+3. Examination Packages Pending Transfer.
+4. Results Pending Approval.
+5. Answer-Key Correction Requests Pending Review.
+
+### Additional dashboard sections
+
+**Today's Examination Sessions**
+
+Display examinations happening today with:
+
+- Department.
+- Semester.
+- Subject.
+- Sitting.
+- Start time.
+- Duration.
+- Current status.
+
+**Pending Actions**
+
+Display important actions that require COE's attention, such as:
+
+- Examination package awaiting transfer.
+- Results awaiting approval.
+- Answer-key correction requests requiring review.
+
+Make each dashboard item clickable and navigate to its relevant page or examination details.
+
+Do not add total departments, total registered students, total examination cycles or unnecessary analytical charts.
+
+Use live values returned by the backend. Do not permanently hardcode sample statistics.
+
+---
+
+# 6. Page 2 – Schedule Examination
+
+This is the most important page of the COE Portal.
+
+Remove the entire concept of Examination Cycles, common scheduling and staggered scheduling.
+
+COE simply schedules an examination for a particular:
+
+**Department + Semester + Subject**
+
+All sections belonging to that department and semester are automatically combined into one examination group.
+
+For example:
+
+Department: Computer Science  
+Semester: 3  
+Sections: A, B and C  
+Subject: Operating Systems
+
+All eligible students from Sections A, B and C will be treated as one combined examination group.
+
+However, preserve the original section information in the student records for future HOD reporting and filtering.
+
+### A. Schedule Examination form
+
+Include these fields:
+
+**Examination Details**
+- Department.
+- Semester.
+- Subject.
+- Examination Date.
+- Start Time.
+- Examination Duration.
+- Total Number of Questions.
+- Maximum Marks.
+- Passing Marks.
+- Marks per Question.
+- Laboratory Selection.
+
+The subject dropdown must show subjects belonging to the selected department and semester.
+
+The question bank and published paper sets must match the exact department, semester and subject.
+
+Do not allow COE to accidentally select question sets belonging to another subject or department.
+
+### B. Question-set availability
+
+The HOD uploads questions in the HOD Portal.
+
+The backend automatically generates four numbered sets after the HOD clicks Publish:
+
+- Set 1.
+- Set 2.
+- Set 3.
+- Set 4.
+
+These sets must become available to COE immediately after publication. Do not restrict their visibility to the day before an examination.
+
+Inside the relevant examination details, show the four available sets and their status.
+
+COE must be able to see:
+
+- Set number.
+- Publication status.
+- Number of questions.
+- Generation status.
+- Selection status.
+
+COE must NEVER see actual question text or correct answers.
+
+If the HOD has not published the corresponding question bank, show a clear message such as:
+
+"Question sets are not yet published by HOD."
+
+Do not allow selection of unrelated or unpublished question sets.
+
+The frontend must obtain the four sets through the backend API. Do not implement paper-generation algorithms inside the COE frontend.
+
+### C. Student List and Eligibility Management
+
+HOD uploads student details through the HOD Portal.
+
+COE must see the combined student list for the selected department and semester.
+
+Display:
+
+- Student Name.
+- USN.
+- Original Section.
+- Eligibility Status.
+- Assigned Sitting, when applicable.
+
+COE personally decides whether a student is Eligible or Not Eligible for that examination.
+
+Do not hardcode fee payment, backlog clearance or any particular eligibility criterion.
+
+Provide two options:
+
+- Eligible.
+- Not Eligible.
+
+COE must provide a mandatory explanation whenever marking a student Not Eligible.
+
+Include individual eligibility updates and practical bulk-selection options.
+
+Record who changed the eligibility, the decision, reason and timestamp.
+
+Only eligible students can log in and attend the examination.
+
+The final eligible student list must be frozen when the examination is finalised.
+
+Any authorised changes after finalisation must be recorded and securely synchronised with the Lab Server.
+
+### D. Morning and Afternoon Sitting Allocation
+
+All sections remain combined as one examination group.
+
+If the available laboratories cannot accommodate all eligible students in one sitting, divide them into separate sittings.
+
+For example:
+
+Morning Sitting: 60 students.
+
+Afternoon Sitting: 55 students.
+
+The system should suggest allocations based on available computer capacity.
+
+However, COE must be able to manually adjust the number of students assigned to each sitting.
+
+Provide:
+
+- Sitting name.
+- Assigned laboratory.
+- Student count.
+- Start time.
+- Duration.
+- Assigned student list.
+
+If all eligible students can be accommodated in one sitting, there is no need to create an unnecessary second sitting.
+
+Each student must be assigned to only one sitting for that examination.
+
+### E. Examination settings
+
+Allow COE to configure:
+
+- Total questions.
+- Maximum marks.
+- Passing marks.
+- Marks awarded per correct answer.
+- Examination duration.
+
+All questions are treated as being of the same difficulty level.
+
+Do not include Easy, Medium or Hard classification.
+
+Do not include any negative-marking, penalty or deduction settings. Incorrect answers must not result in deducted marks.
+
+Validate the relationship between total questions, marks per question and maximum marks.
+
+Where question count is determined by the published paper, show that value accurately and prevent mismatches.
+
+### F. Set Selection
+
+COE selects a numbered paper set for each sitting.
+
+For example:
+
+Morning Sitting: Set 1.
+
+Afternoon Sitting: Set 2.
+
+COE is free to choose from the available published sets.
+
+Once COE selects a set, the backend automatically creates four versions:
+
+- Version A.
+- Version B.
+- Version C.
+- Version D.
+
+The four versions contain the same questions, but question order and option order are shuffled.
+
+Question IDs must remain stable so that answer keys are correctly mapped.
+
+COE must not manually create or edit these versions.
+
+Show only their generation status.
+
+### G. Secure Examination Package and Lab Transfer
+
+Do not create separate Secure Packages or Lab Transfer pages.
+
+Include these features inside the relevant examination details.
+
+After paper selection and version generation, the backend prepares a secure examination package containing:
+
+- Versions A–D.
+- Corresponding answer keys.
+- Frozen eligible student list.
+- Student-to-sitting assignments.
+- Examination settings.
+- Examination and session identifiers.
+- Required PC assignment information.
+
+The Java backend performs actual encryption and digital signing.
+
+The COE frontend must not pretend to perform cryptography.
+
+Show genuine backend-provided statuses for:
+
+- Package preparation.
+- Encryption completion.
+- Digital signature generation.
+- Package transfer.
+- Lab Server receipt.
+- Signature verification.
+- Examination readiness.
+
+Provide a clear **Send to Lab** action.
+
+The action should call the appropriate backend/Lab Server integration service.
+
+The Lab Server must verify the package before accepting it.
+
+If the signature is invalid or the package does not match the examination, the Lab Server must reject it and return the actual reason.
+
+Never provide a manual "accept anyway" security bypass.
+
+Show transfer progress, verification status, failure reason and retry availability where authorised.
+
+Do not create dummy hashes or fake signature-verification results in the frontend.
+
+---
+
+# 7. Page 3 – Session Monitoring
+
+Keep this as a separate page.
+
+COE must be able to monitor examinations at two levels.
+
+### A. Overall Examination Monitoring
+
+Show:
+
+- Total eligible students.
+- Students logged in.
+- Students who started.
+- Students who submitted.
+- Students not yet started.
+- Connected and disconnected students.
+- Active laboratory computers.
+- Lab Server connection status.
+- Remaining examination time.
+- Total suspicious-activity events.
+- Number of locked students.
+- Invigilator unlock count.
+- PC recovery count.
+
+### B. Individual Student Monitoring
+
+When COE opens a particular examination session, show every student's live status.
+
+Include:
+
+- Student Name.
+- USN.
+- Original Section.
+- Assigned PC Number.
+- Login Status.
+- Examination Status.
+- Submission Status.
+- Connection Status.
+- Suspicious Activity Count.
+- Invigilator Unlock History.
+- PC Recovery History.
+
+Provide a searchable and filterable student table.
+
+### C. Suspicious Activity Monitoring
+
+The Student Portal should detect browser events such as:
+
+- Switching browser tabs.
+- Leaving or losing focus of the examination window.
+- Exiting examination fullscreen mode.
+
+The Student Portal locks the examination interface after the configured suspicious activity event and requires authorised invigilator authentication to unlock it.
+
+Only authorised invigilators should possess their own login credentials.
+
+The invigilator's credentials must be validated through the backend or Lab Server. Never expose the password in frontend source code.
+
+COE must be able to view the incident history.
+
+Each event must record:
+
+- Student USN.
+- Examination/session ID.
+- PC number.
+- Event type.
+- Timestamp.
+- Lock status.
+- Invigilator identity when unlocked.
+- Unlock time and reason, where applicable.
+
+Display these events as suspicious-activity records, not automatically proven cheating.
+
+Do not implement camera or microphone surveillance.
+
+Do not expose student answers or allow COE to view the actual examination screens.
+
+### D. Invigilator-Assisted PC Recovery
+
+The Student Portal has a separate Invigilator Login option on the student login screen.
+
+An invigilator can log in using their own username and password.
+
+After successful authentication, the invigilator can view eligible students in the active examination session and select a student who needs to move to another PC.
+
+The Lab Server must:
+
+1. Verify the student's active examination session.
+2. Revoke the previous PC binding.
+3. Authorise the new PC.
+4. Preserve previously saved answers.
+5. Preserve the original examination timer.
+6. Prevent simultaneous active sessions for the same student.
+7. Record the recovery action.
+
+COE must be able to see these PC recovery records inside Session Monitoring.
+
+Include the old PC number, new PC number, USN, invigilator identity, time and reason.
+
+### E. Important restrictions
+
+Session Monitoring is for observation and examination-status tracking.
+
+Do NOT add an Emergency Terminate Examination feature to COE.
+
+Do not add camera surveillance, microphone surveillance or screen recording.
+
+---
+
+# 8. Page 4 – Import Results
+
+Keep this as a separate sidebar page.
+
+After students complete the examination, the Lab Server evaluates their answers using the protected answer key.
+
+The Lab Server creates a result file and digitally signs it.
+
+COE retrieves the result file and imports it into the central examination system.
+
+### Page components
+
+- Select examination.
+- Select sitting.
+- Upload actual result file.
+- Display file information.
+- Verify digital signature through the backend.
+- Verify examination ID and session ID.
+- Match student USNs with the frozen eligible student list.
+- Detect duplicate records.
+- Detect missing student results.
+- Detect invalid or unexpected records.
+- Display verification summary.
+- Import verified results.
+
+Implement real file upload through an appropriate multipart/binary API operation.
+
+Do not implement a fake upload that sends only the filename and file size.
+
+The backend must verify the actual uploaded file and its digital signature.
+
+Do not mark results as verified merely because a file was selected.
+
+Show actual validation failures and clear error messages.
+
+Only successfully verified results can be imported.
+
+---
+
+# 9. Page 5 – Result Approval
+
+Keep this as a separate page.
+
+After importing results, COE reviews the results before releasing them to the authorised HODs and Principal.
+
+### A. Result overview
+
+Display:
+
+- Examination.
+- Department.
+- Semester.
+- Subject.
+- Total eligible students.
+- Students present.
+- Students absent.
+- Imported result records.
+- Records requiring attention.
+- Pending answer-key correction requests.
+- Approval status.
+
+### B. Student-wise results
+
+Inside each examination's result details, provide a searchable table containing:
+
+- Student Name.
+- USN.
+- Total Marks Obtained.
+- Maximum Marks.
+- Attendance Status: Present or Absent.
+- Result: Pass or Fail.
+
+Determine Pass/Fail using the passing marks configured for that examination.
+
+For absent students, display Absent rather than inventing a marks value.
+
+Do not display individual module-wise marks or module-wise breakdowns.
+
+Allow COE to export student-wise results.
+
+### C. Examination Topper
+
+COE must be able to see the topper of each examination.
+
+Display:
+
+- Student Name.
+- USN.
+- Overall Marks Obtained.
+- Maximum Marks.
+
+Determine the topper using the highest overall marks.
+
+If multiple students are tied for the highest marks, display all tied toppers.
+
+Do not create a separate Analytics page for this.
+
+### D. Answer-Key Correction Management
+
+This is an essential feature.
+
+HOD can submit an answer-key correction request for an examined question.
+
+A request should contain:
+
+- Question ID.
+- Examination and subject.
+- Existing correct answer.
+- Proposed correct answer.
+- Reason and supporting explanation.
+
+COE must be able to:
+
+- View the correction request.
+- Review the question reference.
+- Approve the request.
+- Reject the request.
+- Record a decision and timestamp.
+
+After approval, the backend must update the answer key applicable to that examination and recalculate affected students' marks.
+
+Do not silently modify the original master question bank.
+
+Maintain complete correction history.
+
+Results must not be released while required correction requests or other critical result-validation issues remain unresolved.
+
+### E. Result Release
+
+After reviewing all results and resolving pending corrections, COE approves and releases the results.
+
+After release:
+
+- The relevant HOD can view results only for their own department.
+- Principal can access authorised institution-wide results.
+- Students must not see marks, answer keys or results through the Student Portal.
+
+COE should have a confirmation step before releasing results.
+
+---
+
+# 10. Page 6 – Audit Logs
+
+Keep this as a separate page.
+
+This page displays important system activities.
+
+Include records for:
+
+- Examination scheduling.
+- Examination changes.
+- Student eligibility decisions.
+- Student eligibility changes after finalisation.
+- Sitting allocation changes.
+- Numbered set selection.
+- Version generation.
+- Package preparation and transfer.
+- Signature verification and rejection.
+- Student logins.
+- Examination submissions.
+- Suspicious-activity events.
+- Invigilator unlocks.
+- PC recovery actions.
+- Result imports.
+- Answer-key correction approvals and rejections.
+- Result approval and release.
+- Password changes and account-security events where appropriate.
+
+Display:
+
+- Activity.
+- User name.
+- User role.
+- Relevant examination.
+- Relevant student USN, where applicable.
+- Date and time.
+- Action status.
+
+Provide search, filtering and authorised export.
+
+Audit records must be read-only in the COE interface.
+
+The Java backend must be responsible for genuine protected audit storage. Do not rely on browser storage as the authoritative audit database.
+
+---
+
+# 11. Page 7 – Settings
+
+Keep Settings simple.
+
+It must contain exactly two main sections.
+
+### A. Change Password
+
+Provide:
+
+- Current Password.
+- New Password.
+- Confirm New Password.
+- Update Password button.
+
+The backend must verify the current password and securely update it.
+
+Show validation for incorrect current password, weak password, mismatched confirmation and successful updates.
+
+Never store plain-text passwords.
+
+### B. Appearance
+
+Provide:
+
+- Light Mode.
+- Dark Mode.
+
+The selected theme should persist after refreshing the application and logging in again.
+
+Apply the selected theme consistently across the entire COE Portal.
+
+Do not include developer API configuration, mock-data reset controls or unrelated technical settings in the COE-facing production interface.
+
+---
+
+# 12. Account Menu and Logout
+
+Display the authenticated COE's name and account information in a suitable top-right account dropdown or sidebar account area.
+
+Provide:
+
+- COE identity.
+- Username.
+- Designation, where supplied by the backend.
+- My Account information.
+- Settings shortcut.
+- Logout.
+
+Do not create a separate Profile page.
+
+Logout must:
+
+1. Ask for confirmation.
+2. Call the backend logout/session invalidation operation.
+3. Clear the authenticated application state.
+4. Redirect to the COE login page.
+5. Prevent direct access to protected routes.
+
+---
+
+# 13. Backend Integration Architecture
+
+Our backend team is developing the backend using Java and PostgreSQL.
+
+The student examination runs through a separate local Lab Server to support offline operation.
+
+Build the frontend with a clean separation between:
+
+**Central Backend API**
+- COE authentication.
+- Examination scheduling.
+- HOD-published question-set information.
+- Student eligibility.
+- Sitting allocation.
+- Set selection.
+- Version-generation status.
+- Package preparation.
+- Result import.
+- Answer-key corrections.
+- Result approval.
+- Audit logs.
+- Account settings.
+
+**Lab Server API**
+- Package transfer and receipt acknowledgements.
+- Package verification status.
+- Active examination sessions.
+- Student login and connection status.
+- PC status.
+- Suspicious-activity events.
+- Invigilator unlock records.
+- PC recovery records.
+- Examination submission status.
+- Lab result-file availability.
+
+Keep central-backend and Lab-Server API configurations separate.
+
+Create clean, reusable API service modules and strongly typed request/response models.
+
+Use the existing project's service architecture wherever practical.
+
+Do not directly connect the frontend to PostgreSQL.
+
+Do not implement authentication, encryption or digital-signature security only in JavaScript.
+
+The backend and Lab Server remain responsible for enforcing actual security.
+
+### Development mode
+
+If the Java backend or Lab Server is not yet available, provide an isolated development mock adapter only when needed for frontend development.
+
+It must be clearly labelled as development/sample data.
+
+It must not:
+
+- Automatically authenticate a COE user.
+- Accept arbitrary passwords as valid production credentials.
+- Present simulated cryptographic verification as genuine.
+- Present simulated package transfers as actual transfers.
+- Present fictional results as imported official results.
+
+When a real backend is unavailable, display a helpful connection or integration error rather than pretending an operation succeeded.
+
+Keep development configuration separate from production configuration.
+
+---
+
+# 14. Frontend Quality Requirements
+
+The final application must be a usable, structured and maintainable frontend.
+
+Implement:
+
+- Working routing.
+- Protected routes.
+- Reusable layout components.
+- Reusable forms and validation.
+- Searchable tables.
+- Filters where needed.
+- Loading indicators.
+- Empty states.
+- Error states.
+- Success notifications.
+- Confirmation dialogs for important actions.
+- Responsive layouts.
+- Persistent theme selection.
+- Proper accessibility labels.
+- Clear status indicators.
+
+Do not use static screenshots as substitutes for application pages.
+
+Do not leave buttons, forms, menu items or links as decorative elements.
+
+Do not insert fake charts or unnecessary analytics just to fill the dashboard.
+
+Use realistic examination terminology and consistent naming throughout the application.
+
+---
+
+# 15. Final Sidebar Reference
+
+The final sidebar must contain only:
+
+1. Dashboard
+2. Schedule Examination
+3. Session Monitoring
+4. Import Results
+5. Result Approval
+6. Audit Logs
+7. Settings
+
+There must be no separate pages for Examination Cycles, Student Eligibility, Question Papers, Version Management, Secure Packages, Lab Transfer, Analytics & Reports or Profile.
+
+---
+
+# 16. Final Validation Before Completion
+
+Before declaring the redesign complete, test the application.
+
+Verify that:
+
+1. The application opens at COE Login.
+2. The complete MIT Mysore institutional header is preserved.
+3. Login works through the authentication service.
+4. Unauthenticated users cannot access internal routes.
+5. Logout works and protects all internal routes.
+6. Dashboard shows the five approved summary statistics.
+7. COE can schedule examinations for department, semester and subject.
+8. All sections are combined without losing original section records.
+9. COE can decide student eligibility and must provide reasons for ineligibility.
+10. COE can manually adjust sitting allocation.
+11. Only matching HOD-published sets appear.
+12. COE can select a set for each sitting.
+13. Version generation status is displayed.
+14. Package preparation and Lab Server transfer are integrated through services.
+15. Session Monitoring supports both overall and individual student status.
+16. Suspicious-activity and PC recovery events are displayed.
+17. Results can be imported using actual file content.
+18. Student-wise overall marks and examination outcomes are displayed without module-wise marks.
+19. Answer-key correction requests are reviewable and auditable.
+20. The topper is visible in the examination result details.
+21. Results cannot be released before critical validation and correction issues are resolved.
+22. Audit Logs are read-only.
+23. Password changing works through the backend service.
+24. Light and Dark themes persist.
+25. No unnecessary pages or old sidebar navigation items remain.
+
+Run the available build and TypeScript checks. Fix compilation errors, broken imports, routing problems and obvious runtime errors.
+
+### Final deliverables
+
+Provide:
+
+1. The complete updated COE Portal frontend source code.
+2. All required assets and configuration files.
+3. A summary of the pages retained and removed.
+4. A list of the source files modified or newly created.
+5. A clear description of the API service interfaces that the Java backend team must implement.
+6. Any remaining backend or Lab Server integration dependencies.
+
+**Final instruction: Build a genuine, functional, backend-ready COE frontend by modifying the supplied existing project. Do not return only a prototype, design preview, wireframe or explanation. Preserve our college branding and implement the exact examination workflow described above.**

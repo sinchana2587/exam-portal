@@ -1,0 +1,6 @@
+{
+  "name": "MIT Mysore Student Examination Portal",
+  "description": "Computer-based MCQ Student Examination Portal for Maharaja Institute of Technology Mysore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

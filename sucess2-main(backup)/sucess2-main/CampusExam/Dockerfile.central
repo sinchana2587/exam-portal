@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+FROM eclipse-temurin:17-jdk-alpine AS builder
+
+WORKDIR /build
+COPY src ./src
+COPY lib ./lib
+COPY CampusExam.java .
+
+RUN javac -cp "lib/postgresql.jar:src" -d classes CampusExam.java
+
+FROM eclipse-temurin:17-jre-alpine AS runner
+
+WORKDIR /app
+
+RUN addgroup -S campusexam && adduser -S campusexam -G campusexam
+
+COPY --from=builder /build/classes ./
+COPY --from=builder /build/lib ./lib
+COPY index.html app.html ./
+
+RUN mkdir -p /app/keys /app/lab_storage/results /app/audit_storage/results && \
+    chown -R campusexam:campusexam /app
+
+USER campusexam
+
+ENV PORT=8081 \
+    BIND=0.0.0.0 \
+    BOOTSTRAP_OFFICIAL_ACCOUNTS=false \
+    CENTRAL_KEYS_DIR=/app/keys \
+    LAB_RESULTS_DIR=/app/lab_storage/results \
+    AUDIT_STORAGE_DIR=/app/audit_storage/results
+
+EXPOSE 8081
+
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:8081/health || exit 1
+
+ENTRYPOINT ["java", "-cp", ".:lib/postgresql.jar", "CampusExam"]

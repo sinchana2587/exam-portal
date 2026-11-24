@@ -1,0 +1,602 @@
+[
+  {
+    "qNum": 1,
+    "module": 1,
+    "text": "Which of the following laws is valid in Boolean algebra but NOT valid in ordinary algebra?",
+    "optionA": "x + y = y + x",
+    "optionB": "(x\u00b7y)\u00b7z = x\u00b7(y\u00b7z)",
+    "optionC": "x\u00b7(y + z) = x\u00b7y + x\u00b7z",
+    "optionD": "x + (y\u00b7z) = (x + y)\u00b7(x + z)",
+    "correct": "D"
+  },
+  {
+    "qNum": 2,
+    "module": 1,
+    "text": "Who introduced the two-valued Boolean algebra called 'switching algebra' in 1938?",
+    "optionA": "C. E. Shannon",
+    "optionB": "Augustus De Morgan",
+    "optionC": "E. V. Huntington",
+    "optionD": "George Boole",
+    "correct": "A"
+  },
+  {
+    "qNum": 3,
+    "module": 1,
+    "text": "According to the duality principle, the dual of the expression x + 0 = x is:",
+    "optionA": "x \u00b7 1 = x",
+    "optionB": "x \u00b7 0 = x",
+    "optionC": "x + 1 = x",
+    "optionD": "x' + 1 = x'",
+    "correct": "A"
+  },
+  {
+    "qNum": 4,
+    "module": 1,
+    "text": "Simplify the expression x + x'y.",
+    "optionA": "xy",
+    "optionB": "y",
+    "optionC": "x + y",
+    "optionD": "x",
+    "correct": "C"
+  },
+  {
+    "qNum": 5,
+    "module": 1,
+    "text": "According to De Morgan's theorem, (x\u00b7y)' is equal to:",
+    "optionA": "x + y",
+    "optionB": "x \u00b7 y'",
+    "optionC": "x' \u00b7 y'",
+    "optionD": "x' + y'",
+    "correct": "D"
+  },
+  {
+    "qNum": 6,
+    "module": 1,
+    "text": "The correct order of precedence of Boolean operators (highest to lowest) is:",
+    "optionA": "NOT, Parentheses, OR, AND",
+    "optionB": "Parentheses, AND, NOT, OR",
+    "optionC": "Parentheses, NOT, AND, OR",
+    "optionD": "Parentheses, OR, AND, NOT",
+    "correct": "C"
+  },
+  {
+    "qNum": 7,
+    "module": 1,
+    "text": "A Boolean function of 4 variables has a truth table with how many rows?",
+    "optionA": "32",
+    "optionB": "4",
+    "optionC": "16",
+    "optionD": "8",
+    "correct": "C"
+  },
+  {
+    "qNum": 8,
+    "module": 1,
+    "text": "How many different Boolean functions can be formed with 3 binary variables?",
+    "optionA": "256",
+    "optionB": "65536",
+    "optionC": "8",
+    "optionD": "64",
+    "correct": "A"
+  },
+  {
+    "qNum": 9,
+    "module": 1,
+    "text": "If F(A, B, C) = \u03a3(1, 4, 5, 6, 7), then the complement F' in minterm form is:",
+    "optionA": "\u03a3(1, 4, 5)",
+    "optionB": "\u03a3(0, 2, 3)",
+    "optionC": "\u03a3(0, 1, 2)",
+    "optionD": "\u03a3(2, 3, 7)",
+    "correct": "B"
+  },
+  {
+    "qNum": 10,
+    "module": 1,
+    "text": "The function F(x, y, z) = \u03a0(0, 2, 4, 5) expressed as a sum of minterms is:",
+    "optionA": "\u03a3(1, 2, 6, 7)",
+    "optionB": "\u03a3(0, 2, 4, 5)",
+    "optionC": "\u03a3(1, 3, 6, 7)",
+    "optionD": "\u03a3(1, 3, 5, 7)",
+    "correct": "C"
+  },
+  {
+    "qNum": 11,
+    "module": 1,
+    "text": "For three variables x, y, z, the maxterm M3 is:",
+    "optionA": "x' + y' + z",
+    "optionB": "x + y' + z'",
+    "optionC": "x' + y + z",
+    "optionD": "x' y z",
+    "correct": "B"
+  },
+  {
+    "qNum": 12,
+    "module": 1,
+    "text": "Using the K-map shown, the simplified SOP expression for F(x, y, z) = \u03a3(2, 3, 4, 5) is:",
+    "optionA": "y + z",
+    "optionB": "xy + x'y'",
+    "optionC": "x'y + xy'",
+    "optionD": "x'z + xz'",
+    "correct": "C"
+  },
+  {
+    "qNum": 13,
+    "module": 1,
+    "text": "Using the K-map shown, the simplified expression for F(w, x, y, z) is:",
+    "optionA": "y' + w'z' + xz'",
+    "optionB": "y' + w'z + xz'",
+    "optionC": "y' + wz + xz",
+    "optionD": "y + w'z' + xz'",
+    "correct": "A"
+  },
+  {
+    "qNum": 14,
+    "module": 1,
+    "text": "The K-map shows F = \u03a3(1, 3, 7, 11, 15) with don't-care conditions d = \u03a3(0, 2, 5). A minimal SOP expression is:",
+    "optionA": "F = yz' + w'z",
+    "optionB": "F = y'z + w'x'",
+    "optionC": "F = yz + wx",
+    "optionD": "F = yz + w'x'",
+    "correct": "D"
+  },
+  {
+    "qNum": 15,
+    "module": 1,
+    "text": "For the K-map shown (F = \u03a3(0, 1, 2, 5, 8, 9, 10)), the minimal product-of-sums (POS) expression is:",
+    "optionA": "(A + B')(C' + D')(B + D)",
+    "optionB": "(A' + B')(C + D)(B' + D)",
+    "optionC": "(A + B)(C + D)(B + D')",
+    "optionD": "(A' + B')(C' + D')(B' + D)",
+    "correct": "D"
+  },
+  {
+    "qNum": 16,
+    "module": 1,
+    "text": "Why are the rows and columns of a K-map labelled in Gray-code order (00, 01, 11, 10)?",
+    "optionA": "So that adjacent cells differ in only one variable",
+    "optionB": "To arrange minterms in binary counting order",
+    "optionC": "To reduce the number of cells",
+    "optionD": "To make the map symmetric about the diagonal",
+    "correct": "A"
+  },
+  {
+    "qNum": 17,
+    "module": 1,
+    "text": "In a 4-variable K-map, a group of eight adjacent 1s yields a product term with how many literals?",
+    "optionA": "1",
+    "optionB": "2",
+    "optionC": "3",
+    "optionD": "0",
+    "correct": "A"
+  },
+  {
+    "qNum": 18,
+    "module": 1,
+    "text": "The shaded cell in the 3-variable K-map shown (row x = 1, column yz = 10) corresponds to minterm:",
+    "optionA": "m4",
+    "optionB": "m7",
+    "optionC": "m5",
+    "optionD": "m6",
+    "correct": "D"
+  },
+  {
+    "qNum": 19,
+    "module": 1,
+    "text": "Which pair of gates is called 'universal' because any Boolean function can be built using only one of them?",
+    "optionA": "NOT and AND",
+    "optionB": "XOR and XNOR",
+    "optionC": "NAND and NOR",
+    "optionD": "AND and OR",
+    "correct": "C"
+  },
+  {
+    "qNum": 20,
+    "module": 1,
+    "text": "Which of the following gate operations is NOT associative, so the multi-input gate is defined as a complemented OR?",
+    "optionA": "AND",
+    "optionB": "NOR",
+    "optionC": "OR",
+    "optionD": "XOR",
+    "correct": "B"
+  },
+  {
+    "qNum": 21,
+    "module": 1,
+    "text": "A three-input exclusive-OR gate output equals 1 when:",
+    "optionA": "an even number of inputs are 1",
+    "optionB": "all inputs are 1",
+    "optionC": "an odd number of inputs are 1",
+    "optionD": "at least one input is 0",
+    "correct": "C"
+  },
+  {
+    "qNum": 22,
+    "module": 1,
+    "text": "The output of the cascaded NAND circuit shown, F = [(ABC)'(DE)']', simplifies to:",
+    "optionA": "ABC + DE",
+    "optionB": "(ABC)(DE)",
+    "optionC": "A + B + C + D + E",
+    "optionD": "(ABC)' + (DE)'",
+    "correct": "A"
+  },
+  {
+    "qNum": 23,
+    "module": 1,
+    "text": "The output F of the logic circuit shown is:",
+    "optionA": "F = x'z + xy'",
+    "optionB": "F = xz + x'y'",
+    "optionC": "F = (x' + z)(x + y')",
+    "optionD": "F = x'y + xz'",
+    "correct": "A"
+  },
+  {
+    "qNum": 24,
+    "module": 1,
+    "text": "In the Quine\u2013McCluskey tabular method, the first step is to:",
+    "optionA": "group the minterms according to the number of 1s in their binary form",
+    "optionB": "draw the K-map",
+    "optionC": "apply De Morgan's theorem to all terms",
+    "optionD": "find the essential prime implicants",
+    "correct": "A"
+  },
+  {
+    "qNum": 25,
+    "module": 1,
+    "text": "Using the Quine\u2013McCluskey method, F(W, X, Y, Z) = \u03a3m(2, 6, 8, 9, 10, 11, 14, 15) simplifies to:",
+    "optionA": "Y'Z + W'X + WY",
+    "optionB": "YZ' + WX' + WY",
+    "optionC": "YZ + WX + W'Y",
+    "optionD": "YZ' + W'X' + WY'",
+    "correct": "B"
+  },
+  {
+    "qNum": 26,
+    "module": 1,
+    "text": "In a K-map, a don't-care condition (X) may be treated as:",
+    "optionA": "ignored and left out of every group",
+    "optionB": "either 0 or 1, whichever gives the simpler expression",
+    "optionC": "always 0",
+    "optionD": "always 1",
+    "correct": "B"
+  },
+  {
+    "qNum": 27,
+    "module": 1,
+    "text": "Which IC logic family is preferred in systems that require low power consumption?",
+    "optionA": "ECL",
+    "optionB": "TTL",
+    "optionC": "I\u00b2L",
+    "optionD": "CMOS",
+    "correct": "D"
+  },
+  {
+    "qNum": 28,
+    "module": 1,
+    "text": "Which IC logic family is used in systems that require very high-speed operation?",
+    "optionA": "MOS",
+    "optionB": "ECL",
+    "optionC": "CMOS",
+    "optionD": "I\u00b2L",
+    "correct": "B"
+  },
+  {
+    "qNum": 29,
+    "module": 1,
+    "text": "A 14-pin SSI package (two pins for power supply) can accommodate how many two-input gates?",
+    "optionA": "4",
+    "optionB": "3",
+    "optionC": "7",
+    "optionD": "6",
+    "correct": "A"
+  },
+  {
+    "qNum": 30,
+    "module": 1,
+    "text": "In a negative-logic system, logic-1 is represented by:",
+    "optionA": "the low voltage level (L)",
+    "optionB": "the high voltage level (H)",
+    "optionC": "0 volts always",
+    "optionD": "a negative voltage always",
+    "correct": "A"
+  },
+  {
+    "qNum": 31,
+    "module": 2,
+    "text": "A combinational circuit is one whose output at any time depends on:",
+    "optionA": "the present inputs and past inputs",
+    "optionB": "only the present combination of inputs",
+    "optionC": "the stored state only",
+    "optionD": "a clock signal only",
+    "correct": "B"
+  },
+  {
+    "qNum": 32,
+    "module": 2,
+    "text": "Which of the following is NOT a combinational circuit?",
+    "optionA": "Binary counter",
+    "optionB": "Decoder",
+    "optionC": "Adder",
+    "optionD": "Multiplexer",
+    "correct": "A"
+  },
+  {
+    "qNum": 33,
+    "module": 2,
+    "text": "The circuit shown, built from an XOR gate and an AND gate with inputs A and B, is a:",
+    "optionA": "comparator",
+    "optionB": "half subtractor",
+    "optionC": "full adder",
+    "optionD": "half adder",
+    "correct": "D"
+  },
+  {
+    "qNum": 34,
+    "module": 2,
+    "text": "For a half adder with inputs x = 1 and y = 1, the outputs (Sum, Carry) are:",
+    "optionA": "Sum = 1, Carry = 1",
+    "optionB": "Sum = 1, Carry = 0",
+    "optionC": "Sum = 0, Carry = 1",
+    "optionD": "Sum = 0, Carry = 0",
+    "correct": "C"
+  },
+  {
+    "qNum": 35,
+    "module": 2,
+    "text": "For a full adder with inputs x = 1, y = 0 and z (carry-in) = 1, the output carry C is:",
+    "optionA": "1 (and Sum = 1)",
+    "optionB": "0 (and Sum = 1)",
+    "optionC": "1 (and Sum = 0)",
+    "optionD": "0 (and Sum = 0)",
+    "correct": "C"
+  },
+  {
+    "qNum": 36,
+    "module": 2,
+    "text": "In the full adder shown (two half adders and one extra gate), the extra gate that produces the output carry is a(n):",
+    "optionA": "NAND gate",
+    "optionB": "OR gate",
+    "optionC": "AND gate",
+    "optionD": "XOR gate",
+    "correct": "B"
+  },
+  {
+    "qNum": 37,
+    "module": 2,
+    "text": "For a half subtractor with minuend x = 0 and subtrahend y = 1, the borrow output B is:",
+    "optionA": "1",
+    "optionB": "Cannot be determined",
+    "optionC": "x",
+    "optionD": "0",
+    "correct": "A"
+  },
+  {
+    "qNum": 38,
+    "module": 2,
+    "text": "A full adder can be converted into a full subtractor by:",
+    "optionA": "replacing the XOR gates with AND gates",
+    "optionB": "complementing input x before applying it to the gates that form the carry (borrow) output",
+    "optionC": "complementing the output sum",
+    "optionD": "complementing input y before the sum gate",
+    "correct": "B"
+  },
+  {
+    "qNum": 39,
+    "module": 2,
+    "text": "For a full subtractor with x = 0, y = 1 and previous borrow z = 1, the outputs (Difference D, Borrow B) are:",
+    "optionA": "D = 0, B = 0",
+    "optionB": "D = 1, B = 1",
+    "optionC": "D = 1, B = 0",
+    "optionD": "D = 0, B = 1",
+    "correct": "D"
+  },
+  {
+    "qNum": 40,
+    "module": 2,
+    "text": "The excess-3 code for decimal digit 5 (BCD 0101) is:",
+    "optionA": "0101",
+    "optionB": "1001",
+    "optionC": "0111",
+    "optionD": "1000",
+    "correct": "D"
+  },
+  {
+    "qNum": 41,
+    "module": 2,
+    "text": "In the BCD-to-excess-3 code converter, the output bit z (least significant) is given by (inputs A, B, C, D):",
+    "optionA": "z = CD'",
+    "optionB": "z = C \u2295 D",
+    "optionC": "z = D'",
+    "optionD": "z = D",
+    "correct": "C"
+  },
+  {
+    "qNum": 42,
+    "module": 2,
+    "text": "For the NAND circuit shown, the output F is:",
+    "optionA": "AB + ACD + BC'",
+    "optionB": "AB + ACD' + B'C",
+    "optionC": "AB + CD + B'C'",
+    "optionD": "A(B' + CD) + BC",
+    "correct": "A"
+  },
+  {
+    "qNum": 43,
+    "module": 2,
+    "text": "An AND operation can be realised using NAND gates only by:",
+    "optionA": "inverting both inputs and then using a NAND gate",
+    "optionB": "a single NAND gate",
+    "optionC": "a NAND gate followed by a NAND gate wired as an inverter",
+    "optionD": "two NAND gates in parallel",
+    "correct": "C"
+  },
+  {
+    "qNum": 44,
+    "module": 2,
+    "text": "An n-variable exclusive-OR function is equal to 1 for those minterms that have:",
+    "optionA": "an even number of 1s",
+    "optionB": "an odd number of 1s",
+    "optionC": "all variables equal to 1",
+    "optionD": "exactly one 0",
+    "correct": "B"
+  },
+  {
+    "qNum": 45,
+    "module": 2,
+    "text": "In the 4-bit ripple-carry adder shown, the delay of the adder is mainly decided by:",
+    "optionA": "the number of output pins",
+    "optionB": "the time taken by the carry to propagate through all full adders",
+    "optionC": "the clock frequency",
+    "optionD": "the delay of the sum XOR gates only",
+    "correct": "B"
+  },
+  {
+    "qNum": 46,
+    "module": 2,
+    "text": "In a look-ahead carry adder, with carry generate Gi = AiBi and carry propagate Pi = Ai \u2295 Bi, the carry C2 is:",
+    "optionA": "G1 \u2295 P1C1",
+    "optionB": "G1\u00b7P1 + C1",
+    "optionC": "G1 + P1C1",
+    "optionD": "P1 + G1C1",
+    "correct": "C"
+  },
+  {
+    "qNum": 47,
+    "module": 2,
+    "text": "In a look-ahead carry generator, the carry C3 is expressed as:",
+    "optionA": "G2P2 + G1P1C1",
+    "optionB": "G2 + G1 + C1",
+    "optionC": "G2 + P2G1 + P2P1C1",
+    "optionD": "G2 + P2 + P1C1",
+    "correct": "C"
+  },
+  {
+    "qNum": 48,
+    "module": 2,
+    "text": "A BCD adder corrects an invalid binary sum (greater than 9) by adding:",
+    "optionA": "1010",
+    "optionB": "0110",
+    "optionC": "0011",
+    "optionD": "1001",
+    "correct": "B"
+  },
+  {
+    "qNum": 49,
+    "module": 2,
+    "text": "Adding the BCD digits 7 and 8 using a BCD adder gives the corrected BCD result:",
+    "optionA": "0000 1111",
+    "optionB": "0001 0101",
+    "optionC": "0001 0011",
+    "optionD": "0001 1111",
+    "correct": "B"
+  },
+  {
+    "qNum": 50,
+    "module": 2,
+    "text": "The BCD adder block diagram shown uses how many 4-bit binary adders?",
+    "optionA": "3",
+    "optionB": "4",
+    "optionC": "1",
+    "optionD": "2",
+    "correct": "D"
+  },
+  {
+    "qNum": 51,
+    "module": 2,
+    "text": "In a magnitude comparator, two 4-bit numbers A and B are equal when:",
+    "optionA": "A0 = B0 and A3 \u2260 B3",
+    "optionB": "any one pair of bits is equal",
+    "optionC": "A3 = B3 only",
+    "optionD": "all pairs of corresponding bits are equal (xi = AiBi + Ai'Bi' = 1 for every i)",
+    "correct": "D"
+  },
+  {
+    "qNum": 52,
+    "module": 2,
+    "text": "In a 3-to-8 line decoder, when the input xyz = 101, the active output is:",
+    "optionA": "D4",
+    "optionB": "D3",
+    "optionC": "D6",
+    "optionD": "D5",
+    "correct": "D"
+  },
+  {
+    "qNum": 53,
+    "module": 2,
+    "text": "A full adder is implemented using a 3\u00d78 decoder and two OR gates, as partly shown (S = \u03a3(1, 2, 4, 7)). The OR gate for the carry C must be connected to decoder outputs:",
+    "optionA": "3, 5, 6, 7",
+    "optionB": "1, 2, 4, 7",
+    "optionC": "2, 3, 6, 7",
+    "optionD": "0, 1, 2, 4",
+    "correct": "A"
+  },
+  {
+    "qNum": 54,
+    "module": 2,
+    "text": "In the circuit shown (two 3\u00d78 decoders with enable inputs, w inverted for the top decoder), when w = 1 the outputs that generate minterms are:",
+    "optionA": "all outputs are 1",
+    "optionB": "D8 to D15 (bottom decoder enabled)",
+    "optionC": "D0 to D7 (top decoder enabled)",
+    "optionD": "all outputs are 0",
+    "correct": "B"
+  },
+  {
+    "qNum": 55,
+    "module": 2,
+    "text": "In an octal-to-binary encoder, the output bit x (most significant) is 1 for octal digits:",
+    "optionA": "2, 3, 6 or 7",
+    "optionB": "4, 5, 6 or 7 (x = D4 + D5 + D6 + D7)",
+    "optionC": "1, 3, 5 or 7",
+    "optionD": "0, 1, 2 or 3",
+    "correct": "B"
+  },
+  {
+    "qNum": 56,
+    "module": 2,
+    "text": "How many selection lines are needed for an 8-to-1 multiplexer?",
+    "optionA": "8",
+    "optionB": "3",
+    "optionC": "4",
+    "optionD": "2",
+    "correct": "B"
+  },
+  {
+    "qNum": 57,
+    "module": 2,
+    "text": "The 4\u00d71 multiplexer shown has inputs I0 = 0, I1 = 1, I2 = A, I3 = A' and select lines S1 = B, S0 = C. The function F(A, B, C) implemented is:",
+    "optionA": "\u03a3(1, 3, 5, 6)",
+    "optionB": "\u03a3(1, 3, 5, 7)",
+    "optionC": "\u03a3(0, 2, 4, 7)",
+    "optionD": "\u03a3(1, 2, 5, 6)",
+    "correct": "A"
+  },
+  {
+    "qNum": 58,
+    "module": 2,
+    "text": "A ROM that has 5 address input lines and 8 output lines is described as a:",
+    "optionA": "5 \u00d7 8 ROM",
+    "optionB": "32 \u00d7 8 ROM",
+    "optionC": "8 \u00d7 32 ROM",
+    "optionD": "16 \u00d7 8 ROM",
+    "correct": "B"
+  },
+  {
+    "qNum": 59,
+    "module": 2,
+    "text": "For the PLA program table shown (3 inputs, 3 product terms, 2 outputs), the number of programmed links 2n\u00d7k + k\u00d7m + m is:",
+    "optionA": "32",
+    "optionB": "18",
+    "optionC": "24",
+    "optionD": "26",
+    "correct": "D"
+  },
+  {
+    "qNum": 60,
+    "module": 2,
+    "text": "Compared with a ROM, a PLA replaces the decoder with:",
+    "optionA": "a bank of OR gates only",
+    "optionB": "a set of flip-flops",
+    "optionC": "a multiplexer",
+    "optionD": "a programmable group of AND gates generating product terms",
+    "correct": "D"
+  }
+]
